@@ -6,84 +6,84 @@ created: '2024-01-15'
 modified: '2024-01-15'
 specificationVersion: '0.18'
 tags:
-- Workflow
-- Orchestration
-- ETL
-- Data Pipeline
-- Scheduling
-- DAG
-apis:
-- name: Apache Airflow REST API
-  description: The stable public REST API for interacting with Apache Airflow programmatically, allowing management of DAGs, tasks, connections, and more.
-  image: https://airflow.apache.org/images/feature-image.png
-  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  baseURL: http://localhost:8080/api/v1
-  tags:
-  - REST
+  - DAG
+  - Data Pipeline
+  - ETL
+  - Orchestration
+  - Scheduling
   - Workflow
-  - DAGs
-  - Tasks
-  properties:
-  - type: Documentation
-    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  - type: OpenAPI
-    url: https://airflow.apache.org/docs/apache-airflow/stable/_api/openapi.json
-  - type: Authentication
-    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
-  - type: Changelog
-    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  contact:
-  - type: Email
-    url: mailto:dev@airflow.apache.org
-  - type: Slack
-    url: https://apache-airflow.slack.com/
-- name: Apache Airflow Experimental API (Deprecated)
-  description: The experimental API that preceded the stable REST API. This is deprecated and should not be used for new implementations.
-  image: https://airflow.apache.org/images/feature-image.png
-  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
-  baseURL: http://localhost:8080/api/experimental
-  tags:
-  - REST
-  - Deprecated
-  - Legacy
-  properties:
-  - type: Documentation
-    url: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
-  - type: Deprecation Notice
-    url: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html#deprecation-notice
+apis:
+  - name: Apache Airflow REST API
+    description: The stable public REST API for interacting with Apache Airflow programmatically, allowing management of DAGs, tasks, connections, and more.
+    image: https://airflow.apache.org/images/feature-image.png
+    humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+    baseURL: http://localhost:8080/api/v1
+    tags:
+      - DAGs
+      - REST
+      - Tasks
+      - Workflow
+    properties:
+      - type: Documentation
+        url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+      - type: OpenAPI
+        url: https://airflow.apache.org/docs/apache-airflow/stable/_api/openapi.json
+      - type: Authentication
+        url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+      - type: Changelog
+        url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+    contact:
+      - type: Email
+        url: mailto:dev@airflow.apache.org
+      - type: Slack
+        url: https://apache-airflow.slack.com/
+  - name: Apache Airflow Experimental API (Deprecated)
+    description: The experimental API that preceded the stable REST API. This is deprecated and should not be used for new implementations.
+    image: https://airflow.apache.org/images/feature-image.png
+    humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+    baseURL: http://localhost:8080/api/experimental
+    tags:
+      - Deprecated
+      - Legacy
+      - REST
+    properties:
+      - type: Documentation
+        url: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+      - type: Deprecation Notice
+        url: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html#deprecation-notice
 maintainers:
-- name: Apache Software Foundation
-  email: dev@airflow.apache.org
-  url: https://www.apache.org/
+  - name: Apache Software Foundation
+    email: dev@airflow.apache.org
+    url: https://www.apache.org/
 common:
-- type: GitHub Repository
-  url: https://github.com/apache/airflow
-- type: Getting Started
-  url: https://airflow.apache.org/docs/apache-airflow/stable/start.html
-- type: Installation Guide
-  url: https://airflow.apache.org/docs/apache-airflow/stable/installation/
-- type: Tutorial
-  url: https://airflow.apache.org/docs/apache-airflow/stable/tutorial/index.html
-- type: Docker Image
-  url: https://hub.docker.com/r/apache/airflow
-- type: PyPI Package
-  url: https://pypi.org/project/apache-airflow/
-- type: Security
-  url: https://airflow.apache.org/docs/apache-airflow/stable/security/
-- type: Community
-  url: https://airflow.apache.org/community/
-- type: Blog
-  url: https://airflow.apache.org/blog/
-- type: Slack Community
-  url: https://apache-airflow.slack.com/
-- type: Mailing Lists
-  url: https://airflow.apache.org/community/#mailing-lists
-- type: Contributing Guide
-  url: https://github.com/apache/airflow/blob/main/CONTRIBUTING.rst
-- type: License
-  url: https://github.com/apache/airflow/blob/main/LICENSE
-- type: Release Notes
-  url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+  - type: GitHub Repository
+    url: https://github.com/apache/airflow
+  - type: Getting Started
+    url: https://airflow.apache.org/docs/apache-airflow/stable/start.html
+  - type: Installation Guide
+    url: https://airflow.apache.org/docs/apache-airflow/stable/installation/
+  - type: Tutorial
+    url: https://airflow.apache.org/docs/apache-airflow/stable/tutorial/index.html
+  - type: Docker Image
+    url: https://hub.docker.com/r/apache/airflow
+  - type: PyPI Package
+    url: https://pypi.org/project/apache-airflow/
+  - type: Security
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/
+  - type: Community
+    url: https://airflow.apache.org/community/
+  - type: Blog
+    url: https://airflow.apache.org/blog/
+  - type: Slack Community
+    url: https://apache-airflow.slack.com/
+  - type: Mailing Lists
+    url: https://airflow.apache.org/community/#mailing-lists
+  - type: Contributing Guide
+    url: https://github.com/apache/airflow/blob/main/CONTRIBUTING.rst
+  - type: License
+    url: https://github.com/apache/airflow/blob/main/LICENSE
+  - type: Release Notes
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
 include:
-- name: Airflow Providers
-  url: https://airflow.apache.org/docs/apache-airflow-providers/
+  - name: Airflow Providers
+    url: https://airflow.apache.org/docs/apache-airflow-providers/

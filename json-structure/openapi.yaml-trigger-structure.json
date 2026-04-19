@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-trigger-structure.json",
+  "name": "Trigger",
+  "description": "Trigger schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "classpath": {
+      "type": "string"
+    },
+    "created_date": {
+      "format": "datetime",
+      "type": "string"
+    },
+    "id": {
+      "type": "integer"
+    },
+    "kwargs": {
+      "type": "string"
+    },
+    "triggerer_id": {
+      "nullable": true,
+      "type": "integer"
+    }
+  }
+}

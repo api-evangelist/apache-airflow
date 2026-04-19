@@ -1,0 +1,12 @@
+{
+  "dag_run_id": "example_dag",
+  "dry_run": true,
+  "end_date": "example-value",
+  "include_downstream": false,
+  "include_future": false,
+  "include_parentdag": true,
+  "include_past": false,
+  "include_subdags": true,
+  "include_upstream": false,
+  "only_failed": true
+}

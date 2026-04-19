@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-connection-test-structure.json",
+  "name": "ConnectionTest",
+  "description": "Connection test results.\n\n*New in version 2.2.0*\n",
+  "type": "object",
+  "properties": {
+    "message": {
+      "description": "The success or failure message of the request.",
+      "type": "string"
+    },
+    "status": {
+      "description": "The status of the request.",
+      "type": "boolean"
+    }
+  }
+}

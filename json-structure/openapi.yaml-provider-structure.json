@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-provider-structure.json",
+  "name": "Provider",
+  "description": "The provider\n\n*New in version 2.1.0*\n",
+  "type": "object",
+  "properties": {
+    "description": {
+      "description": "The description of the provider.",
+      "type": "string"
+    },
+    "package_name": {
+      "description": "The package name of the provider.",
+      "type": "string"
+    },
+    "version": {
+      "description": "The version of the provider.",
+      "type": "string"
+    }
+  }
+}

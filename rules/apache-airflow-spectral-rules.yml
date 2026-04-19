@@ -1,0 +1,144 @@
+extends: spectral:oas
+rules:
+  info-title-prefix:
+    description: API title must start with "Apache Airflow"
+    severity: warn
+    given: "$.info.title"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^Apache Airflow"
+  info-description-required:
+    description: API must have a description.
+    severity: error
+    given: "$.info"
+    then:
+      field: description
+      function: truthy
+  info-version-required:
+    description: API info must include a version.
+    severity: error
+    given: "$.info"
+    then:
+      field: version
+      function: truthy
+  servers-defined:
+    description: At least one server must be defined.
+    severity: error
+    given: "$"
+    then:
+      field: servers
+      function: truthy
+  operation-summary-required:
+    description: Every operation must have a summary.
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: summary
+      function: truthy
+  operation-summary-starts-with-apache-airflow:
+    description: Operation summaries must start with "Apache Airflow".
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete].summary"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^Apache Airflow"
+  operation-operationId-required:
+    description: Every operation must have an operationId.
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: operationId
+      function: truthy
+  operation-operationId-camelCase:
+    description: operationId must be camelCase.
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete].operationId"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z][a-zA-Z0-9]*$"
+  operation-tags-required:
+    description: Every operation must have at least one tag.
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: tags
+      function: truthy
+  operation-description-required:
+    description: Every operation should have a description.
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: description
+      function: truthy
+  paths-kebab-case:
+    description: Path segments must use kebab-case.
+    severity: warn
+    given: "$.paths"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(/[a-z0-9{}_\\-]+)+$"
+  parameter-description-required:
+    description: Every parameter must have a description.
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete].parameters[*]"
+    then:
+      field: description
+      function: truthy
+  response-success-required:
+    description: Every operation must define at least one 2xx response.
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete].responses"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          anyOf:
+            - required: ['200']
+            - required: ['201']
+            - required: ['204']
+  response-description-required:
+    description: Every response must have a description.
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete].responses[*]"
+    then:
+      field: description
+      function: truthy
+  schema-property-description:
+    description: Schema properties should have descriptions.
+    severity: info
+    given: "$.components.schemas[*].properties[*]"
+    then:
+      field: description
+      function: truthy
+  security-schemes-defined:
+    description: Security schemes must be defined in components.
+    severity: warn
+    given: "$.components"
+    then:
+      field: securitySchemes
+      function: truthy
+  get-no-request-body:
+    description: GET operations must not have a request body.
+    severity: error
+    given: "$.paths[*].get"
+    then:
+      field: requestBody
+      function: falsy
+  delete-no-request-body:
+    description: DELETE operations should not have a request body.
+    severity: warn
+    given: "$.paths[*].delete"
+    then:
+      field: requestBody
+      function: falsy
+  tag-description-required:
+    description: Global tags should have descriptions.
+    severity: info
+    given: "$.tags[*]"
+    then:
+      field: description
+      function: truthy

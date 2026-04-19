@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-dag-detail-structure.json",
+  "name": "DAGDetail",
+  "description": "DAG details.\n\nFor details see:\n[airflow.models.DAG](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.DAG)\n"
+}

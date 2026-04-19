@@ -1,0 +1,247 @@
+vocabulary: 1.0.0
+info:
+  provider: Apache Airflow
+  description: Unified taxonomy for Apache Airflow covering workflow 
+    orchestration resources, actions, and operational patterns.
+  created: '2026-04-19'
+  modified: '2026-04-19'
+operational:
+  apis:
+  - name: Apache Airflow REST API
+    namespace: airflow-rest
+    version: 2.5.3
+    baseUrl: http://localhost:8080/api/v1
+    status: active
+  resources:
+  - name: dags
+    api: airflow-rest
+    actions:
+    - list
+    - get
+    - patch
+    - delete
+  - name: dag-runs
+    api: airflow-rest
+    actions:
+    - list
+    - get
+    - create
+    - delete
+    - clear
+  - name: task-instances
+    api: airflow-rest
+    actions:
+    - list
+    - get
+    - patch
+    - clear
+  - name: connections
+    api: airflow-rest
+    actions:
+    - list
+    - get
+    - create
+    - update
+    - delete
+  - name: variables
+    api: airflow-rest
+    actions:
+    - list
+    - get
+    - create
+    - update
+    - delete
+  - name: pools
+    api: airflow-rest
+    actions:
+    - list
+    - get
+    - create
+    - update
+    - delete
+  - name: roles
+    api: airflow-rest
+    actions:
+    - list
+    - get
+    - create
+    - delete
+  - name: users
+    api: airflow-rest
+    actions:
+    - list
+    - get
+    - create
+    - update
+    - delete
+  - name: xcoms
+    api: airflow-rest
+    actions:
+    - list
+    - get
+  - name: plugins
+    api: airflow-rest
+    actions:
+    - list
+  - name: providers
+    api: airflow-rest
+    actions:
+    - list
+  - name: datasets
+    api: airflow-rest
+    actions:
+    - list
+    - get
+  actions:
+  - name: list
+    httpMethod: GET
+    pattern: read
+  - name: get
+    httpMethod: GET
+    pattern: read
+  - name: create
+    httpMethod: POST
+    pattern: write
+  - name: update
+    httpMethod: PATCH
+    pattern: write
+  - name: delete
+    httpMethod: DELETE
+    pattern: destructive
+  - name: trigger
+    httpMethod: POST
+    pattern: write
+  - name: clear
+    httpMethod: POST
+    pattern: write
+  - name: patch
+    httpMethod: PATCH
+    pattern: write
+  schemas:
+    core:
+    - DAG
+    - DAGRun
+    - TaskInstance
+    - Connection
+    - Variable
+    - Pool
+    security:
+    - User
+    - Role
+    - Permission
+    monitoring:
+    - EventLog
+    - ImportError
+    - DagWarning
+  parameters:
+    pagination:
+    - limit
+    - offset
+    identifiers:
+    - dag_id
+    - dag_run_id
+    - task_id
+    - run_id
+    filters:
+    - state
+    - execution_date_gte
+    - execution_date_lte
+  enums:
+    states:
+    - success
+    - failed
+    - running
+    - queued
+    - scheduled
+    - skipped
+  authentication:
+    schemes:
+    - name: basicAuth
+      type: http
+      scheme: basic
+capability:
+  workflows:
+  - name: Apache Airflow Workflow Orchestration
+    file: capabilities/airflow-orchestration.yaml
+    description: DAG and task management capability.
+    apis:
+    - airflow-rest
+    toolCount: 7
+    personas:
+    - Data Engineer
+    - Platform Operator
+  personas:
+  - id: data-engineer
+    name: Data Engineer
+    description: Engineers who build and manage data pipelines using Airflow 
+      DAGs.
+    workflows:
+    - airflow-orchestration
+  - id: platform-operator
+    name: Platform Operator
+    description: Operators who monitor and maintain Airflow platform health.
+    workflows:
+    - airflow-orchestration
+  domains:
+  - Workflow Orchestration
+  - Data Pipeline
+  - ETL
+  - Task Scheduling
+  namespaces:
+  - name: airflow-rest
+    type: consumed
+    description: Airflow REST API consumer namespace
+  - name: airflow-orchestration-api
+    type: rest
+    port: 8080
+  - name: airflow-orchestration-mcp
+    type: mcp
+    port: 9090
+  binds:
+  - AIRFLOW_USERNAME
+  - AIRFLOW_PASSWORD
+crossReference:
+- resource: dags
+  operations:
+  - list
+  - get
+  - patch
+  workflows:
+  - airflow-orchestration
+  personas:
+  - Data Engineer
+  - Platform Operator
+- resource: dag-runs
+  operations:
+  - trigger
+  - list
+  - get
+  workflows:
+  - airflow-orchestration
+  personas:
+  - Data Engineer
+- resource: task-instances
+  operations:
+  - list
+  - get
+  workflows:
+  - airflow-orchestration
+  personas:
+  - Data Engineer
+  - Platform Operator
+- resource: connections
+  operations:
+  - list
+  - create
+  workflows:
+  - airflow-orchestration
+  personas:
+  - Data Engineer
+- resource: variables
+  operations:
+  - list
+  - create
+  workflows:
+  - airflow-orchestration
+  personas:
+  - Data Engineer

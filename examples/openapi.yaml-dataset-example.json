@@ -1,0 +1,13 @@
+{
+  "consuming_dags": [
+    "example-value"
+  ],
+  "created_at": "example-value",
+  "extra": {},
+  "id": 1,
+  "producing_tasks": [
+    "example-value"
+  ],
+  "updated_at": "example-value",
+  "uri": "https://example.com/path/abc123"
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-dag-detail-schema.json",
+  "title": "DAGDetail",
+  "description": "DAG details.\n\nFor details see:\n[airflow.models.DAG](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.DAG)\n",
+  "allOf": [
+    {
+      "$ref": "#/components/schemas/DAG"
+    },
+    {
+      "properties": {
+        "catchup": {
+          "readOnly": true,
+          "type": "boolean"
+        },
+        "concurrency": {
+          "readOnly": true,
+          "type": "number"
+        },
+        "dag_run_timeout": {
+          "$ref": "#/components/schemas/TimeDelta",
+          "nullable": true
+        },
+        "default_view": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "doc_md": {
+          "nullable": true,
+          "readOnly": true,
+          "type": "string"
+        },
+        "end_date": {
+          "description": "The DAG's end date.\n\n*New in version 2.3.0*.\n",
+          "format": "date-time",
+          "nullable": true,
+          "readOnly": true,
+          "type": "string"
+        },
+        "is_paused_upon_creation": {
+          "description": "Whether the DAG is paused upon creation.\n\n*New in version 2.3.0*\n",
+          "nullable": true,
+          "readOnly": true,
+          "type": "boolean"
+        },
+        "last_parsed": {
+          "description": "The last time the DAG was parsed.\n\n*New in version 2.3.0*\n",
+          "format": "date-time",
+          "nullable": true,
+          "readOnly": true,
+          "type": "string"
+        },
+        "orientation": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "params": {
+          "description": "User-specified DAG params.\n\n*New in version 2.0.1*\n",
+          "readOnly": true,
+          "type": "object"
+        },
+        "render_template_as_native_obj": {
+          "description": "Whether to render templates as native Python objects.\n\n*New in version 2.3.0*\n",
+          "nullable": true,
+          "readOnly": true,
+          "type": "boolean"
+        },
+        "start_date": {
+          "description": "The DAG's start date.\n\n*Changed in version 2.0.1*&#58; Field becomes nullable.\n",
+          "format": "date-time",
+          "nullable": true,
+          "readOnly": true,
+          "type": "string"
+        },
+        "template_search_path": {
+          "description": "The template search path.\n\n*New in version 2.3.0*\n",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "type": "array"
+        },
+        "timezone": {
+          "$ref": "#/components/schemas/Timezone"
+        }
+      },
+      "type": "object"
+    }
+  ]
+}

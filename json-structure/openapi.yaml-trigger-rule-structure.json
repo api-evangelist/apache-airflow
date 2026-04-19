@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-trigger-rule-structure.json",
+  "name": "TriggerRule",
+  "description": "Trigger rule.\n\n*Changed in version 2.2.0*&#58; 'none_failed_min_one_success' is added as a possible value.\n",
+  "type": "string"
+}

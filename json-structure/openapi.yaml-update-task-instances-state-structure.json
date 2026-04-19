@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-update-task-instances-state-structure.json",
+  "name": "UpdateTaskInstancesState",
+  "description": "UpdateTaskInstancesState schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dag_run_id": {
+      "description": "The task instance's DAG run ID. Either set this or execution_date but not both.\n\n*New in version 2.3.0*\n",
+      "type": "string"
+    },
+    "dry_run": {
+      "default": true,
+      "description": "If set, don't actually run this operation. The response will contain a list of task instances\nplanned to be affected, but won't be modified in any way.\n",
+      "type": "boolean"
+    },
+    "execution_date": {
+      "description": "The execution date. Either set this or dag_run_id but not both.",
+      "format": "datetime",
+      "type": "string"
+    },
+    "include_downstream": {
+      "description": "If set to true, downstream tasks are also affected.",
+      "type": "boolean"
+    },
+    "include_future": {
+      "description": "If set to True, also tasks from future DAG Runs are affected.",
+      "type": "boolean"
+    },
+    "include_past": {
+      "description": "If set to True, also tasks from past DAG Runs are affected.",
+      "type": "boolean"
+    },
+    "include_upstream": {
+      "description": "If set to true, upstream tasks are also affected.",
+      "type": "boolean"
+    },
+    "new_state": {
+      "description": "Expected new state.",
+      "enum": [
+        "success",
+        "failed"
+      ],
+      "type": "string"
+    },
+    "task_id": {
+      "description": "The task ID.",
+      "type": "string"
+    }
+  }
+}

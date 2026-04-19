@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-task-instance-collection-schema.json",
+  "title": "TaskInstanceCollection",
+  "description": "Collection of task instances.\n\n*Changed in version 2.1.0*&#58; 'total_entries' field is added.\n",
+  "type": "object",
+  "allOf": [
+    {
+      "properties": {
+        "task_instances": {
+          "items": {
+            "$ref": "#/components/schemas/TaskInstance"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    {
+      "$ref": "#/components/schemas/CollectionInfo"
+    }
+  ]
+}

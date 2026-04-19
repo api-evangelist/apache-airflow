@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-plugin-collection-item-structure.json",
+  "name": "PluginCollectionItem",
+  "description": "A plugin Item.\n\n*New in version 2.1.0*\n",
+  "type": "object",
+  "properties": {
+    "appbuilder_menu_items": {
+      "description": "The Flask Appbuilder menu items",
+      "items": {
+        "nullable": true,
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "appbuilder_views": {
+      "description": "The appuilder views",
+      "items": {
+        "nullable": true,
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "executors": {
+      "description": "The plugin executors",
+      "items": {
+        "nullable": true,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "flask_blueprints": {
+      "description": "The flask blueprints",
+      "items": {
+        "nullable": true,
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "global_operator_extra_links": {
+      "description": "The global operator extra links",
+      "items": {
+        "nullable": true,
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "hooks": {
+      "description": "The plugin hooks",
+      "items": {
+        "nullable": true,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "macros": {
+      "description": "The plugin macros",
+      "items": {
+        "nullable": true,
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "name": {
+      "description": "The name of the plugin",
+      "type": "string"
+    },
+    "operator_extra_links": {
+      "description": "Operator extra links",
+      "items": {
+        "nullable": true,
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "source": {
+      "description": "The plugin source",
+      "nullable": true,
+      "type": "string"
+    }
+  }
+}

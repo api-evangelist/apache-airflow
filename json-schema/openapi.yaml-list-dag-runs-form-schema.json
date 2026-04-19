@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-list-dag-runs-form-schema.json",
+  "title": "ListDagRunsForm",
+  "description": "ListDagRunsForm schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dag_ids": {
+      "description": "Return objects with specific DAG IDs.\nThe value can be repeated to retrieve multiple matching values (OR condition).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "end_date_gte": {
+      "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with end_date_lte parameter to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "end_date_lte": {
+      "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with end_date_gte parameter to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "execution_date_gte": {
+      "description": "Returns objects greater or equal to the specified date.\n\nThis can be combined with execution_date_lte key to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "execution_date_lte": {
+      "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with execution_date_gte key to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "order_by": {
+      "description": "The name of the field to order the results by. Prefix a field name\nwith `-` to reverse the sort order.\n\n*New in version 2.1.0*\n",
+      "type": "string"
+    },
+    "page_limit": {
+      "default": 100,
+      "description": "The numbers of items to return.",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "page_offset": {
+      "description": "The number of items to skip before starting to collect the result set.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "start_date_gte": {
+      "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte key to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "start_date_lte": {
+      "description": "Returns objects less or equal the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "states": {
+      "description": "Return objects with specific states.\nThe value can be repeated to retrieve multiple matching values (OR condition).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    }
+  }
+}

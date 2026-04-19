@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-task-outlet-dataset-reference-structure.json",
+  "name": "TaskOutletDatasetReference",
+  "description": "A datasets reference to an upstream task.\n\n*New in version 2.4.0*\n",
+  "type": "object",
+  "properties": {
+    "created_at": {
+      "description": "The dataset creation time",
+      "nullable": false,
+      "type": "string"
+    },
+    "dag_id": {
+      "description": "The DAG ID that updates the dataset.",
+      "nullable": true,
+      "type": "string"
+    },
+    "task_id": {
+      "description": "The task ID that updates the dataset.",
+      "nullable": true,
+      "type": "string"
+    },
+    "updated_at": {
+      "description": "The dataset update time",
+      "nullable": false,
+      "type": "string"
+    }
+  }
+}

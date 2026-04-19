@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-update-task-instance-structure.json",
+  "name": "UpdateTaskInstance",
+  "description": "UpdateTaskInstance schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dry_run": {
+      "default": false,
+      "description": "If set, don't actually run this operation. The response will contain the task instance\nplanned to be affected, but won't be modified in any way.\n",
+      "type": "boolean"
+    },
+    "new_state": {
+      "description": "Expected new state.",
+      "enum": [
+        "success",
+        "failed"
+      ],
+      "type": "string"
+    }
+  }
+}

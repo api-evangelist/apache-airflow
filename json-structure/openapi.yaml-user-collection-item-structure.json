@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-user-collection-item-structure.json",
+  "name": "UserCollectionItem",
+  "description": "A user object.\n\n*New in version 2.1.0*\n",
+  "type": "object",
+  "properties": {
+    "active": {
+      "description": "Whether the user is active",
+      "nullable": true,
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "changed_on": {
+      "description": "The date user was changed",
+      "format": "datetime",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "created_on": {
+      "description": "The date user was created",
+      "format": "datetime",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "email": {
+      "description": "The user's email.\n\n*Changed in version 2.2.0*&#58; A minimum character length requirement ('minLength') is added.\n",
+      "minLength": 1,
+      "type": "string"
+    },
+    "failed_login_count": {
+      "description": "The number of times the login failed",
+      "nullable": true,
+      "readOnly": true,
+      "type": "integer"
+    },
+    "first_name": {
+      "description": "The user's first name.\n\n*Changed in version 2.4.0*&#58; The requirement for this to be non-empty was removed.\n",
+      "type": "string"
+    },
+    "last_login": {
+      "description": "The last user login",
+      "format": "datetime",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "last_name": {
+      "description": "The user's last name.\n\n*Changed in version 2.4.0*&#58; The requirement for this to be non-empty was removed.\n",
+      "type": "string"
+    },
+    "login_count": {
+      "description": "The login count",
+      "nullable": true,
+      "readOnly": true,
+      "type": "integer"
+    },
+    "roles": {
+      "description": "User roles.\n\n*Changed in version 2.2.0*&#58; Field is no longer read-only.\n",
+      "items": {
+        "nullable": true,
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "username": {
+      "description": "The username.\n\n*Changed in version 2.2.0*&#58; A minimum character length requirement ('minLength') is added.\n",
+      "minLength": 1,
+      "type": "string"
+    }
+  }
+}

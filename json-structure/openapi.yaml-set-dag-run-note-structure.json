@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-set-dag-run-note-structure.json",
+  "name": "SetDagRunNote",
+  "description": "SetDagRunNote schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "note": {
+      "description": "Custom notes left by users for this Dag Run.",
+      "type": "string"
+    }
+  }
+}

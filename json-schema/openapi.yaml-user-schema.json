@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-user-schema.json",
+  "title": "User",
+  "description": "A user object with sensitive data.\n\n*New in version 2.1.0*\n",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "#/components/schemas/UserCollectionItem"
+    },
+    {
+      "properties": {
+        "password": {
+          "type": "string",
+          "writeOnly": true
+        }
+      },
+      "type": "object"
+    }
+  ]
+}

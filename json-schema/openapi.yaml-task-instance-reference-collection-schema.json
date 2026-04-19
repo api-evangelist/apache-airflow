@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-task-instance-reference-collection-schema.json",
+  "title": "TaskInstanceReferenceCollection",
+  "description": "TaskInstanceReferenceCollection schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "task_instances": {
+      "items": {
+        "$ref": "#/components/schemas/TaskInstanceReference"
+      },
+      "type": "array"
+    }
+  }
+}

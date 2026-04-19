@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-clear-dag-run-structure.json",
+  "name": "ClearDagRun",
+  "description": "ClearDagRun schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dry_run": {
+      "default": true,
+      "description": "If set, don't actually run this operation. The response will contain a list of task instances\nplanned to be cleaned, but not modified in any way.\n",
+      "type": "boolean"
+    }
+  }
+}

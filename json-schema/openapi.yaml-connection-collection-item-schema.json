@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-connection-collection-item-schema.json",
+  "title": "ConnectionCollectionItem",
+  "description": "Connection collection item.\nThe password and extra fields are only available when retrieving a single object due to the sensitivity of this data.\n",
+  "type": "object",
+  "properties": {
+    "conn_type": {
+      "description": "The connection type.",
+      "type": "string"
+    },
+    "connection_id": {
+      "description": "The connection ID.",
+      "type": "string"
+    },
+    "description": {
+      "description": "The description of the connection.",
+      "nullable": true,
+      "type": "string"
+    },
+    "host": {
+      "description": "Host of the connection.",
+      "nullable": true,
+      "type": "string"
+    },
+    "login": {
+      "description": "Login of the connection.",
+      "nullable": true,
+      "type": "string"
+    },
+    "port": {
+      "description": "Port of the connection.",
+      "nullable": true,
+      "type": "integer"
+    },
+    "schema": {
+      "description": "Schema of the connection.",
+      "nullable": true,
+      "type": "string"
+    }
+  }
+}

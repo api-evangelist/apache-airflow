@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-class-reference-structure.json",
+  "name": "ClassReference",
+  "description": "Class reference",
+  "type": "object",
+  "properties": {
+    "class_name": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "module_path": {
+      "readOnly": true,
+      "type": "string"
+    }
+  }
+}

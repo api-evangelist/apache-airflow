@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-health-info-structure.json",
+  "name": "HealthInfo",
+  "description": "Instance status information.",
+  "type": "object",
+  "properties": {
+    "metadatabase": {
+      "$ref": "#/components/schemas/MetadatabaseStatus"
+    },
+    "scheduler": {
+      "$ref": "#/components/schemas/SchedulerStatus"
+    }
+  }
+}

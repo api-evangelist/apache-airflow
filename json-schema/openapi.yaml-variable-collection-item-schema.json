@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-variable-collection-item-schema.json",
+  "title": "VariableCollectionItem",
+  "description": "XCom entry collection item.\nThe value field are only available when retrieving a single object due to the sensitivity of this data.",
+  "type": "object",
+  "properties": {
+    "description": {
+      "description": "The description of the variable.\n\n*New in version 2.4.0*\n",
+      "nullable": true,
+      "type": "string"
+    },
+    "key": {
+      "type": "string"
+    }
+  }
+}

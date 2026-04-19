@@ -1,0 +1,6 @@
+{
+  "dag_id": "example_dag",
+  "message": "example-value",
+  "timestamp": "2025-03-15T14:30:00Z",
+  "warning_type": "example-value"
+}

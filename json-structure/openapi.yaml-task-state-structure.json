@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-task-state-structure.json",
+  "name": "TaskState",
+  "description": "Task state.\n\n*Changed in version 2.0.2*&#58; 'removed' is added as a possible value.\n\n*Changed in version 2.2.0*&#58; 'deferred' is added as a possible value.\n\n*Changed in version 2.4.0*&#58; 'sensing' state has been removed.\n*Changed in version 2.4.2*&#58; 'restarting' is added as a possible value\n",
+  "type": "string"
+}

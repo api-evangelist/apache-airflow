@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-time-delta-schema.json",
+  "title": "TimeDelta",
+  "description": "Time delta",
+  "type": "object",
+  "properties": {
+    "__type": {
+      "type": "string"
+    },
+    "days": {
+      "type": "integer"
+    },
+    "microseconds": {
+      "type": "integer"
+    },
+    "seconds": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "__type",
+    "days",
+    "seconds",
+    "microseconds"
+  ]
+}

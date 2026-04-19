@@ -1,0 +1,12 @@
+{
+  "conf": {},
+  "dag_id": "example_dag",
+  "dag_run_id": "example_dag",
+  "data_interval_end": "2025-03-15T14:30:00Z",
+  "data_interval_start": "2025-03-15T14:30:00Z",
+  "end_date": "2025-03-15T14:30:00Z",
+  "execution_date": "2025-03-15T14:30:00Z",
+  "external_trigger": true,
+  "last_scheduling_decision": "2025-03-15T14:30:00Z",
+  "logical_date": "2025-03-15T14:30:00Z"
+}

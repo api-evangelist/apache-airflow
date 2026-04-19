@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-x-com-collection-item-structure.json",
+  "name": "XComCollectionItem",
+  "description": "XCom entry collection item.\n\nThe value field is only available when reading a single object due to the size of the value.\n",
+  "type": "object",
+  "properties": {
+    "dag_id": {
+      "type": "string"
+    },
+    "execution_date": {
+      "format": "datetime",
+      "type": "string"
+    },
+    "key": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "format": "datetime",
+      "type": "string"
+    }
+  }
+}

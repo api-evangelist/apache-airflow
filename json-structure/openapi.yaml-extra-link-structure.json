@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-extra-link-structure.json",
+  "name": "ExtraLink",
+  "description": "Additional links containing additional information about the task.",
+  "type": "object",
+  "properties": {
+    "class_ref": {
+      "$ref": "#/components/schemas/ClassReference"
+    },
+    "href": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "name": {
+      "readOnly": true,
+      "type": "string"
+    }
+  }
+}

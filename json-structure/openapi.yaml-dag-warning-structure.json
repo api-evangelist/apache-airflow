@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-dag-warning-structure.json",
+  "name": "DagWarning",
+  "description": "DagWarning schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dag_id": {
+      "description": "The dag_id.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "message": {
+      "description": "The message for the dag warning.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "The time when this warning was logged.",
+      "format": "datetime",
+      "readOnly": true,
+      "type": "string"
+    },
+    "warning_type": {
+      "description": "The warning type for the dag warning.",
+      "readOnly": true,
+      "type": "string"
+    }
+  }
+}

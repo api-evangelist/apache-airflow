@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-collection-info-schema.json",
+  "title": "CollectionInfo",
+  "description": "Metadata about collection.",
+  "type": "object",
+  "properties": {
+    "total_entries": {
+      "description": "Count of total objects in the current result set before pagination parameters\n(limit, offset) are applied.\n",
+      "type": "integer"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-class-reference-schema.json",
+  "title": "ClassReference",
+  "description": "Class reference",
+  "type": "object",
+  "properties": {
+    "class_name": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "module_path": {
+      "readOnly": true,
+      "type": "string"
+    }
+  }
+}

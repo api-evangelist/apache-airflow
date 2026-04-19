@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-relative-delta-structure.json",
+  "name": "RelativeDelta",
+  "description": "Relative delta",
+  "type": "object",
+  "properties": {
+    "__type": {
+      "type": "string"
+    },
+    "day": {
+      "type": "integer"
+    },
+    "days": {
+      "type": "integer"
+    },
+    "hour": {
+      "type": "integer"
+    },
+    "hours": {
+      "type": "integer"
+    },
+    "leapdays": {
+      "type": "integer"
+    },
+    "microsecond": {
+      "type": "integer"
+    },
+    "microseconds": {
+      "type": "integer"
+    },
+    "minute": {
+      "type": "integer"
+    },
+    "minutes": {
+      "type": "integer"
+    },
+    "month": {
+      "type": "integer"
+    },
+    "months": {
+      "type": "integer"
+    },
+    "second": {
+      "type": "integer"
+    },
+    "seconds": {
+      "type": "integer"
+    },
+    "year": {
+      "type": "integer"
+    },
+    "years": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "__type",
+    "years",
+    "months",
+    "days",
+    "leapdays",
+    "hours",
+    "minutes",
+    "seconds",
+    "microseconds",
+    "year",
+    "month",
+    "day",
+    "hour",
+    "minute",
+    "second",
+    "microsecond"
+  ]
+}

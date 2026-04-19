@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-task-collection-schema.json",
+  "title": "TaskCollection",
+  "description": "Collection of tasks.",
+  "type": "object",
+  "properties": {
+    "tasks": {
+      "items": {
+        "$ref": "#/components/schemas/Task"
+      },
+      "type": "array"
+    }
+  }
+}

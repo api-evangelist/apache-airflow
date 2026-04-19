@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-dag-schema.json",
+  "title": "DAG",
+  "description": "DAG",
+  "type": "object",
+  "properties": {
+    "dag_id": {
+      "description": "The ID of the DAG.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "default_view": {
+      "description": "Default view of the DAG inside the webserver\n\n*New in version 2.3.0*\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "description": {
+      "description": "User-provided DAG description, which can consist of several sentences or paragraphs that describe DAG contents.\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "file_token": {
+      "description": "The key containing the encrypted path to the file. Encryption and decryption take place only on the server. This prevents the client from reading an non-DAG file. This also ensures API extensibility, because the format of encrypted data may change.\n",
+      "readOnly": true,
+      "type": "string"
+    },
+    "fileloc": {
+      "description": "The absolute path to the file.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "has_import_errors": {
+      "description": "Whether the DAG has import errors\n\n*New in version 2.3.0*\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "has_task_concurrency_limits": {
+      "description": "Whether the DAG has task concurrency limits\n\n*New in version 2.3.0*\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "is_active": {
+      "description": "Whether the DAG is currently seen by the scheduler(s).\n\n*New in version 2.1.1*\n\n*Changed in version 2.2.0*&#58; Field is read-only.\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "is_paused": {
+      "description": "Whether the DAG is paused.",
+      "nullable": true,
+      "type": "boolean"
+    },
+    "is_subdag": {
+      "description": "Whether the DAG is SubDAG.",
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "last_expired": {
+      "description": "Time when the DAG last received a refresh signal\n(e.g. the DAG's \"refresh\" button was clicked in the web UI)\n\n*New in version 2.3.0*\n",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "last_parsed_time": {
+      "description": "The last time the DAG was parsed.\n\n*New in version 2.3.0*\n",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "last_pickled": {
+      "description": "The last time the DAG was pickled.\n\n*New in version 2.3.0*\n",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "max_active_runs": {
+      "description": "Maximum number of active DAG runs for the DAG\n\n*New in version 2.3.0*\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "integer"
+    },
+    "max_active_tasks": {
+      "description": "Maximum number of active tasks that can be run on the DAG\n\n*New in version 2.3.0*\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "integer"
+    },
+    "next_dagrun": {
+      "description": "The logical date of the next dag run.\n\n*New in version 2.3.0*\n",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "next_dagrun_create_after": {
+      "description": "Earliest time at which this ``next_dagrun`` can be created.\n\n*New in version 2.3.0*\n",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "next_dagrun_data_interval_end": {
+      "description": "The end of the interval of the next dag run.\n\n*New in version 2.3.0*\n",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "next_dagrun_data_interval_start": {
+      "description": "The start of the interval of the next dag run.\n\n*New in version 2.3.0*\n",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "owners": {
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true,
+      "type": "array"
+    },
+    "pickle_id": {
+      "description": "Foreign key to the latest pickle_id\n\n*New in version 2.3.0*\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "root_dag_id": {
+      "description": "If the DAG is SubDAG then it is the top level DAG identifier. Otherwise, null.",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "schedule_interval": {
+      "$ref": "#/components/schemas/ScheduleInterval"
+    },
+    "scheduler_lock": {
+      "description": "Whether (one of) the scheduler is scheduling this DAG at the moment\n\n*New in version 2.3.0*\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "tags": {
+      "description": "List of tags.",
+      "items": {
+        "$ref": "#/components/schemas/Tag"
+      },
+      "nullable": true,
+      "readOnly": true,
+      "type": "array"
+    },
+    "timetable_description": {
+      "description": "Timetable/Schedule Interval description.\n\n*New in version 2.3.0*\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    }
+  }
+}

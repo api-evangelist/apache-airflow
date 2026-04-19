@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-action-collection-schema.json",
+  "title": "ActionCollection",
+  "description": "A collection of actions.\n\n*New in version 2.1.0*\n",
+  "type": "object",
+  "allOf": [
+    {
+      "properties": {
+        "actions": {
+          "items": {
+            "$ref": "#/components/schemas/Action"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    {
+      "$ref": "#/components/schemas/CollectionInfo"
+    }
+  ]
+}

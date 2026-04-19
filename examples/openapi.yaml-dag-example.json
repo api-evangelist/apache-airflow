@@ -1,0 +1,12 @@
+{
+  "dag_id": "example_dag",
+  "default_view": "example-value",
+  "description": "Example description for Apache Airflow resource.",
+  "file_token": "example-value",
+  "fileloc": "example-value",
+  "has_import_errors": true,
+  "has_task_concurrency_limits": true,
+  "is_active": true,
+  "is_paused": true,
+  "is_subdag": true
+}

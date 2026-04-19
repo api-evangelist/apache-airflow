@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-cron-expression-structure.json",
+  "name": "CronExpression",
+  "description": "Cron expression",
+  "type": "object",
+  "properties": {
+    "__type": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "__type",
+    "value"
+  ]
+}

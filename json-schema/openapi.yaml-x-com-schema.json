@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-x-com-schema.json",
+  "title": "XCom",
+  "description": "Full representations of XCom entry.",
+  "allOf": [
+    {
+      "$ref": "#/components/schemas/XComCollectionItem"
+    },
+    {
+      "properties": {
+        "value": {
+          "description": "The value",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  ]
+}

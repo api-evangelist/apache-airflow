@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-resource-structure.json",
+  "name": "Resource",
+  "description": "A resource on which permissions are granted.\n\n*New in version 2.1.0*\n",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The name of the resource",
+      "nullable": false,
+      "type": "string"
+    }
+  }
+}

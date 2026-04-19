@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-dataset-event-schema.json",
+  "title": "DatasetEvent",
+  "description": "A dataset event.\n\n*New in version 2.4.0*\n",
+  "type": "object",
+  "properties": {
+    "created_dagruns": {
+      "items": {
+        "$ref": "#/components/schemas/BasicDAGRun"
+      },
+      "type": "array"
+    },
+    "dataset_id": {
+      "description": "The dataset id",
+      "type": "integer"
+    },
+    "dataset_uri": {
+      "description": "The URI of the dataset",
+      "nullable": false,
+      "type": "string"
+    },
+    "extra": {
+      "description": "The dataset event extra",
+      "nullable": true,
+      "type": "object"
+    },
+    "source_dag_id": {
+      "description": "The DAG ID that updated the dataset.",
+      "nullable": true,
+      "type": "string"
+    },
+    "source_map_index": {
+      "description": "The task map index that updated the dataset.",
+      "nullable": true,
+      "type": "integer"
+    },
+    "source_run_id": {
+      "description": "The DAG run ID that updated the dataset.",
+      "nullable": true,
+      "type": "string"
+    },
+    "source_task_id": {
+      "description": "The task ID that updated the dataset.",
+      "nullable": true,
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "The dataset event creation time",
+      "nullable": false,
+      "type": "string"
+    }
+  }
+}

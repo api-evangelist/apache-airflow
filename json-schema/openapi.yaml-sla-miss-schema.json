@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-sla-miss-schema.json",
+  "title": "SLAMiss",
+  "description": "SLAMiss schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dag_id": {
+      "description": "The DAG ID.",
+      "type": "string"
+    },
+    "description": {
+      "nullable": true,
+      "type": "string"
+    },
+    "email_sent": {
+      "type": "boolean"
+    },
+    "execution_date": {
+      "format": "datetime",
+      "type": "string"
+    },
+    "notification_sent": {
+      "type": "boolean"
+    },
+    "task_id": {
+      "description": "The task ID.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "timestamp": {
+      "format": "datetime",
+      "type": "string"
+    }
+  }
+}

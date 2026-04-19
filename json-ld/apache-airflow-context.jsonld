@@ -1,0 +1,911 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "airflow": "https://airflow.apache.org/schema/",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "Resource": "airflow:Resource",
+    "name": "schema:name",
+    "ConfigOption": "airflow:ConfigOption",
+    "key": {
+      "@id": "airflow:key",
+      "@type": "xsd:string"
+    },
+    "value": {
+      "@id": "airflow:value",
+      "@type": "xsd:string"
+    },
+    "DatasetEvent": "airflow:DatasetEvent",
+    "createdDagruns": {
+      "@id": "airflow:created_dagruns",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "datasetId": {
+      "@id": "airflow:dataset_id",
+      "@type": "xsd:integer"
+    },
+    "datasetUri": {
+      "@id": "airflow:dataset_uri",
+      "@type": "xsd:string"
+    },
+    "extra": {
+      "@id": "airflow:extra",
+      "@type": "@id"
+    },
+    "sourceDagId": {
+      "@id": "airflow:source_dag_id",
+      "@type": "xsd:string"
+    },
+    "sourceMapIndex": {
+      "@id": "airflow:source_map_index",
+      "@type": "xsd:integer"
+    },
+    "sourceRunId": {
+      "@id": "airflow:source_run_id",
+      "@type": "xsd:string"
+    },
+    "sourceTaskId": {
+      "@id": "airflow:source_task_id",
+      "@type": "xsd:string"
+    },
+    "timestamp": {
+      "@id": "airflow:timestamp",
+      "@type": "xsd:string"
+    },
+    "TaskState": "airflow:TaskState",
+    "ImportError": "airflow:ImportError",
+    "filename": {
+      "@id": "airflow:filename",
+      "@type": "xsd:string"
+    },
+    "importErrorId": {
+      "@id": "airflow:import_error_id",
+      "@type": "xsd:integer"
+    },
+    "stackTrace": {
+      "@id": "airflow:stack_trace",
+      "@type": "xsd:string"
+    },
+    "Provider": "airflow:Provider",
+    "description": "schema:description",
+    "packageName": {
+      "@id": "airflow:package_name",
+      "@type": "xsd:string"
+    },
+    "version": "schema:version",
+    "Variable": "airflow:Variable",
+    "EventLog": "airflow:EventLog",
+    "dagId": {
+      "@id": "airflow:dag_id",
+      "@type": "xsd:string"
+    },
+    "event": {
+      "@id": "airflow:event",
+      "@type": "xsd:string"
+    },
+    "eventLogId": {
+      "@id": "airflow:event_log_id",
+      "@type": "xsd:integer"
+    },
+    "executionDate": {
+      "@id": "airflow:execution_date",
+      "@type": "xsd:dateTime"
+    },
+    "owner": {
+      "@id": "airflow:owner",
+      "@type": "xsd:string"
+    },
+    "taskId": {
+      "@id": "airflow:task_id",
+      "@type": "xsd:string"
+    },
+    "when": {
+      "@id": "airflow:when",
+      "@type": "xsd:dateTime"
+    },
+    "DAGDetail": "airflow:DAGDetail",
+    "UserCollection": "airflow:UserCollection",
+    "EventLogCollection": "airflow:EventLogCollection",
+    "SLAMiss": "airflow:SLAMiss",
+    "emailSent": {
+      "@id": "airflow:email_sent",
+      "@type": "xsd:boolean"
+    },
+    "notificationSent": {
+      "@id": "airflow:notification_sent",
+      "@type": "xsd:boolean"
+    },
+    "RelativeDelta": "airflow:RelativeDelta",
+    "Type": {
+      "@id": "airflow:__type",
+      "@type": "xsd:string"
+    },
+    "day": {
+      "@id": "airflow:day",
+      "@type": "xsd:integer"
+    },
+    "days": {
+      "@id": "airflow:days",
+      "@type": "xsd:integer"
+    },
+    "hour": {
+      "@id": "airflow:hour",
+      "@type": "xsd:integer"
+    },
+    "hours": {
+      "@id": "airflow:hours",
+      "@type": "xsd:integer"
+    },
+    "leapdays": {
+      "@id": "airflow:leapdays",
+      "@type": "xsd:integer"
+    },
+    "microsecond": {
+      "@id": "airflow:microsecond",
+      "@type": "xsd:integer"
+    },
+    "microseconds": {
+      "@id": "airflow:microseconds",
+      "@type": "xsd:integer"
+    },
+    "minute": {
+      "@id": "airflow:minute",
+      "@type": "xsd:integer"
+    },
+    "minutes": {
+      "@id": "airflow:minutes",
+      "@type": "xsd:integer"
+    },
+    "month": {
+      "@id": "airflow:month",
+      "@type": "xsd:integer"
+    },
+    "months": {
+      "@id": "airflow:months",
+      "@type": "xsd:integer"
+    },
+    "second": {
+      "@id": "airflow:second",
+      "@type": "xsd:integer"
+    },
+    "seconds": {
+      "@id": "airflow:seconds",
+      "@type": "xsd:integer"
+    },
+    "year": {
+      "@id": "airflow:year",
+      "@type": "xsd:integer"
+    },
+    "years": {
+      "@id": "airflow:years",
+      "@type": "xsd:integer"
+    },
+    "CronExpression": "airflow:CronExpression",
+    "UpdateTaskInstancesState": "airflow:UpdateTaskInstancesState",
+    "dagRunId": {
+      "@id": "airflow:dag_run_id",
+      "@type": "xsd:string"
+    },
+    "dryRun": {
+      "@id": "airflow:dry_run",
+      "@type": "xsd:boolean"
+    },
+    "includeDownstream": {
+      "@id": "airflow:include_downstream",
+      "@type": "xsd:boolean"
+    },
+    "includeFuture": {
+      "@id": "airflow:include_future",
+      "@type": "xsd:boolean"
+    },
+    "includePast": {
+      "@id": "airflow:include_past",
+      "@type": "xsd:boolean"
+    },
+    "includeUpstream": {
+      "@id": "airflow:include_upstream",
+      "@type": "xsd:boolean"
+    },
+    "newState": {
+      "@id": "airflow:new_state",
+      "@type": "xsd:string"
+    },
+    "XComCollectionItem": "airflow:XComCollectionItem",
+    "XCom": "airflow:XCom",
+    "DAGCollection": "airflow:DAGCollection",
+    "BasicDAGRun": "airflow:BasicDAGRun",
+    "dataIntervalEnd": {
+      "@id": "airflow:data_interval_end",
+      "@type": "xsd:dateTime"
+    },
+    "dataIntervalStart": {
+      "@id": "airflow:data_interval_start",
+      "@type": "xsd:dateTime"
+    },
+    "endDate": {
+      "@id": "airflow:end_date",
+      "@type": "xsd:dateTime"
+    },
+    "logicalDate": {
+      "@id": "airflow:logical_date",
+      "@type": "xsd:dateTime"
+    },
+    "runId": {
+      "@id": "airflow:run_id",
+      "@type": "xsd:string"
+    },
+    "startDate": {
+      "@id": "airflow:start_date",
+      "@type": "xsd:dateTime"
+    },
+    "state": {
+      "@id": "airflow:state",
+      "@type": "xsd:string"
+    },
+    "ConnectionCollection": "airflow:ConnectionCollection",
+    "Tag": "airflow:Tag",
+    "XComCollection": "airflow:XComCollection",
+    "Job": "airflow:Job",
+    "executorClass": {
+      "@id": "airflow:executor_class",
+      "@type": "xsd:string"
+    },
+    "hostname": {
+      "@id": "airflow:hostname",
+      "@type": "xsd:string"
+    },
+    "id": {
+      "@id": "airflow:id",
+      "@type": "xsd:integer"
+    },
+    "jobType": {
+      "@id": "airflow:job_type",
+      "@type": "xsd:string"
+    },
+    "latestHeartbeat": {
+      "@id": "airflow:latest_heartbeat",
+      "@type": "xsd:string"
+    },
+    "unixname": {
+      "@id": "airflow:unixname",
+      "@type": "xsd:string"
+    },
+    "ProviderCollection": "airflow:ProviderCollection",
+    "providers": {
+      "@id": "airflow:providers",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "Connection": "airflow:Connection",
+    "ClearTaskInstances": "airflow:ClearTaskInstances",
+    "includeParentdag": {
+      "@id": "airflow:include_parentdag",
+      "@type": "xsd:boolean"
+    },
+    "includeSubdags": {
+      "@id": "airflow:include_subdags",
+      "@type": "xsd:boolean"
+    },
+    "onlyFailed": {
+      "@id": "airflow:only_failed",
+      "@type": "xsd:boolean"
+    },
+    "onlyRunning": {
+      "@id": "airflow:only_running",
+      "@type": "xsd:boolean"
+    },
+    "resetDagRuns": {
+      "@id": "airflow:reset_dag_runs",
+      "@type": "xsd:boolean"
+    },
+    "taskIds": {
+      "@id": "airflow:task_ids",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "VariableCollectionItem": "airflow:VariableCollectionItem",
+    "DagScheduleDatasetReference": "airflow:DagScheduleDatasetReference",
+    "createdAt": {
+      "@id": "airflow:created_at",
+      "@type": "xsd:string"
+    },
+    "updatedAt": {
+      "@id": "airflow:updated_at",
+      "@type": "xsd:string"
+    },
+    "Trigger": "airflow:Trigger",
+    "classpath": {
+      "@id": "airflow:classpath",
+      "@type": "xsd:string"
+    },
+    "createdDate": {
+      "@id": "airflow:created_date",
+      "@type": "xsd:string"
+    },
+    "kwargs": {
+      "@id": "airflow:kwargs",
+      "@type": "xsd:string"
+    },
+    "triggererId": {
+      "@id": "airflow:triggerer_id",
+      "@type": "xsd:integer"
+    },
+    "ScheduleInterval": "airflow:ScheduleInterval",
+    "DagWarning": "airflow:DagWarning",
+    "message": {
+      "@id": "airflow:message",
+      "@type": "xsd:string"
+    },
+    "warningType": {
+      "@id": "airflow:warning_type",
+      "@type": "xsd:string"
+    },
+    "ConfigSection": "airflow:ConfigSection",
+    "options": {
+      "@id": "airflow:options",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "VersionInfo": "airflow:VersionInfo",
+    "gitVersion": {
+      "@id": "airflow:git_version",
+      "@type": "xsd:string"
+    },
+    "Task": "airflow:Task",
+    "classRef": {
+      "@id": "airflow:class_ref",
+      "@type": "xsd:string"
+    },
+    "dependsOnPast": {
+      "@id": "airflow:depends_on_past",
+      "@type": "xsd:boolean"
+    },
+    "downstreamTaskIds": {
+      "@id": "airflow:downstream_task_ids",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "executionTimeout": {
+      "@id": "airflow:execution_timeout",
+      "@type": "xsd:string"
+    },
+    "extraLinks": {
+      "@id": "airflow:extra_links",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "isMapped": {
+      "@id": "airflow:is_mapped",
+      "@type": "xsd:boolean"
+    },
+    "pool": {
+      "@id": "airflow:pool",
+      "@type": "xsd:string"
+    },
+    "poolSlots": {
+      "@id": "airflow:pool_slots",
+      "@type": "xsd:decimal"
+    },
+    "priorityWeight": {
+      "@id": "airflow:priority_weight",
+      "@type": "xsd:decimal"
+    },
+    "queue": {
+      "@id": "airflow:queue",
+      "@type": "xsd:string"
+    },
+    "retries": {
+      "@id": "airflow:retries",
+      "@type": "xsd:decimal"
+    },
+    "retryDelay": {
+      "@id": "airflow:retry_delay",
+      "@type": "xsd:string"
+    },
+    "retryExponentialBackoff": {
+      "@id": "airflow:retry_exponential_backoff",
+      "@type": "xsd:boolean"
+    },
+    "subDag": {
+      "@id": "airflow:sub_dag",
+      "@type": "xsd:string"
+    },
+    "templateFields": {
+      "@id": "airflow:template_fields",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "triggerRule": {
+      "@id": "airflow:trigger_rule",
+      "@type": "xsd:string"
+    },
+    "uiColor": {
+      "@id": "airflow:ui_color",
+      "@type": "xsd:string"
+    },
+    "uiFgcolor": {
+      "@id": "airflow:ui_fgcolor",
+      "@type": "xsd:string"
+    },
+    "waitForDownstream": {
+      "@id": "airflow:wait_for_downstream",
+      "@type": "xsd:boolean"
+    },
+    "weightRule": {
+      "@id": "airflow:weight_rule",
+      "@type": "xsd:string"
+    },
+    "Pool": "airflow:Pool",
+    "occupiedSlots": {
+      "@id": "airflow:occupied_slots",
+      "@type": "xsd:integer"
+    },
+    "openSlots": {
+      "@id": "airflow:open_slots",
+      "@type": "xsd:integer"
+    },
+    "queuedSlots": {
+      "@id": "airflow:queued_slots",
+      "@type": "xsd:integer"
+    },
+    "slots": {
+      "@id": "airflow:slots",
+      "@type": "xsd:integer"
+    },
+    "usedSlots": {
+      "@id": "airflow:used_slots",
+      "@type": "xsd:integer"
+    },
+    "ActionCollection": "airflow:ActionCollection",
+    "ListDagRunsForm": "airflow:ListDagRunsForm",
+    "dagIds": {
+      "@id": "airflow:dag_ids",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "endDateGte": {
+      "@id": "airflow:end_date_gte",
+      "@type": "xsd:dateTime"
+    },
+    "endDateLte": {
+      "@id": "airflow:end_date_lte",
+      "@type": "xsd:dateTime"
+    },
+    "executionDateGte": {
+      "@id": "airflow:execution_date_gte",
+      "@type": "xsd:dateTime"
+    },
+    "executionDateLte": {
+      "@id": "airflow:execution_date_lte",
+      "@type": "xsd:dateTime"
+    },
+    "orderBy": {
+      "@id": "airflow:order_by",
+      "@type": "xsd:string"
+    },
+    "pageLimit": {
+      "@id": "airflow:page_limit",
+      "@type": "xsd:integer"
+    },
+    "pageOffset": {
+      "@id": "airflow:page_offset",
+      "@type": "xsd:integer"
+    },
+    "startDateGte": {
+      "@id": "airflow:start_date_gte",
+      "@type": "xsd:dateTime"
+    },
+    "startDateLte": {
+      "@id": "airflow:start_date_lte",
+      "@type": "xsd:dateTime"
+    },
+    "states": {
+      "@id": "airflow:states",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "ActionResource": "airflow:ActionResource",
+    "action": {
+      "@id": "airflow:action",
+      "@type": "@id"
+    },
+    "resource": {
+      "@id": "airflow:resource",
+      "@type": "@id"
+    },
+    "HealthStatus": "airflow:HealthStatus",
+    "ExtraLink": "airflow:ExtraLink",
+    "href": {
+      "@id": "airflow:href",
+      "@type": "xsd:string"
+    },
+    "ExtraLinkCollection": "airflow:ExtraLinkCollection",
+    "PoolCollection": "airflow:PoolCollection",
+    "RoleCollection": "airflow:RoleCollection",
+    "ConnectionTest": "airflow:ConnectionTest",
+    "status": {
+      "@id": "airflow:status",
+      "@type": "xsd:boolean"
+    },
+    "ConnectionCollectionItem": "airflow:ConnectionCollectionItem",
+    "connType": {
+      "@id": "airflow:conn_type",
+      "@type": "xsd:string"
+    },
+    "connectionId": {
+      "@id": "airflow:connection_id",
+      "@type": "xsd:string"
+    },
+    "host": {
+      "@id": "airflow:host",
+      "@type": "xsd:string"
+    },
+    "login": {
+      "@id": "airflow:login",
+      "@type": "xsd:string"
+    },
+    "port": {
+      "@id": "airflow:port",
+      "@type": "xsd:integer"
+    },
+    "SetDagRunNote": "airflow:SetDagRunNote",
+    "note": {
+      "@id": "airflow:note",
+      "@type": "xsd:string"
+    },
+    "User": "airflow:User",
+    "DAGRunCollection": "airflow:DAGRunCollection",
+    "SetTaskInstanceNote": "airflow:SetTaskInstanceNote",
+    "ListTaskInstanceForm": "airflow:ListTaskInstanceForm",
+    "durationGte": {
+      "@id": "airflow:duration_gte",
+      "@type": "xsd:decimal"
+    },
+    "durationLte": {
+      "@id": "airflow:duration_lte",
+      "@type": "xsd:decimal"
+    },
+    "SchedulerStatus": "airflow:SchedulerStatus",
+    "latestSchedulerHeartbeat": {
+      "@id": "airflow:latest_scheduler_heartbeat",
+      "@type": "xsd:string"
+    },
+    "VariableCollection": "airflow:VariableCollection",
+    "Color": "airflow:Color",
+    "UserCollectionItem": "airflow:UserCollectionItem",
+    "active": {
+      "@id": "airflow:active",
+      "@type": "xsd:boolean"
+    },
+    "changedOn": {
+      "@id": "airflow:changed_on",
+      "@type": "xsd:string"
+    },
+    "createdOn": {
+      "@id": "airflow:created_on",
+      "@type": "xsd:string"
+    },
+    "email": "schema:email",
+    "failedLoginCount": {
+      "@id": "airflow:failed_login_count",
+      "@type": "xsd:integer"
+    },
+    "firstName": {
+      "@id": "airflow:first_name",
+      "@type": "xsd:string"
+    },
+    "lastLogin": {
+      "@id": "airflow:last_login",
+      "@type": "xsd:string"
+    },
+    "lastName": {
+      "@id": "airflow:last_name",
+      "@type": "xsd:string"
+    },
+    "loginCount": {
+      "@id": "airflow:login_count",
+      "@type": "xsd:integer"
+    },
+    "roles": {
+      "@id": "airflow:roles",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "username": {
+      "@id": "airflow:username",
+      "@type": "xsd:string"
+    },
+    "Dataset": "airflow:Dataset",
+    "consumingDags": {
+      "@id": "airflow:consuming_dags",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "producingTasks": {
+      "@id": "airflow:producing_tasks",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "uri": {
+      "@id": "airflow:uri",
+      "@type": "xsd:string"
+    },
+    "TaskInstanceCollection": "airflow:TaskInstanceCollection",
+    "TriggerRule": "airflow:TriggerRule",
+    "Action": "airflow:Action",
+    "HealthInfo": "airflow:HealthInfo",
+    "metadatabase": {
+      "@id": "airflow:metadatabase",
+      "@type": "xsd:string"
+    },
+    "scheduler": {
+      "@id": "airflow:scheduler",
+      "@type": "xsd:string"
+    },
+    "CollectionInfo": "airflow:CollectionInfo",
+    "totalEntries": {
+      "@id": "airflow:total_entries",
+      "@type": "xsd:integer"
+    },
+    "Role": "airflow:Role",
+    "actions": {
+      "@id": "airflow:actions",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "DAG": "airflow:DAG",
+    "defaultView": {
+      "@id": "airflow:default_view",
+      "@type": "xsd:string"
+    },
+    "fileToken": {
+      "@id": "airflow:file_token",
+      "@type": "xsd:string"
+    },
+    "fileloc": {
+      "@id": "airflow:fileloc",
+      "@type": "xsd:string"
+    },
+    "hasImportErrors": {
+      "@id": "airflow:has_import_errors",
+      "@type": "xsd:boolean"
+    },
+    "hasTaskConcurrencyLimits": {
+      "@id": "airflow:has_task_concurrency_limits",
+      "@type": "xsd:boolean"
+    },
+    "isActive": {
+      "@id": "airflow:is_active",
+      "@type": "xsd:boolean"
+    },
+    "isPaused": {
+      "@id": "airflow:is_paused",
+      "@type": "xsd:boolean"
+    },
+    "isSubdag": {
+      "@id": "airflow:is_subdag",
+      "@type": "xsd:boolean"
+    },
+    "lastExpired": {
+      "@id": "airflow:last_expired",
+      "@type": "xsd:dateTime"
+    },
+    "lastParsedTime": {
+      "@id": "airflow:last_parsed_time",
+      "@type": "xsd:dateTime"
+    },
+    "lastPickled": {
+      "@id": "airflow:last_pickled",
+      "@type": "xsd:dateTime"
+    },
+    "maxActiveRuns": {
+      "@id": "airflow:max_active_runs",
+      "@type": "xsd:integer"
+    },
+    "maxActiveTasks": {
+      "@id": "airflow:max_active_tasks",
+      "@type": "xsd:integer"
+    },
+    "nextDagrun": {
+      "@id": "airflow:next_dagrun",
+      "@type": "xsd:dateTime"
+    },
+    "nextDagrunCreateAfter": {
+      "@id": "airflow:next_dagrun_create_after",
+      "@type": "xsd:dateTime"
+    },
+    "nextDagrunDataIntervalEnd": {
+      "@id": "airflow:next_dagrun_data_interval_end",
+      "@type": "xsd:dateTime"
+    },
+    "nextDagrunDataIntervalStart": {
+      "@id": "airflow:next_dagrun_data_interval_start",
+      "@type": "xsd:dateTime"
+    },
+    "owners": {
+      "@id": "airflow:owners",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "pickleId": {
+      "@id": "airflow:pickle_id",
+      "@type": "xsd:string"
+    },
+    "rootDagId": {
+      "@id": "airflow:root_dag_id",
+      "@type": "xsd:string"
+    },
+    "scheduleInterval": {
+      "@id": "airflow:schedule_interval",
+      "@type": "xsd:string"
+    },
+    "schedulerLock": {
+      "@id": "airflow:scheduler_lock",
+      "@type": "xsd:boolean"
+    },
+    "tags": {
+      "@id": "airflow:tags",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "timetableDescription": {
+      "@id": "airflow:timetable_description",
+      "@type": "xsd:string"
+    },
+    "MetadatabaseStatus": "airflow:MetadatabaseStatus",
+    "ClearDagRun": "airflow:ClearDagRun",
+    "TaskInstance": "airflow:TaskInstance",
+    "duration": {
+      "@id": "airflow:duration",
+      "@type": "xsd:decimal"
+    },
+    "executorConfig": {
+      "@id": "airflow:executor_config",
+      "@type": "xsd:string"
+    },
+    "mapIndex": {
+      "@id": "airflow:map_index",
+      "@type": "xsd:integer"
+    },
+    "maxTries": {
+      "@id": "airflow:max_tries",
+      "@type": "xsd:integer"
+    },
+    "operator": {
+      "@id": "airflow:operator",
+      "@type": "xsd:string"
+    },
+    "pid": {
+      "@id": "airflow:pid",
+      "@type": "xsd:integer"
+    },
+    "queuedWhen": {
+      "@id": "airflow:queued_when",
+      "@type": "xsd:string"
+    },
+    "renderedFields": {
+      "@id": "airflow:rendered_fields",
+      "@type": "@id"
+    },
+    "slaMiss": {
+      "@id": "airflow:sla_miss",
+      "@type": "xsd:string"
+    },
+    "trigger": {
+      "@id": "airflow:trigger",
+      "@type": "xsd:string"
+    },
+    "triggererJob": {
+      "@id": "airflow:triggerer_job",
+      "@type": "xsd:string"
+    },
+    "tryNumber": {
+      "@id": "airflow:try_number",
+      "@type": "xsd:integer"
+    },
+    "DatasetEventCollection": "airflow:DatasetEventCollection",
+    "TimeDelta": "airflow:TimeDelta",
+    "DagWarningCollection": "airflow:DagWarningCollection",
+    "PluginCollectionItem": "airflow:PluginCollectionItem",
+    "appbuilderMenuItems": {
+      "@id": "airflow:appbuilder_menu_items",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "appbuilderViews": {
+      "@id": "airflow:appbuilder_views",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "executors": {
+      "@id": "airflow:executors",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "flaskBlueprints": {
+      "@id": "airflow:flask_blueprints",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "globalOperatorExtraLinks": {
+      "@id": "airflow:global_operator_extra_links",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "hooks": {
+      "@id": "airflow:hooks",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "macros": {
+      "@id": "airflow:macros",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "operatorExtraLinks": {
+      "@id": "airflow:operator_extra_links",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "source": {
+      "@id": "airflow:source",
+      "@type": "xsd:string"
+    },
+    "TaskOutletDatasetReference": "airflow:TaskOutletDatasetReference",
+    "ClassReference": "airflow:ClassReference",
+    "className": {
+      "@id": "airflow:class_name",
+      "@type": "xsd:string"
+    },
+    "modulePath": {
+      "@id": "airflow:module_path",
+      "@type": "xsd:string"
+    },
+    "DatasetCollection": "airflow:DatasetCollection",
+    "DagState": "airflow:DagState",
+    "UpdateTaskInstance": "airflow:UpdateTaskInstance",
+    "Config": "airflow:Config",
+    "sections": {
+      "@id": "airflow:sections",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "ImportErrorCollection": "airflow:ImportErrorCollection",
+    "WeightRule": "airflow:WeightRule",
+    "UpdateDagRunState": "airflow:UpdateDagRunState",
+    "Timezone": "airflow:Timezone",
+    "DAGRun": "airflow:DAGRun",
+    "conf": {
+      "@id": "airflow:conf",
+      "@type": "@id"
+    },
+    "externalTrigger": {
+      "@id": "airflow:external_trigger",
+      "@type": "xsd:boolean"
+    },
+    "lastSchedulingDecision": {
+      "@id": "airflow:last_scheduling_decision",
+      "@type": "xsd:dateTime"
+    },
+    "runType": {
+      "@id": "airflow:run_type",
+      "@type": "xsd:string"
+    },
+    "PluginCollection": "airflow:PluginCollection",
+    "TaskInstanceReference": "airflow:TaskInstanceReference",
+    "TaskInstanceReferenceCollection": "airflow:TaskInstanceReferenceCollection",
+    "taskInstances": {
+      "@id": "airflow:task_instances",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "TaskCollection": "airflow:TaskCollection",
+    "tasks": {
+      "@id": "airflow:tasks",
+      "@container": "@set",
+      "@type": "xsd:string"
+    }
+  }
+}

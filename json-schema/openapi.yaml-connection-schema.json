@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-connection-schema.json",
+  "title": "Connection",
+  "description": "Full representation of the connection.",
+  "allOf": [
+    {
+      "$ref": "#/components/schemas/ConnectionCollectionItem"
+    },
+    {
+      "properties": {
+        "extra": {
+          "description": "Other values that cannot be put into another field, e.g. RSA keys.",
+          "nullable": true,
+          "type": "string"
+        },
+        "password": {
+          "description": "Password of the connection.",
+          "format": "password",
+          "type": "string",
+          "writeOnly": true
+        }
+      },
+      "type": "object"
+    }
+  ]
+}

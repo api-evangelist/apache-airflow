@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-action-schema.json",
+  "title": "Action",
+  "description": "An action Item.\n\n*New in version 2.1.0*\n",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The name of the permission \"action\"",
+      "nullable": false,
+      "type": "string"
+    }
+  }
+}

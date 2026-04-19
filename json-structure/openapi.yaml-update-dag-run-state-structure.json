@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-update-dag-run-state-structure.json",
+  "name": "UpdateDagRunState",
+  "description": "Modify the state of a DAG run.\n\n*New in version 2.2.0*\n",
+  "type": "object",
+  "properties": {
+    "state": {
+      "description": "The state to set this DagRun",
+      "enum": [
+        "success",
+        "failed",
+        "queued"
+      ],
+      "type": "string"
+    }
+  }
+}

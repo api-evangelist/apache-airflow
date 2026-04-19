@@ -1,0 +1,9 @@
+{
+  "conn_type": "http",
+  "connection_id": "example_dag",
+  "description": "Example description for Apache Airflow resource.",
+  "host": "example-value",
+  "login": "example-value",
+  "port": 1,
+  "schema": "example-value"
+}

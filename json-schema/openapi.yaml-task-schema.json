@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-task-schema.json",
+  "title": "Task",
+  "description": "For details see:\n[airflow.models.BaseOperator](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.BaseOperator)\n",
+  "type": "object",
+  "properties": {
+    "class_ref": {
+      "$ref": "#/components/schemas/ClassReference"
+    },
+    "depends_on_past": {
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "downstream_task_ids": {
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true,
+      "type": "array"
+    },
+    "end_date": {
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "execution_timeout": {
+      "$ref": "#/components/schemas/TimeDelta",
+      "nullable": true
+    },
+    "extra_links": {
+      "items": {
+        "properties": {
+          "class_ref": {
+            "$ref": "#/components/schemas/ClassReference"
+          }
+        },
+        "type": "object"
+      },
+      "readOnly": true,
+      "type": "array"
+    },
+    "is_mapped": {
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "owner": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "pool": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "pool_slots": {
+      "readOnly": true,
+      "type": "number"
+    },
+    "priority_weight": {
+      "readOnly": true,
+      "type": "number"
+    },
+    "queue": {
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "retries": {
+      "readOnly": true,
+      "type": "number"
+    },
+    "retry_delay": {
+      "$ref": "#/components/schemas/TimeDelta",
+      "nullable": true
+    },
+    "retry_exponential_backoff": {
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "start_date": {
+      "format": "date-time",
+      "readOnly": true,
+      "type": "string"
+    },
+    "sub_dag": {
+      "$ref": "#/components/schemas/DAG"
+    },
+    "task_id": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "template_fields": {
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true,
+      "type": "array"
+    },
+    "trigger_rule": {
+      "$ref": "#/components/schemas/TriggerRule"
+    },
+    "ui_color": {
+      "$ref": "#/components/schemas/Color"
+    },
+    "ui_fgcolor": {
+      "$ref": "#/components/schemas/Color"
+    },
+    "wait_for_downstream": {
+      "readOnly": true,
+      "type": "boolean"
+    },
+    "weight_rule": {
+      "$ref": "#/components/schemas/WeightRule"
+    }
+  }
+}

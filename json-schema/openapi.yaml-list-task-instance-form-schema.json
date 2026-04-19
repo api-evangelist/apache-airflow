@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-list-task-instance-form-schema.json",
+  "title": "ListTaskInstanceForm",
+  "description": "ListTaskInstanceForm schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dag_ids": {
+      "description": "Return objects with specific DAG IDs.\nThe value can be repeated to retrieve multiple matching values (OR condition).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "duration_gte": {
+      "description": "Returns objects greater than or equal to the specified values.\n\nThis can be combined with duration_lte parameter to receive only the selected period.\n",
+      "type": "number"
+    },
+    "duration_lte": {
+      "description": "Returns objects less than or equal to the specified values.\n\nThis can be combined with duration_gte parameter to receive only the selected range.\n",
+      "type": "number"
+    },
+    "end_date_gte": {
+      "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "end_date_lte": {
+      "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "execution_date_gte": {
+      "description": "Returns objects greater or equal to the specified date.\n\nThis can be combined with execution_date_lte parameter to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "execution_date_lte": {
+      "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with execution_date_gte parameter to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "pool": {
+      "description": "The value can be repeated to retrieve multiple matching values (OR condition).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "queue": {
+      "description": "The value can be repeated to retrieve multiple matching values (OR condition).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "start_date_gte": {
+      "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "start_date_lte": {
+      "description": "Returns objects less or equal the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n",
+      "format": "date-time",
+      "type": "string"
+    },
+    "state": {
+      "description": "The value can be repeated to retrieve multiple matching values (OR condition).",
+      "items": {
+        "$ref": "#/components/schemas/TaskState"
+      },
+      "type": "array"
+    }
+  }
+}

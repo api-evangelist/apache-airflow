@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-task-instance-reference-structure.json",
+  "name": "TaskInstanceReference",
+  "description": "TaskInstanceReference schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dag_id": {
+      "description": "The DAG ID.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "dag_run_id": {
+      "description": "The DAG run ID.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "execution_date": {
+      "format": "datetime",
+      "readOnly": true,
+      "type": "string"
+    },
+    "task_id": {
+      "description": "The task ID.",
+      "readOnly": true,
+      "type": "string"
+    }
+  }
+}

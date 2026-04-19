@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-scheduler-status-schema.json",
+  "title": "SchedulerStatus",
+  "description": "The status and the latest scheduler heartbeat.",
+  "type": "object",
+  "properties": {
+    "latest_scheduler_heartbeat": {
+      "description": "The time the scheduler last do a heartbeat.",
+      "format": "datetime",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/components/schemas/HealthStatus"
+    }
+  }
+}

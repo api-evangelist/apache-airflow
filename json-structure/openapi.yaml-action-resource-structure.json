@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-action-resource-structure.json",
+  "name": "ActionResource",
+  "description": "The Action-Resource item.\n\n*New in version 2.1.0*\n",
+  "type": "object",
+  "properties": {
+    "action": {
+      "$ref": "#/components/schemas/Action",
+      "description": "The permission action",
+      "type": "object"
+    },
+    "resource": {
+      "$ref": "#/components/schemas/Resource",
+      "description": "The permission resource",
+      "type": "object"
+    }
+  }
+}

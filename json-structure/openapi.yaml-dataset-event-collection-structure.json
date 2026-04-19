@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-dataset-event-collection-structure.json",
+  "name": "DatasetEventCollection",
+  "description": "A collection of dataset events.\n\n*New in version 2.4.0*\n",
+  "type": "object"
+}

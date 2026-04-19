@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-extra-link-collection-structure.json",
+  "name": "ExtraLinkCollection",
+  "description": "The collection of extra links.",
+  "type": "object",
+  "properties": {
+    "extra_links": {
+      "items": {
+        "$ref": "#/components/schemas/ExtraLink"
+      },
+      "type": "array"
+    }
+  }
+}

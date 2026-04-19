@@ -1,0 +1,126 @@
+naftiko: 1.0.0-alpha1
+info:
+  label: Apache Airflow Workflow Orchestration
+  description: Unified capability for managing and monitoring Apache Airflow 
+    DAGs, runs, tasks, connections, and variables. Used by data engineers and 
+    platform operators to orchestrate data pipelines.
+  tags:
+  - Apache Airflow
+  - Workflow Orchestration
+  - DAG Management
+  - Data Pipeline
+  - ETL
+  created: '2026-04-19'
+  modified: '2026-04-19'
+binds:
+- namespace: env
+  keys:
+    AIRFLOW_USERNAME: AIRFLOW_USERNAME
+    AIRFLOW_PASSWORD: AIRFLOW_PASSWORD
+capability:
+  consumes:
+  - import: airflow-rest
+    location: ./shared/airflow-rest.yaml
+  exposes:
+  - type: rest
+    port: 8080
+    namespace: airflow-orchestration-api
+    description: Unified REST API for Airflow workflow orchestration.
+    resources:
+    - path: /v1/dags
+      name: dags
+      operations:
+      - method: GET
+        name: list-dags
+        description: List all DAGs.
+        call: airflow-rest.list-dags
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dag-runs
+      name: dag-runs
+      operations:
+      - method: POST
+        name: trigger-dag-run
+        description: Trigger a DAG run.
+        call: airflow-rest.trigger-dag-run
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: airflow-orchestration-mcp
+    transport: http
+    description: MCP server for AI-assisted Airflow workflow management.
+    tools:
+    - name: list-dags
+      description: List all Airflow DAGs.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: airflow-rest.list-dags
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: trigger-dag-run
+      description: Trigger an Airflow DAG run.
+      hints:
+        readOnly: false
+        openWorld: false
+      call: airflow-rest.trigger-dag-run
+      with:
+        dag_id: tools.dag_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-dag-run-status
+      description: Get the status of an Airflow DAG run.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: airflow-rest.get-dag-run
+      with:
+        dag_id: tools.dag_id
+        dag_run_id: tools.dag_run_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-task-instances
+      description: List task instances for monitoring DAG run progress.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: airflow-rest.list-task-instances
+      with:
+        dag_id: tools.dag_id
+        dag_run_id: tools.dag_run_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-connections
+      description: List Airflow connections for integrations.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: airflow-rest.list-connections
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-variables
+      description: List Airflow variables.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: airflow-rest.list-variables
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-pools
+      description: List Airflow resource pools.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: airflow-rest.list-pools
+      outputParameters:
+      - type: object
+        mapping: $.

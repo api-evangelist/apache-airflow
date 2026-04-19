@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-set-dag-run-note-schema.json",
+  "title": "SetDagRunNote",
+  "description": "SetDagRunNote schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "note": {
+      "description": "Custom notes left by users for this Dag Run.",
+      "type": "string"
+    }
+  }
+}

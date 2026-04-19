@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-color-schema.json",
+  "title": "Color",
+  "description": "Color in hexadecimal notation.",
+  "type": "string",
+  "pattern": "^#[a-fA-F0-9]{3,6}$"
+}

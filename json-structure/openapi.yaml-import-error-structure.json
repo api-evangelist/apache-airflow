@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-import-error-structure.json",
+  "name": "ImportError",
+  "description": "ImportError schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "filename": {
+      "description": "The filename",
+      "readOnly": true,
+      "type": "string"
+    },
+    "import_error_id": {
+      "description": "The import error ID.",
+      "readOnly": true,
+      "type": "integer"
+    },
+    "stack_trace": {
+      "description": "The full stackstrace..",
+      "readOnly": true,
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "The time when this error was created.",
+      "format": "datetime",
+      "readOnly": true,
+      "type": "string"
+    }
+  }
+}

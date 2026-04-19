@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-config-structure.json",
+  "name": "Config",
+  "description": "The configuration.",
+  "type": "object",
+  "properties": {
+    "sections": {
+      "items": {
+        "$ref": "#/components/schemas/ConfigSection"
+      },
+      "type": "array"
+    }
+  }
+}

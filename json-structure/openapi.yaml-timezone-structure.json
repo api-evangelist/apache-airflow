@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-timezone-structure.json",
+  "name": "Timezone",
+  "description": "Timezone schema from Apache Airflow API",
+  "type": "string"
+}

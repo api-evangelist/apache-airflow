@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-task-instance-structure.json",
+  "name": "TaskInstance",
+  "description": "TaskInstance schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dag_id": {
+      "type": "string"
+    },
+    "dag_run_id": {
+      "description": "The DagRun ID for this task instance\n\n*New in version 2.3.0*\n",
+      "type": "string"
+    },
+    "duration": {
+      "nullable": true,
+      "type": "number"
+    },
+    "end_date": {
+      "format": "datetime",
+      "nullable": true,
+      "type": "string"
+    },
+    "execution_date": {
+      "format": "datetime",
+      "type": "string"
+    },
+    "executor_config": {
+      "type": "string"
+    },
+    "hostname": {
+      "type": "string"
+    },
+    "map_index": {
+      "type": "integer"
+    },
+    "max_tries": {
+      "type": "integer"
+    },
+    "note": {
+      "description": "Contains manually entered notes by the user about the TaskInstance.\n\n*New in version 2.5.0*\n",
+      "nullable": true,
+      "type": "string"
+    },
+    "operator": {
+      "description": "*Changed in version 2.1.1*&#58; Field becomes nullable.\n",
+      "nullable": true,
+      "type": "string"
+    },
+    "pid": {
+      "nullable": true,
+      "type": "integer"
+    },
+    "pool": {
+      "type": "string"
+    },
+    "pool_slots": {
+      "type": "integer"
+    },
+    "priority_weight": {
+      "nullable": true,
+      "type": "integer"
+    },
+    "queue": {
+      "nullable": true,
+      "type": "string"
+    },
+    "queued_when": {
+      "nullable": true,
+      "type": "string"
+    },
+    "rendered_fields": {
+      "description": "JSON object describing rendered fields.\n\n*New in version 2.3.0*\n",
+      "type": "object"
+    },
+    "sla_miss": {
+      "$ref": "#/components/schemas/SLAMiss",
+      "nullable": true
+    },
+    "start_date": {
+      "format": "datetime",
+      "nullable": true,
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/components/schemas/TaskState",
+      "nullable": true
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "trigger": {
+      "$ref": "#/components/schemas/Trigger",
+      "nullable": true
+    },
+    "triggerer_job": {
+      "$ref": "#/components/schemas/Job",
+      "nullable": true
+    },
+    "try_number": {
+      "type": "integer"
+    },
+    "unixname": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "created_dagruns": [
+    "example-value"
+  ],
+  "dataset_id": 1,
+  "dataset_uri": "https://example.com/path/abc123",
+  "extra": {},
+  "source_dag_id": "example_dag",
+  "source_map_index": 1,
+  "source_run_id": "example_dag",
+  "source_task_id": "example_dag",
+  "timestamp": "2025-03-15T14:30:00Z"
+}

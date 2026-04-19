@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-event-log-collection-structure.json",
+  "name": "EventLogCollection",
+  "description": "Collection of event logs.\n\n*Changed in version 2.1.0*&#58; 'total_entries' field is added.\n",
+  "type": "object"
+}

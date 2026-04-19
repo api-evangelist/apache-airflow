@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-dag-state-schema.json",
+  "title": "DagState",
+  "description": "DAG State.\n\n*Changed in version 2.1.3*&#58; 'queued' is added as a possible value.\n",
+  "type": "string",
+  "enum": [
+    "queued",
+    "running",
+    "success",
+    "failed"
+  ],
+  "readOnly": true
+}

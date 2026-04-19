@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-set-task-instance-note-structure.json",
+  "name": "SetTaskInstanceNote",
+  "description": "SetTaskInstanceNote schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "note": {
+      "description": "The custom note to set for this Task Instance.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "note"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-task-state-schema.json",
+  "title": "TaskState",
+  "description": "Task state.\n\n*Changed in version 2.0.2*&#58; 'removed' is added as a possible value.\n\n*Changed in version 2.2.0*&#58; 'deferred' is added as a possible value.\n\n*Changed in version 2.4.0*&#58; 'sensing' state has been removed.\n*Changed in version 2.4.2*&#58; 'restarting' is added as a possible value\n",
+  "type": "string",
+  "enum": [
+    "success",
+    "running",
+    "failed",
+    "upstream_failed",
+    "skipped",
+    "up_for_retry",
+    "up_for_reschedule",
+    "queued",
+    "none",
+    "scheduled",
+    "deferred",
+    "removed",
+    "restarting"
+  ]
+}

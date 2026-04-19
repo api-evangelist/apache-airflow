@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-event-log-structure.json",
+  "name": "EventLog",
+  "description": "Log of user operations via CLI or Web UI.",
+  "type": "object",
+  "properties": {
+    "dag_id": {
+      "description": "The DAG ID",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "event": {
+      "description": "A key describing the type of event.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "event_log_id": {
+      "description": "The event log ID",
+      "readOnly": true,
+      "type": "integer"
+    },
+    "execution_date": {
+      "description": "When the event was dispatched for an object having execution_date, the value of this field.\n",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "extra": {
+      "description": "Other information that was not included in the other fields, e.g. the complete CLI command.\n",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "owner": {
+      "description": "Name of the user who triggered these events a.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "task_id": {
+      "description": "The DAG ID",
+      "nullable": true,
+      "readOnly": true,
+      "type": "string"
+    },
+    "when": {
+      "description": "The time when these events happened.",
+      "format": "date-time",
+      "readOnly": true,
+      "type": "string"
+    }
+  }
+}

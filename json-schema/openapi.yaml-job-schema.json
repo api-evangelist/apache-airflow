@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-job-schema.json",
+  "title": "Job",
+  "description": "Job schema from Apache Airflow API",
+  "type": "object",
+  "properties": {
+    "dag_id": {
+      "nullable": true,
+      "type": "string"
+    },
+    "end_date": {
+      "format": "datetime",
+      "nullable": true,
+      "type": "string"
+    },
+    "executor_class": {
+      "nullable": true,
+      "type": "string"
+    },
+    "hostname": {
+      "nullable": true,
+      "type": "string"
+    },
+    "id": {
+      "type": "integer"
+    },
+    "job_type": {
+      "nullable": true,
+      "type": "string"
+    },
+    "latest_heartbeat": {
+      "format": "datetime",
+      "nullable": true,
+      "type": "string"
+    },
+    "start_date": {
+      "format": "datetime",
+      "nullable": true,
+      "type": "string"
+    },
+    "state": {
+      "nullable": true,
+      "type": "string"
+    },
+    "unixname": {
+      "nullable": true,
+      "type": "string"
+    }
+  }
+}

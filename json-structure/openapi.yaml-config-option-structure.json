@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-config-option-structure.json",
+  "name": "ConfigOption",
+  "description": "The option of configuration.",
+  "type": "object",
+  "properties": {
+    "key": {
+      "readOnly": true,
+      "type": "string"
+    },
+    "value": {
+      "readOnly": true,
+      "type": "string"
+    }
+  }
+}

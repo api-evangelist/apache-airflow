@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-structure/openapi.yaml-time-delta-structure.json",
+  "name": "TimeDelta",
+  "description": "Time delta",
+  "type": "object",
+  "properties": {
+    "__type": {
+      "type": "string"
+    },
+    "days": {
+      "type": "integer"
+    },
+    "microseconds": {
+      "type": "integer"
+    },
+    "seconds": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "__type",
+    "days",
+    "seconds",
+    "microseconds"
+  ]
+}

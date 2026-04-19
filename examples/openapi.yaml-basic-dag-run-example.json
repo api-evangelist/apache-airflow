@@ -1,0 +1,10 @@
+{
+  "dag_id": "example_dag",
+  "data_interval_end": "2025-03-15T14:30:00Z",
+  "data_interval_start": "2025-03-15T14:30:00Z",
+  "end_date": "2025-03-15T14:30:00Z",
+  "logical_date": "2025-03-15T14:30:00Z",
+  "run_id": "example_dag",
+  "start_date": "2025-03-15T14:30:00Z",
+  "state": "success"
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-schedule-interval-schema.json",
+  "title": "ScheduleInterval",
+  "description": "Schedule interval. Defines how often DAG runs, this object gets added to your latest task instance's\nexecution_date to figure out the next schedule.\n",
+  "anyOf": [
+    {
+      "$ref": "#/components/schemas/TimeDelta"
+    },
+    {
+      "$ref": "#/components/schemas/RelativeDelta"
+    },
+    {
+      "$ref": "#/components/schemas/CronExpression"
+    }
+  ],
+  "readOnly": true
+}

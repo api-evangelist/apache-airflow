@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/json-schema/openapi.yaml-provider-schema.json",
+  "title": "Provider",
+  "description": "The provider\n\n*New in version 2.1.0*\n",
+  "type": "object",
+  "properties": {
+    "description": {
+      "description": "The description of the provider.",
+      "type": "string"
+    },
+    "package_name": {
+      "description": "The package name of the provider.",
+      "type": "string"
+    },
+    "version": {
+      "description": "The version of the provider.",
+      "type": "string"
+    }
+  }
+}

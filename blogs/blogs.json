@@ -1,0 +1,13 @@
+{
+  "repo": "apache-airflow",
+  "feeds": [
+    {
+      "source": "https://airflow.apache.org/blog/",
+      "feed_url": "https://airflow.apache.org/blog/index.xml",
+      "saved": 10,
+      "title": "Apache Airflow Blog"
+    }
+  ],
+  "post_count": 10,
+  "fetched": "2026-05-03T23:22:05Z"
+}

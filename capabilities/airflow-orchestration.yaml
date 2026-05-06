@@ -1,9 +1,8 @@
-naftiko: 1.0.0-alpha1
+naftiko: 1.0.0-alpha2
 info:
   label: Apache Airflow Workflow Orchestration
-  description: Unified capability for managing and monitoring Apache Airflow 
-    DAGs, runs, tasks, connections, and variables. Used by data engineers and 
-    platform operators to orchestrate data pipelines.
+  description: Unified capability for managing and monitoring Apache Airflow DAGs, runs, tasks, connections, and variables.
+    Used by data engineers and platform operators to orchestrate data pipelines.
   tags:
   - Apache Airflow
   - Workflow Orchestration
@@ -11,7 +10,7 @@ info:
   - Data Pipeline
   - ETL
   created: '2026-04-19'
-  modified: '2026-04-19'
+  modified: '2026-05-06'
 binds:
 - namespace: env
   keys:
@@ -19,8 +18,187 @@ binds:
     AIRFLOW_PASSWORD: AIRFLOW_PASSWORD
 capability:
   consumes:
-  - import: airflow-rest
-    location: ./shared/airflow-rest.yaml
+  - type: http
+    namespace: airflow-rest
+    baseUri: http://localhost:8080/api/v1
+    description: Apache Airflow stable REST API.
+    authentication:
+      type: basic
+      username: '{{AIRFLOW_USERNAME}}'
+      password: '{{AIRFLOW_PASSWORD}}'
+    resources:
+    - name: dags
+      path: /dags
+      description: Manage DAG definitions.
+      operations:
+      - name: list-dags
+        method: GET
+        description: List all DAGs.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          required: false
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-dag
+        method: GET
+        description: Get a specific DAG.
+        inputParameters:
+        - name: dag_id
+          in: path
+          type: string
+          required: true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patch-dag
+        method: PATCH
+        description: Update a DAG (pause/unpause).
+        inputParameters:
+        - name: dag_id
+          in: path
+          type: string
+          required: true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dag-runs
+      path: /dags/{dag_id}/dagRuns
+      description: Manage DAG runs.
+      operations:
+      - name: list-dag-runs
+        method: GET
+        description: List DAG runs for a DAG.
+        inputParameters:
+        - name: dag_id
+          in: path
+          type: string
+          required: true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: trigger-dag-run
+        method: POST
+        description: Trigger a new DAG run.
+        inputParameters:
+        - name: dag_id
+          in: path
+          type: string
+          required: true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-dag-run
+        method: GET
+        description: Get a specific DAG run.
+        inputParameters:
+        - name: dag_id
+          in: path
+          type: string
+          required: true
+        - name: dag_run_id
+          in: path
+          type: string
+          required: true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: task-instances
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances
+      description: Monitor task instances.
+      operations:
+      - name: list-task-instances
+        method: GET
+        description: List task instances for a DAG run.
+        inputParameters:
+        - name: dag_id
+          in: path
+          type: string
+          required: true
+        - name: dag_run_id
+          in: path
+          type: string
+          required: true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: connections
+      path: /connections
+      description: Manage Airflow connections.
+      operations:
+      - name: list-connections
+        method: GET
+        description: List all connections.
+        inputParameters: []
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-connection
+        method: POST
+        description: Create a new connection.
+        inputParameters: []
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: variables
+      path: /variables
+      description: Manage Airflow variables.
+      operations:
+      - name: list-variables
+        method: GET
+        description: List all variables.
+        inputParameters: []
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-variable
+        method: POST
+        description: Create a new variable.
+        inputParameters: []
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: pools
+      path: /pools
+      description: Manage Airflow resource pools.
+      operations:
+      - name: list-pools
+        method: GET
+        description: List all pools.
+        inputParameters: []
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
   exposes:
   - type: rest
     port: 8080

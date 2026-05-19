@@ -1,0 +1,356 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Airflow API (Stable) — DAGRun
+  description: 'Airflow API (Stable) — DAGRun. 9 operations. Lead operation: Apache Airflow List DAG Runs. Self-contained
+    Naftiko capability covering one Apache Airflow business surface.'
+  tags:
+  - Apache Airflow
+  - DAGRun
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    APACHE_AIRFLOW_API_KEY: APACHE_AIRFLOW_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apache-airflow-dagrun
+    baseUri: ''
+    description: Airflow API (Stable) — DAGRun business capability. Self-contained, no shared references.
+    resources:
+    - name: dags-dag_id-dagRuns
+      path: /dags/{dag_id}/dagRuns
+      operations:
+      - name: getdagruns
+        method: GET
+        description: Apache Airflow List DAG Runs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postdagrun
+        method: POST
+        description: Apache Airflow Trigger a New DAG Run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-dag_id-dagRuns-dag_run_id
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}
+      operations:
+      - name: deletedagrun
+        method: DELETE
+        description: Apache Airflow Delete a DAG Run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getdagrun
+        method: GET
+        description: Apache Airflow Get a DAG Run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatedagrunstate
+        method: PATCH
+        description: Apache Airflow Modify a DAG Run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-dag_id-dagRuns-dag_run_id-clear
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/clear
+      operations:
+      - name: cleardagrun
+        method: POST
+        description: Apache Airflow Clear a DAG Run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-dag_id-dagRuns-dag_run_id-setNote
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/setNote
+      operations:
+      - name: setdagrunnote
+        method: PATCH
+        description: Apache Airflow Update the DagRun Note.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-dag_id-dagRuns-dag_run_id-upstreamDatasetEvents
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/upstreamDatasetEvents
+      operations:
+      - name: getupstreamdatasetevents
+        method: GET
+        description: Apache Airflow Get Dataset Events for a DAG Run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags-~-dagRuns-list
+      path: /dags/~/dagRuns/list
+      operations:
+      - name: getdagrunsbatch
+        method: POST
+        description: Apache Airflow List DAG Runs (batch)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.APACHE_AIRFLOW_USER}}'
+      password: '{{env.APACHE_AIRFLOW_PASS}}'
+  exposes:
+  - type: rest
+    namespace: apache-airflow-dagrun-rest
+    port: 8080
+    description: REST adapter for Airflow API (Stable) — DAGRun. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/dags/{dag-id}/dagruns
+      name: dags-dag-id-dagruns
+      description: REST surface for dags-dag_id-dagRuns.
+      operations:
+      - method: GET
+        name: getdagruns
+        description: Apache Airflow List DAG Runs
+        call: apache-airflow-dagrun.getdagruns
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postdagrun
+        description: Apache Airflow Trigger a New DAG Run
+        call: apache-airflow-dagrun.postdagrun
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}
+      name: dags-dag-id-dagruns-dag-run-id
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id.
+      operations:
+      - method: DELETE
+        name: deletedagrun
+        description: Apache Airflow Delete a DAG Run
+        call: apache-airflow-dagrun.deletedagrun
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getdagrun
+        description: Apache Airflow Get a DAG Run
+        call: apache-airflow-dagrun.getdagrun
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: updatedagrunstate
+        description: Apache Airflow Modify a DAG Run
+        call: apache-airflow-dagrun.updatedagrunstate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/clear
+      name: dags-dag-id-dagruns-dag-run-id-clear
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-clear.
+      operations:
+      - method: POST
+        name: cleardagrun
+        description: Apache Airflow Clear a DAG Run
+        call: apache-airflow-dagrun.cleardagrun
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/setnote
+      name: dags-dag-id-dagruns-dag-run-id-setnote
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-setNote.
+      operations:
+      - method: PATCH
+        name: setdagrunnote
+        description: Apache Airflow Update the DagRun Note.
+        call: apache-airflow-dagrun.setdagrunnote
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/upstreamdatasetevents
+      name: dags-dag-id-dagruns-dag-run-id-upstreamdatasetevents
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-upstreamDatasetEvents.
+      operations:
+      - method: GET
+        name: getupstreamdatasetevents
+        description: Apache Airflow Get Dataset Events for a DAG Run
+        call: apache-airflow-dagrun.getupstreamdatasetevents
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags//dagruns/list
+      name: dags-dagruns-list
+      description: REST surface for dags-~-dagRuns-list.
+      operations:
+      - method: POST
+        name: getdagrunsbatch
+        description: Apache Airflow List DAG Runs (batch)
+        call: apache-airflow-dagrun.getdagrunsbatch
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apache-airflow-dagrun-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Airflow API (Stable) — DAGRun. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: apache-airflow-list-dag-runs
+      description: Apache Airflow List DAG Runs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dagrun.getdagruns
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-trigger-new-dag
+      description: Apache Airflow Trigger a New DAG Run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apache-airflow-dagrun.postdagrun
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-delete-dag-run
+      description: Apache Airflow Delete a DAG Run
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: apache-airflow-dagrun.deletedagrun
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-dag-run
+      description: Apache Airflow Get a DAG Run
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dagrun.getdagrun
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-modify-dag-run
+      description: Apache Airflow Modify a DAG Run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dagrun.updatedagrunstate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-clear-dag-run
+      description: Apache Airflow Clear a DAG Run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apache-airflow-dagrun.cleardagrun
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-update-dagrun-note
+      description: Apache Airflow Update the DagRun Note.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dagrun.setdagrunnote
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-dataset-events
+      description: Apache Airflow Get Dataset Events for a DAG Run
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dagrun.getupstreamdatasetevents
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-list-dag-runs-2
+      description: Apache Airflow List DAG Runs (batch)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: apache-airflow-dagrun.getdagrunsbatch
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

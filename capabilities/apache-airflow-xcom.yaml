@@ -1,0 +1,112 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Airflow API (Stable) — XCom
+  description: 'Airflow API (Stable) — XCom. 2 operations. Lead operation: Apache Airflow List XCom Entries. Self-contained
+    Naftiko capability covering one Apache Airflow business surface.'
+  tags:
+  - Apache Airflow
+  - XCom
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    APACHE_AIRFLOW_API_KEY: APACHE_AIRFLOW_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apache-airflow-xcom
+    baseUri: ''
+    description: Airflow API (Stable) — XCom business capability. Self-contained, no shared references.
+    resources:
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-xcomEntries
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries
+      operations:
+      - name: getxcomentries
+        method: GET
+        description: Apache Airflow List XCom Entries
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-xcomEntries-xcom_key
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries/{xcom_key}
+      operations:
+      - name: getxcomentry
+        method: GET
+        description: Apache Airflow Get an XCom Entry
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deserialize
+          in: query
+          type: boolean
+          description: Whether to deserialize an XCom value when using a custom XCom backend.
+    authentication:
+      type: basic
+      username: '{{env.APACHE_AIRFLOW_USER}}'
+      password: '{{env.APACHE_AIRFLOW_PASS}}'
+  exposes:
+  - type: rest
+    namespace: apache-airflow-xcom-rest
+    port: 8080
+    description: REST adapter for Airflow API (Stable) — XCom. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances/{task-id}/xcomentries
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances-task-id-xcomentries
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-xcomEntries.
+      operations:
+      - method: GET
+        name: getxcomentries
+        description: Apache Airflow List XCom Entries
+        call: apache-airflow-xcom.getxcomentries
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances/{task-id}/xcomentries/{xcom-key}
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances-task-id-xcomentries-xcom-key
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-xcomEntries-xcom_key.
+      operations:
+      - method: GET
+        name: getxcomentry
+        description: Apache Airflow Get an XCom Entry
+        call: apache-airflow-xcom.getxcomentry
+        with:
+          deserialize: rest.deserialize
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apache-airflow-xcom-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Airflow API (Stable) — XCom. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: apache-airflow-list-xcom-entries
+      description: Apache Airflow List XCom Entries
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-xcom.getxcomentries
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-xcom-entry
+      description: Apache Airflow Get an XCom Entry
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-xcom.getxcomentry
+      with:
+        deserialize: tools.deserialize
+      outputParameters:
+      - type: object
+        mapping: $.

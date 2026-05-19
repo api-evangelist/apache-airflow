@@ -1,0 +1,103 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Airflow API (Stable) — Monitoring
+  description: 'Airflow API (Stable) — Monitoring. 2 operations. Lead operation: Apache Airflow Get Instance Status. Self-contained
+    Naftiko capability covering one Apache Airflow business surface.'
+  tags:
+  - Apache Airflow
+  - Monitoring
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    APACHE_AIRFLOW_API_KEY: APACHE_AIRFLOW_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apache-airflow-monitoring
+    baseUri: ''
+    description: Airflow API (Stable) — Monitoring business capability. Self-contained, no shared references.
+    resources:
+    - name: health
+      path: /health
+      operations:
+      - name: gethealth
+        method: GET
+        description: Apache Airflow Get Instance Status
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: version
+      path: /version
+      operations:
+      - name: getversion
+        method: GET
+        description: Apache Airflow Get Version Information
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: basic
+      username: '{{env.APACHE_AIRFLOW_USER}}'
+      password: '{{env.APACHE_AIRFLOW_PASS}}'
+  exposes:
+  - type: rest
+    namespace: apache-airflow-monitoring-rest
+    port: 8080
+    description: REST adapter for Airflow API (Stable) — Monitoring. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/health
+      name: health
+      description: REST surface for health.
+      operations:
+      - method: GET
+        name: gethealth
+        description: Apache Airflow Get Instance Status
+        call: apache-airflow-monitoring.gethealth
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/version
+      name: version
+      description: REST surface for version.
+      operations:
+      - method: GET
+        name: getversion
+        description: Apache Airflow Get Version Information
+        call: apache-airflow-monitoring.getversion
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apache-airflow-monitoring-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Airflow API (Stable) — Monitoring. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: apache-airflow-get-instance-status
+      description: Apache Airflow Get Instance Status
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-monitoring.gethealth
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-version-information
+      description: Apache Airflow Get Version Information
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-monitoring.getversion
+      outputParameters:
+      - type: object
+        mapping: $.

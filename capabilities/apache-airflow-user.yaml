@@ -1,0 +1,198 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Airflow API (Stable) — User
+  description: 'Airflow API (Stable) — User. 5 operations. Lead operation: Apache Airflow List Users. Self-contained Naftiko
+    capability covering one Apache Airflow business surface.'
+  tags:
+  - Apache Airflow
+  - User
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    APACHE_AIRFLOW_API_KEY: APACHE_AIRFLOW_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apache-airflow-user
+    baseUri: ''
+    description: Airflow API (Stable) — User business capability. Self-contained, no shared references.
+    resources:
+    - name: users
+      path: /users
+      operations:
+      - name: getusers
+        method: GET
+        description: Apache Airflow List Users
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postuser
+        method: POST
+        description: Apache Airflow Create a User
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: users-username
+      path: /users/{username}
+      operations:
+      - name: deleteuser
+        method: DELETE
+        description: Apache Airflow Delete a User
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getuser
+        method: GET
+        description: Apache Airflow Get a User
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchuser
+        method: PATCH
+        description: Apache Airflow Update a User
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.APACHE_AIRFLOW_USER}}'
+      password: '{{env.APACHE_AIRFLOW_PASS}}'
+  exposes:
+  - type: rest
+    namespace: apache-airflow-user-rest
+    port: 8080
+    description: REST adapter for Airflow API (Stable) — User. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/users
+      name: users
+      description: REST surface for users.
+      operations:
+      - method: GET
+        name: getusers
+        description: Apache Airflow List Users
+        call: apache-airflow-user.getusers
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postuser
+        description: Apache Airflow Create a User
+        call: apache-airflow-user.postuser
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/users/{username}
+      name: users-username
+      description: REST surface for users-username.
+      operations:
+      - method: DELETE
+        name: deleteuser
+        description: Apache Airflow Delete a User
+        call: apache-airflow-user.deleteuser
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getuser
+        description: Apache Airflow Get a User
+        call: apache-airflow-user.getuser
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchuser
+        description: Apache Airflow Update a User
+        call: apache-airflow-user.patchuser
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apache-airflow-user-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Airflow API (Stable) — User. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: apache-airflow-list-users
+      description: Apache Airflow List Users
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-user.getusers
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-create-user
+      description: Apache Airflow Create a User
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apache-airflow-user.postuser
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-delete-user
+      description: Apache Airflow Delete a User
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: apache-airflow-user.deleteuser
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-user
+      description: Apache Airflow Get a User
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-user.getuser
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-update-user
+      description: Apache Airflow Update a User
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: apache-airflow-user.patchuser
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

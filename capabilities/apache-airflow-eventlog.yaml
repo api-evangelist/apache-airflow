@@ -1,0 +1,103 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Airflow API (Stable) — EventLog
+  description: 'Airflow API (Stable) — EventLog. 2 operations. Lead operation: Apache Airflow List Log Entries. Self-contained
+    Naftiko capability covering one Apache Airflow business surface.'
+  tags:
+  - Apache Airflow
+  - EventLog
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    APACHE_AIRFLOW_API_KEY: APACHE_AIRFLOW_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apache-airflow-eventlog
+    baseUri: ''
+    description: Airflow API (Stable) — EventLog business capability. Self-contained, no shared references.
+    resources:
+    - name: eventLogs
+      path: /eventLogs
+      operations:
+      - name: geteventlogs
+        method: GET
+        description: Apache Airflow List Log Entries
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: eventLogs-event_log_id
+      path: /eventLogs/{event_log_id}
+      operations:
+      - name: geteventlog
+        method: GET
+        description: Apache Airflow Get a Log Entry
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: basic
+      username: '{{env.APACHE_AIRFLOW_USER}}'
+      password: '{{env.APACHE_AIRFLOW_PASS}}'
+  exposes:
+  - type: rest
+    namespace: apache-airflow-eventlog-rest
+    port: 8080
+    description: REST adapter for Airflow API (Stable) — EventLog. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/eventlogs
+      name: eventlogs
+      description: REST surface for eventLogs.
+      operations:
+      - method: GET
+        name: geteventlogs
+        description: Apache Airflow List Log Entries
+        call: apache-airflow-eventlog.geteventlogs
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/eventlogs/{event-log-id}
+      name: eventlogs-event-log-id
+      description: REST surface for eventLogs-event_log_id.
+      operations:
+      - method: GET
+        name: geteventlog
+        description: Apache Airflow Get a Log Entry
+        call: apache-airflow-eventlog.geteventlog
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apache-airflow-eventlog-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Airflow API (Stable) — EventLog. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: apache-airflow-list-log-entries
+      description: Apache Airflow List Log Entries
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-eventlog.geteventlogs
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-log-entry
+      description: Apache Airflow Get a Log Entry
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-eventlog.geteventlog
+      outputParameters:
+      - type: object
+        mapping: $.

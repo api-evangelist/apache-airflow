@@ -1,0 +1,426 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Airflow API (Stable) — DAG
+  description: 'Airflow API (Stable) — DAG. 11 operations. Lead operation: Apache Airflow Get a Source Code. Self-contained
+    Naftiko capability covering one Apache Airflow business surface.'
+  tags:
+  - Apache Airflow
+  - DAG
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    APACHE_AIRFLOW_API_KEY: APACHE_AIRFLOW_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apache-airflow-dag
+    baseUri: ''
+    description: Airflow API (Stable) — DAG business capability. Self-contained, no shared references.
+    resources:
+    - name: dagSources-file_token
+      path: /dagSources/{file_token}
+      operations:
+      - name: getdagsource
+        method: GET
+        description: Apache Airflow Get a Source Code
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags
+      path: /dags
+      operations:
+      - name: getdags
+        method: GET
+        description: Apache Airflow List DAGs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dag_id_pattern
+          in: query
+          type: string
+          description: If set, only return DAGs with dag_ids matching this pattern.
+      - name: patchdags
+        method: PATCH
+        description: Apache Airflow Update DAGs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dag_id_pattern
+          in: query
+          type: string
+          description: If set, only update DAGs with dag_ids matching this pattern.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-dag_id
+      path: /dags/{dag_id}
+      operations:
+      - name: deletedag
+        method: DELETE
+        description: Apache Airflow Delete a DAG
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getdag
+        method: GET
+        description: Apache Airflow Get Basic Information About a DAG
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchdag
+        method: PATCH
+        description: Apache Airflow Update a DAG
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-dag_id-clearTaskInstances
+      path: /dags/{dag_id}/clearTaskInstances
+      operations:
+      - name: postcleartaskinstances
+        method: POST
+        description: Apache Airflow Clear a Set of Task Instances
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-dag_id-details
+      path: /dags/{dag_id}/details
+      operations:
+      - name: getdagdetails
+        method: GET
+        description: Apache Airflow Get a Simplified Representation of DAG
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags-dag_id-tasks
+      path: /dags/{dag_id}/tasks
+      operations:
+      - name: gettasks
+        method: GET
+        description: Apache Airflow Get Tasks for DAG
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags-dag_id-tasks-task_id
+      path: /dags/{dag_id}/tasks/{task_id}
+      operations:
+      - name: gettask
+        method: GET
+        description: Apache Airflow Get Simplified Representation of a Task
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags-dag_id-updateTaskInstancesState
+      path: /dags/{dag_id}/updateTaskInstancesState
+      operations:
+      - name: postsettaskinstancesstate
+        method: POST
+        description: Apache Airflow Set a State of Task Instances
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.APACHE_AIRFLOW_USER}}'
+      password: '{{env.APACHE_AIRFLOW_PASS}}'
+  exposes:
+  - type: rest
+    namespace: apache-airflow-dag-rest
+    port: 8080
+    description: REST adapter for Airflow API (Stable) — DAG. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/dagsources/{file-token}
+      name: dagsources-file-token
+      description: REST surface for dagSources-file_token.
+      operations:
+      - method: GET
+        name: getdagsource
+        description: Apache Airflow Get a Source Code
+        call: apache-airflow-dag.getdagsource
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags
+      name: dags
+      description: REST surface for dags.
+      operations:
+      - method: GET
+        name: getdags
+        description: Apache Airflow List DAGs
+        call: apache-airflow-dag.getdags
+        with:
+          dag_id_pattern: rest.dag_id_pattern
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchdags
+        description: Apache Airflow Update DAGs
+        call: apache-airflow-dag.patchdags
+        with:
+          dag_id_pattern: rest.dag_id_pattern
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}
+      name: dags-dag-id
+      description: REST surface for dags-dag_id.
+      operations:
+      - method: DELETE
+        name: deletedag
+        description: Apache Airflow Delete a DAG
+        call: apache-airflow-dag.deletedag
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getdag
+        description: Apache Airflow Get Basic Information About a DAG
+        call: apache-airflow-dag.getdag
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchdag
+        description: Apache Airflow Update a DAG
+        call: apache-airflow-dag.patchdag
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/cleartaskinstances
+      name: dags-dag-id-cleartaskinstances
+      description: REST surface for dags-dag_id-clearTaskInstances.
+      operations:
+      - method: POST
+        name: postcleartaskinstances
+        description: Apache Airflow Clear a Set of Task Instances
+        call: apache-airflow-dag.postcleartaskinstances
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/details
+      name: dags-dag-id-details
+      description: REST surface for dags-dag_id-details.
+      operations:
+      - method: GET
+        name: getdagdetails
+        description: Apache Airflow Get a Simplified Representation of DAG
+        call: apache-airflow-dag.getdagdetails
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/tasks
+      name: dags-dag-id-tasks
+      description: REST surface for dags-dag_id-tasks.
+      operations:
+      - method: GET
+        name: gettasks
+        description: Apache Airflow Get Tasks for DAG
+        call: apache-airflow-dag.gettasks
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/tasks/{task-id}
+      name: dags-dag-id-tasks-task-id
+      description: REST surface for dags-dag_id-tasks-task_id.
+      operations:
+      - method: GET
+        name: gettask
+        description: Apache Airflow Get Simplified Representation of a Task
+        call: apache-airflow-dag.gettask
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/updatetaskinstancesstate
+      name: dags-dag-id-updatetaskinstancesstate
+      description: REST surface for dags-dag_id-updateTaskInstancesState.
+      operations:
+      - method: POST
+        name: postsettaskinstancesstate
+        description: Apache Airflow Set a State of Task Instances
+        call: apache-airflow-dag.postsettaskinstancesstate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apache-airflow-dag-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Airflow API (Stable) — DAG. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: apache-airflow-get-source-code
+      description: Apache Airflow Get a Source Code
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dag.getdagsource
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-list-dags
+      description: Apache Airflow List DAGs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dag.getdags
+      with:
+        dag_id_pattern: tools.dag_id_pattern
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-update-dags
+      description: Apache Airflow Update DAGs
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dag.patchdags
+      with:
+        dag_id_pattern: tools.dag_id_pattern
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-delete-dag
+      description: Apache Airflow Delete a DAG
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: apache-airflow-dag.deletedag
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-basic-information
+      description: Apache Airflow Get Basic Information About a DAG
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dag.getdag
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-update-dag
+      description: Apache Airflow Update a DAG
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dag.patchdag
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-clear-set-task
+      description: Apache Airflow Clear a Set of Task Instances
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apache-airflow-dag.postcleartaskinstances
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-simplified-representation
+      description: Apache Airflow Get a Simplified Representation of DAG
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dag.getdagdetails
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-tasks-dag
+      description: Apache Airflow Get Tasks for DAG
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dag.gettasks
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-simplified-representation-2
+      description: Apache Airflow Get Simplified Representation of a Task
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dag.gettask
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-set-state-task
+      description: Apache Airflow Set a State of Task Instances
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apache-airflow-dag.postsettaskinstancesstate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

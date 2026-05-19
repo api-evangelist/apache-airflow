@@ -1,0 +1,176 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Airflow API (Stable) — Dataset
+  description: 'Airflow API (Stable) — Dataset. 4 operations. Lead operation: Apache Airflow Get Dataset Events for a DAG
+    Run. Self-contained Naftiko capability covering one Apache Airflow business surface.'
+  tags:
+  - Apache Airflow
+  - Dataset
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    APACHE_AIRFLOW_API_KEY: APACHE_AIRFLOW_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apache-airflow-dataset
+    baseUri: ''
+    description: Airflow API (Stable) — Dataset business capability. Self-contained, no shared references.
+    resources:
+    - name: dags-dag_id-dagRuns-dag_run_id-upstreamDatasetEvents
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/upstreamDatasetEvents
+      operations:
+      - name: getupstreamdatasetevents
+        method: GET
+        description: Apache Airflow Get Dataset Events for a DAG Run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: datasets
+      path: /datasets
+      operations:
+      - name: getdatasets
+        method: GET
+        description: Apache Airflow List Datasets
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uri_pattern
+          in: query
+          type: string
+          description: If set, only return datasets with uris matching this pattern.
+    - name: datasets-events
+      path: /datasets/events
+      operations:
+      - name: getdatasetevents
+        method: GET
+        description: Apache Airflow Get Dataset Events
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: datasets-uri
+      path: /datasets/{uri}
+      operations:
+      - name: getdataset
+        method: GET
+        description: Apache Airflow Get a Dataset
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: basic
+      username: '{{env.APACHE_AIRFLOW_USER}}'
+      password: '{{env.APACHE_AIRFLOW_PASS}}'
+  exposes:
+  - type: rest
+    namespace: apache-airflow-dataset-rest
+    port: 8080
+    description: REST adapter for Airflow API (Stable) — Dataset. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/upstreamdatasetevents
+      name: dags-dag-id-dagruns-dag-run-id-upstreamdatasetevents
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-upstreamDatasetEvents.
+      operations:
+      - method: GET
+        name: getupstreamdatasetevents
+        description: Apache Airflow Get Dataset Events for a DAG Run
+        call: apache-airflow-dataset.getupstreamdatasetevents
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/datasets
+      name: datasets
+      description: REST surface for datasets.
+      operations:
+      - method: GET
+        name: getdatasets
+        description: Apache Airflow List Datasets
+        call: apache-airflow-dataset.getdatasets
+        with:
+          uri_pattern: rest.uri_pattern
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/datasets/events
+      name: datasets-events
+      description: REST surface for datasets-events.
+      operations:
+      - method: GET
+        name: getdatasetevents
+        description: Apache Airflow Get Dataset Events
+        call: apache-airflow-dataset.getdatasetevents
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/datasets/{uri}
+      name: datasets-uri
+      description: REST surface for datasets-uri.
+      operations:
+      - method: GET
+        name: getdataset
+        description: Apache Airflow Get a Dataset
+        call: apache-airflow-dataset.getdataset
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apache-airflow-dataset-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Airflow API (Stable) — Dataset. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: apache-airflow-get-dataset-events
+      description: Apache Airflow Get Dataset Events for a DAG Run
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dataset.getupstreamdatasetevents
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-list-datasets
+      description: Apache Airflow List Datasets
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dataset.getdatasets
+      with:
+        uri_pattern: tools.uri_pattern
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-dataset-events-2
+      description: Apache Airflow Get Dataset Events
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dataset.getdatasetevents
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-dataset
+      description: Apache Airflow Get a Dataset
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-dataset.getdataset
+      outputParameters:
+      - type: object
+        mapping: $.

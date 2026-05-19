@@ -1,0 +1,427 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Airflow API (Stable) — TaskInstance
+  description: 'Airflow API (Stable) — TaskInstance. 11 operations. Lead operation: Apache Airflow List Task Instances. Self-contained
+    Naftiko capability covering one Apache Airflow business surface.'
+  tags:
+  - Apache Airflow
+  - TaskInstance
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    APACHE_AIRFLOW_API_KEY: APACHE_AIRFLOW_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apache-airflow-taskinstance
+    baseUri: ''
+    description: Airflow API (Stable) — TaskInstance business capability. Self-contained, no shared references.
+    resources:
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances
+      operations:
+      - name: gettaskinstances
+        method: GET
+        description: Apache Airflow List Task Instances
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}
+      operations:
+      - name: gettaskinstance
+        method: GET
+        description: Apache Airflow Get a Task Instance
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchtaskinstance
+        method: PATCH
+        description: Apache Airflow Updates the State of a Task Instance
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-links
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/links
+      operations:
+      - name: getextralinks
+        method: GET
+        description: Apache Airflow List Extra Links
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-listMapped
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/listMapped
+      operations:
+      - name: getmappedtaskinstances
+        method: GET
+        description: Apache Airflow List Mapped Task Instances
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-logs-task_try_number
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/logs/{task_try_number}
+      operations:
+      - name: getlog
+        method: GET
+        description: Apache Airflow Get Logs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-setNote
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/setNote
+      operations:
+      - name: settaskinstancenote
+        method: PATCH
+        description: Apache Airflow Update the TaskInstance Note.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-map_index
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}
+      operations:
+      - name: getmappedtaskinstance
+        method: GET
+        description: Apache Airflow Get a Mapped Task Instance
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchmappedtaskinstance
+        method: PATCH
+        description: Apache Airflow Updates the State of a Mapped Task Instance
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-map_index-setNote
+      path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/setNote
+      operations:
+      - name: setmappedtaskinstancenote
+        method: PATCH
+        description: Apache Airflow Update the TaskInstance Note.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: dags-~-dagRuns-~-taskInstances-list
+      path: /dags/~/dagRuns/~/taskInstances/list
+      operations:
+      - name: gettaskinstancesbatch
+        method: POST
+        description: Apache Airflow List Task Instances (batch)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.APACHE_AIRFLOW_USER}}'
+      password: '{{env.APACHE_AIRFLOW_PASS}}'
+  exposes:
+  - type: rest
+    namespace: apache-airflow-taskinstance-rest
+    port: 8080
+    description: REST adapter for Airflow API (Stable) — TaskInstance. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances.
+      operations:
+      - method: GET
+        name: gettaskinstances
+        description: Apache Airflow List Task Instances
+        call: apache-airflow-taskinstance.gettaskinstances
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances/{task-id}
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances-task-id
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id.
+      operations:
+      - method: GET
+        name: gettaskinstance
+        description: Apache Airflow Get a Task Instance
+        call: apache-airflow-taskinstance.gettaskinstance
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchtaskinstance
+        description: Apache Airflow Updates the State of a Task Instance
+        call: apache-airflow-taskinstance.patchtaskinstance
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances/{task-id}/links
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances-task-id-links
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-links.
+      operations:
+      - method: GET
+        name: getextralinks
+        description: Apache Airflow List Extra Links
+        call: apache-airflow-taskinstance.getextralinks
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances/{task-id}/listmapped
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances-task-id-listmapped
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-listMapped.
+      operations:
+      - method: GET
+        name: getmappedtaskinstances
+        description: Apache Airflow List Mapped Task Instances
+        call: apache-airflow-taskinstance.getmappedtaskinstances
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances/{task-id}/logs/{task-try-number}
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances-task-id-logs-task-try-number
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-logs-task_try_number.
+      operations:
+      - method: GET
+        name: getlog
+        description: Apache Airflow Get Logs
+        call: apache-airflow-taskinstance.getlog
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances/{task-id}/setnote
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances-task-id-setnote
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-setNote.
+      operations:
+      - method: PATCH
+        name: settaskinstancenote
+        description: Apache Airflow Update the TaskInstance Note.
+        call: apache-airflow-taskinstance.settaskinstancenote
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances/{task-id}/{map-index}
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances-task-id-map-index
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-map_index.
+      operations:
+      - method: GET
+        name: getmappedtaskinstance
+        description: Apache Airflow Get a Mapped Task Instance
+        call: apache-airflow-taskinstance.getmappedtaskinstance
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchmappedtaskinstance
+        description: Apache Airflow Updates the State of a Mapped Task Instance
+        call: apache-airflow-taskinstance.patchmappedtaskinstance
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags/{dag-id}/dagruns/{dag-run-id}/taskinstances/{task-id}/{map-index}/setnote
+      name: dags-dag-id-dagruns-dag-run-id-taskinstances-task-id-map-index-setnote
+      description: REST surface for dags-dag_id-dagRuns-dag_run_id-taskInstances-task_id-map_index-setNote.
+      operations:
+      - method: PATCH
+        name: setmappedtaskinstancenote
+        description: Apache Airflow Update the TaskInstance Note.
+        call: apache-airflow-taskinstance.setmappedtaskinstancenote
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/dags//dagruns//taskinstances/list
+      name: dags-dagruns-taskinstances-list
+      description: REST surface for dags-~-dagRuns-~-taskInstances-list.
+      operations:
+      - method: POST
+        name: gettaskinstancesbatch
+        description: Apache Airflow List Task Instances (batch)
+        call: apache-airflow-taskinstance.gettaskinstancesbatch
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apache-airflow-taskinstance-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Airflow API (Stable) — TaskInstance. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: apache-airflow-list-task-instances
+      description: Apache Airflow List Task Instances
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.gettaskinstances
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-task-instance
+      description: Apache Airflow Get a Task Instance
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.gettaskinstance
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-updates-state-task
+      description: Apache Airflow Updates the State of a Task Instance
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.patchtaskinstance
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-list-extra-links
+      description: Apache Airflow List Extra Links
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.getextralinks
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-list-mapped-task
+      description: Apache Airflow List Mapped Task Instances
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.getmappedtaskinstances
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-logs
+      description: Apache Airflow Get Logs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.getlog
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-update-taskinstance-note
+      description: Apache Airflow Update the TaskInstance Note.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.settaskinstancenote
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-get-mapped-task
+      description: Apache Airflow Get a Mapped Task Instance
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.getmappedtaskinstance
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-updates-state-mapped
+      description: Apache Airflow Updates the State of a Mapped Task Instance
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.patchmappedtaskinstance
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-update-taskinstance-note-2
+      description: Apache Airflow Update the TaskInstance Note.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: apache-airflow-taskinstance.setmappedtaskinstancenote
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apache-airflow-list-task-instances-2
+      description: Apache Airflow List Task Instances (batch)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: apache-airflow-taskinstance.gettaskinstancesbatch
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

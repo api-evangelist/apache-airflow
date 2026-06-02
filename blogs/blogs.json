@@ -2,12 +2,20 @@
   "repo": "apache-airflow",
   "feeds": [
     {
-      "source": "https://airflow.apache.org/blog/",
+      "source": "https://airflow.apache.org/blog/index.xml",
       "feed_url": "https://airflow.apache.org/blog/index.xml",
-      "title": "Apache Airflow Blog",
-      "saved": 34
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    },
+    {
+      "source": "https://airflow.apache.org/docs/apache-airflow/stable/security/",
+      "feed_url": "https://airflow.apache.org/docs/apache-airflow/stable/security/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
     }
   ],
   "post_count": 44,
-  "fetched": "2026-05-17T20:20:35Z"
+  "fetched": "2026-06-01T23:35:02Z"
 }

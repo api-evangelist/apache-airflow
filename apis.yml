@@ -43,41 +43,41 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-config.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-connection.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-dag.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-dagrun.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-dagwarning.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-dataset.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-eventlog.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-importerror.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-monitoring.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-permission.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-plugin.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-pool.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-provider.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-role.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-taskinstance.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-user.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-variable.yaml
-  - type: NaftikoCapability
+  - type: X-NaftikoCapability
     url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-experimental-api
   name: Apache Airflow Experimental API (Deprecated)
@@ -104,10 +104,10 @@ common:
   url: https://airflow.apache.org/docs/apache-airflow/stable/start.html
 - type: Tutorials
   url: https://airflow.apache.org/docs/apache-airflow/stable/tutorial/index.html
-- type: SDK
+- type: SDKs
   url: https://pypi.org/project/apache-airflow/
   title: Python Package (PyPI)
-- type: SDK
+- type: SDKs
   url: https://hub.docker.com/r/apache/airflow
   title: Docker Image
 - type: Security

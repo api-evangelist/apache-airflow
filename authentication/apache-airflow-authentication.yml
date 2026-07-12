@@ -1,0 +1,23 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/apache-airflow-openapi.yaml
+summary:
+  types:
+  - http
+  - openIdConnect
+schemes:
+- name: Basic
+  type: http
+  scheme: basic
+  sources:
+  - openapi/apache-airflow-openapi.yaml
+- name: GoogleOpenId
+  type: openIdConnect
+  openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+  sources:
+  - openapi/apache-airflow-openapi.yaml
+- name: Kerberos
+  type: http
+  scheme: negotiate
+  sources:
+  - openapi/apache-airflow-openapi.yaml

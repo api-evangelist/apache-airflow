@@ -92,6 +92,12 @@ apis:
   - type: Documentation
     url: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
 common:
+- type: VulnerabilityDisclosure
+  url: security/apache-airflow-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/apache-airflow-domain-security.yml
+- type: Authentication
+  url: authentication/apache-airflow-authentication.yml
 - type: LinkedIn
   url: https://www.linkedin.com/company/apache-airflow
 - type: GitHubOrganization

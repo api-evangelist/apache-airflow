@@ -1,0 +1,43 @@
+generated: '2026-06-20'
+method: searched
+source: https://airflow.apache.org/docs/apache-airflow/stable/release-process.html
+versioning:
+  scheme: semver
+  applies_to: Airflow core and the REST API follow Semantic Versioning (strict since 2.0).
+  api_path_versioning: uri-path
+  current_api: v2
+  captured_spec_api: v1
+  note: >-
+    The OpenAPI captured in this repo is the Airflow 2.x "stable" REST API served at /api/v1.
+    Airflow 3.0 moved the REST API to /api/v2, switched the default auth to JWT tokens, and
+    changed several endpoints; the apache-airflow-client 3.x drops /api/v1 in favor of /api/v2.
+  docs: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+release_cadence:
+  feature_releases: X.Y.0 roughly every 2-3 months (new features/improvements).
+  patch_releases: X.Y.Z on an as-needed basis, 100% compatible with the feature release.
+deprecation:
+  policy_url: https://airflow.apache.org/docs/apache-airflow/stable/release-process.html
+  mechanism: >-
+    Deprecated features keep working and emit a Python DeprecationWarning for the remainder of the
+    current major version; they are removed only at the next major version. Experimental features
+    carry no deprecation guarantees.
+  sunset_header: false
+  deprecation_header: false
+  breaking_changes_only_for: security or data-loss fixes that cannot be made backward-compatible.
+security_releases:
+  policy_url: https://airflow.apache.org/docs/apache-airflow/stable/security/
+  advisories: https://airflow.apache.org/docs/apache-airflow/stable/security/index.html
+  cve_process: https://security.apache.org/
+end_of_life:
+  reference: https://endoflife.date/apache-airflow
+sla:
+  url: null
+  note: Self-hosted open-source project; no vendor uptime SLA. Operators run their own instances.
+status_page: null
+deprecated_apis:
+- name: Experimental API
+  path: /api/experimental
+  status: deprecated
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  note: Superseded by the stable REST API; do not use for new implementations.
+deprecated_operations: []

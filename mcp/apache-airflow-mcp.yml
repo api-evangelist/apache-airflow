@@ -1,0 +1,311 @@
+generated: '2026-06-20'
+method: searched
+status: candidate
+source: https://cwiki.apache.org/confluence/spaces/AIRFLOW/pages/364349979/AIP-91+-+Airflow+MCP+Server+Phase+1+-+Read-only+actions
+note: An official first-party Airflow MCP server is in progress under AIP-91 (Phase 1, read-only), to
+  ship in the apache/airflow monorepo with an independent release cycle over HTTP/SSE. A separate MCP
+  client connection ships in the apache-airflow-providers-common-ai provider. Until the official server
+  is GA, the tools[] below are DERIVED one-per-operation from the Airflow REST OpenAPI as a candidate
+  surface (read_only marks the Phase-1-eligible read tools).
+references:
+- title: AIP-91 Airflow MCP Server (Phase 1 read-only)
+  url: https://cwiki.apache.org/confluence/spaces/AIRFLOW/pages/364349979/AIP-91+-+Airflow+MCP+Server+Phase+1+-+Read-only+actions
+- title: MCP Server Connection (apache-airflow-providers-common-ai)
+  url: https://airflow.apache.org/docs/apache-airflow-providers-common-ai/stable/connections/mcp.html
+server:
+  name: apache-airflow
+  transport: sse
+  url: null
+tools:
+- name: get_config
+  description: Apache Airflow Get Current Configuration
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_config
+- name: get_connections
+  description: Apache Airflow List Connections
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_connections
+- name: post_connection
+  description: Apache Airflow Create a Connection
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#post_connection
+- name: test_connection
+  description: Apache Airflow Test a Connection
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#test_connection
+- name: delete_connection
+  description: Apache Airflow Delete a Connection
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#delete_connection
+- name: get_connection
+  description: Apache Airflow Get a Connection
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_connection
+- name: patch_connection
+  description: Apache Airflow Update a Connection
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#patch_connection
+- name: get_dag_source
+  description: Apache Airflow Get a Source Code
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dag_source
+- name: get_dag_warnings
+  description: Apache Airflow List Dag Warnings
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dag_warnings
+- name: get_dags
+  description: Apache Airflow List DAGs
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dags
+- name: patch_dags
+  description: Apache Airflow Update DAGs
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#patch_dags
+- name: delete_dag
+  description: Apache Airflow Delete a DAG
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#delete_dag
+- name: get_dag
+  description: Apache Airflow Get Basic Information About a DAG
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dag
+- name: patch_dag
+  description: Apache Airflow Update a DAG
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#patch_dag
+- name: post_clear_task_instances
+  description: Apache Airflow Clear a Set of Task Instances
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#post_clear_task_instances
+- name: get_dag_runs
+  description: Apache Airflow List DAG Runs
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dag_runs
+- name: post_dag_run
+  description: Apache Airflow Trigger a New DAG Run
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#post_dag_run
+- name: delete_dag_run
+  description: Apache Airflow Delete a DAG Run
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#delete_dag_run
+- name: get_dag_run
+  description: Apache Airflow Get a DAG Run
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dag_run
+- name: update_dag_run_state
+  description: Apache Airflow Modify a DAG Run
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#update_dag_run_state
+- name: clear_dag_run
+  description: Apache Airflow Clear a DAG Run
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#clear_dag_run
+- name: set_dag_run_note
+  description: Apache Airflow Update the DagRun Note.
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#set_dag_run_note
+- name: get_task_instances
+  description: Apache Airflow List Task Instances
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_task_instances
+- name: get_task_instance
+  description: Apache Airflow Get a Task Instance
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_task_instance
+- name: patch_task_instance
+  description: Apache Airflow Updates the State of a Task Instance
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#patch_task_instance
+- name: get_extra_links
+  description: Apache Airflow List Extra Links
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_extra_links
+- name: get_mapped_task_instances
+  description: Apache Airflow List Mapped Task Instances
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_mapped_task_instances
+- name: get_log
+  description: Apache Airflow Get Logs
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_log
+- name: set_task_instance_note
+  description: Apache Airflow Update the TaskInstance Note.
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#set_task_instance_note
+- name: get_xcom_entries
+  description: Apache Airflow List XCom Entries
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_xcom_entries
+- name: get_xcom_entry
+  description: Apache Airflow Get an XCom Entry
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_xcom_entry
+- name: get_mapped_task_instance
+  description: Apache Airflow Get a Mapped Task Instance
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_mapped_task_instance
+- name: patch_mapped_task_instance
+  description: Apache Airflow Updates the State of a Mapped Task Instance
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#patch_mapped_task_instance
+- name: set_mapped_task_instance_note
+  description: Apache Airflow Update the TaskInstance Note.
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#set_mapped_task_instance_note
+- name: get_upstream_dataset_events
+  description: Apache Airflow Get Dataset Events for a DAG Run
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_upstream_dataset_events
+- name: get_dag_details
+  description: Apache Airflow Get a Simplified Representation of DAG
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dag_details
+- name: get_tasks
+  description: Apache Airflow Get Tasks for DAG
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_tasks
+- name: get_task
+  description: Apache Airflow Get Simplified Representation of a Task
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_task
+- name: post_set_task_instances_state
+  description: Apache Airflow Set a State of Task Instances
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#post_set_task_instances_state
+- name: get_dag_runs_batch
+  description: Apache Airflow List DAG Runs (batch)
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dag_runs_batch
+- name: get_task_instances_batch
+  description: Apache Airflow List Task Instances (batch)
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#get_task_instances_batch
+- name: get_datasets
+  description: Apache Airflow List Datasets
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_datasets
+- name: get_dataset_events
+  description: Apache Airflow Get Dataset Events
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dataset_events
+- name: get_dataset
+  description: Apache Airflow Get a Dataset
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_dataset
+- name: get_event_logs
+  description: Apache Airflow List Log Entries
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_event_logs
+- name: get_event_log
+  description: Apache Airflow Get a Log Entry
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_event_log
+- name: get_health
+  description: Apache Airflow Get Instance Status
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_health
+- name: get_import_errors
+  description: Apache Airflow List Import Errors
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_import_errors
+- name: get_import_error
+  description: Apache Airflow Get an Import Error
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_import_error
+- name: get_permissions
+  description: Apache Airflow List Permissions
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_permissions
+- name: get_plugins
+  description: Apache Airflow Get a List of Loaded Plugins
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_plugins
+- name: get_pools
+  description: Apache Airflow List Pools
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_pools
+- name: post_pool
+  description: Apache Airflow Create a Pool
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#post_pool
+- name: delete_pool
+  description: Apache Airflow Delete a Pool
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#delete_pool
+- name: get_pool
+  description: Apache Airflow Get a Pool
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_pool
+- name: patch_pool
+  description: Apache Airflow Update a Pool
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#patch_pool
+- name: get_providers
+  description: Apache Airflow List Providers
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_providers
+- name: get_roles
+  description: Apache Airflow List Roles
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_roles
+- name: post_role
+  description: Apache Airflow Create a Role
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#post_role
+- name: delete_role
+  description: Apache Airflow Delete a Role
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#delete_role
+- name: get_role
+  description: Apache Airflow Get a Role
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_role
+- name: patch_role
+  description: Apache Airflow Update a Role
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#patch_role
+- name: get_users
+  description: Apache Airflow List Users
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_users
+- name: post_user
+  description: Apache Airflow Create a User
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#post_user
+- name: delete_user
+  description: Apache Airflow Delete a User
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#delete_user
+- name: get_user
+  description: Apache Airflow Get a User
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_user
+- name: patch_user
+  description: Apache Airflow Update a User
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#patch_user
+- name: get_variables
+  description: Apache Airflow List Variables
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_variables
+- name: post_variables
+  description: Apache Airflow Create a Variable
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#post_variables
+- name: delete_variable
+  description: Apache Airflow Delete a Variable
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#delete_variable
+- name: get_variable
+  description: Apache Airflow Get a Variable
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_variable
+- name: patch_variable
+  description: Apache Airflow Update a Variable
+  read_only: false
+  source_operation: openapi/apache-airflow-openapi.yaml#patch_variable
+- name: get_version
+  description: Apache Airflow Get Version Information
+  read_only: true
+  source_operation: openapi/apache-airflow-openapi.yaml#get_version

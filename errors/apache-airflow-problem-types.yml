@@ -1,0 +1,64 @@
+generated: '2026-06-20'
+method: derived
+source: openapi/apache-airflow-openapi.yaml
+format: rfc7807
+note: 'Airflow returns RFC 7807 problem responses (schema components/schemas/Error: type, title, status,
+  detail, instance) with content-type application/json. Problem types below are the named response components
+  referenced across the API, with per-status occurrence counts.'
+envelope:
+  media_type: application/json
+  fields:
+  - type
+  - title
+  - status
+  - detail
+  - instance
+problems:
+- status: 400
+  name: BadRequest
+  title: Client specified an invalid argument.
+  schema: '#/components/schemas/Error'
+  occurrences_in_spec: 26
+  remediation: Validate the request body/query parameters against the schema before retrying.
+- status: 401
+  name: Unauthenticated
+  title: Request not authenticated due to missing, invalid, authentication info.
+  schema: '#/components/schemas/Error'
+  occurrences_in_spec: 71
+  remediation: Supply valid authentication (Basic auth, or the configured auth backend/Kerberos).
+- status: 403
+  name: PermissionDenied
+  title: Client does not have sufficient permission.
+  schema: '#/components/schemas/Error'
+  occurrences_in_spec: 69
+  remediation: Ensure the authenticated user has the required RBAC role/permission for this resource.
+- status: 404
+  name: NotFound
+  title: A specified resource is not found.
+  schema: '#/components/schemas/Error'
+  occurrences_in_spec: 49
+  remediation: Confirm the resource identifier (dag_id, dag_run_id, task_id, etc.) exists.
+- status: 405
+  name: MethodNotAllowed
+  title: Request method is known by the server but is not supported by the target resource.
+  schema: '#/components/schemas/Error'
+  occurrences_in_spec: 0
+  remediation: Use a supported HTTP method for this endpoint.
+- status: 406
+  name: NotAcceptable
+  title: A specified Accept header is not allowed.
+  schema: '#/components/schemas/Error'
+  occurrences_in_spec: 1
+  remediation: Send an Accept header the endpoint can satisfy (application/json).
+- status: 409
+  name: AlreadyExists
+  title: An existing resource conflicts with the request.
+  schema: '#/components/schemas/Error'
+  occurrences_in_spec: 4
+  remediation: Resolve the conflicting resource state before retrying (resource already exists).
+- status: 500
+  name: Unknown
+  title: Unknown server error.
+  schema: '#/components/schemas/Error'
+  occurrences_in_spec: 0
+  remediation: Retry later; if it persists, inspect the Airflow API server logs and file an issue.

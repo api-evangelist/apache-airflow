@@ -1,0 +1,50 @@
+generated: '2026-06-20'
+method: searched
+source: PyPI, Docker Hub, ArtifactHub (Helm), pkg.go.dev
+packages:
+- language: python
+  registry: pypi
+  name: apache-airflow
+  url: https://pypi.org/project/apache-airflow/
+  install: pip install apache-airflow
+  official: true
+  description: The Apache Airflow platform distribution (scheduler, API server, providers meta-package).
+- language: python
+  registry: pypi
+  name: apache-airflow-client
+  url: https://pypi.org/project/apache-airflow-client/
+  install: pip install apache-airflow-client
+  official: true
+  source_repo: https://github.com/apache/airflow-client-python
+  description: Official OpenAPI-generated Python client for the Airflow REST API (v2 API; 3.x line targets /api/v2).
+- language: python
+  registry: pypi
+  name: apache-airflow-ctl
+  url: https://pypi.org/project/apache-airflow-ctl/
+  install: pip install apache-airflow-ctl
+  official: true
+  source_repo: https://github.com/apache/airflow/tree/main/airflow-ctl
+  description: Official API-driven command-line client (airflowctl, AIP-81) that talks exclusively to the Airflow REST API.
+- language: go
+  registry: pkg.go.dev
+  name: github.com/apache/airflow-client-go/airflow
+  url: https://pkg.go.dev/github.com/apache/airflow-client-go/airflow
+  install: go get github.com/apache/airflow-client-go/airflow@latest
+  official: true
+  source_repo: https://github.com/apache/airflow-client-go
+  description: Official OpenAPI-generated Go client for the Airflow REST API.
+- language: docker
+  registry: docker-hub
+  name: apache/airflow
+  url: https://hub.docker.com/r/apache/airflow
+  install: docker pull apache/airflow
+  official: true
+  description: Official production Docker image for Apache Airflow.
+- language: helm
+  registry: artifacthub
+  name: apache-airflow/airflow
+  url: https://artifacthub.io/packages/helm/apache-airflow/airflow
+  install: helm repo add apache-airflow https://airflow.apache.org && helm install airflow apache-airflow/airflow
+  official: true
+  docs: https://airflow.apache.org/docs/helm-chart/stable/
+  description: Official Helm chart for deploying Airflow on Kubernetes.

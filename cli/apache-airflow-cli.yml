@@ -1,0 +1,41 @@
+generated: '2026-06-20'
+method: searched
+source: https://airflow.apache.org/docs/apache-airflow-ctl/stable/
+clis:
+- name: airflowctl
+  package: apache-airflow-ctl
+  aka: Apache Airflow CTL
+  since: 0.1.0 (2025-10)
+  aip: AIP-81
+  docs: https://airflow.apache.org/docs/apache-airflow-ctl/stable/
+  source_repo: https://github.com/apache/airflow/tree/main/airflow-ctl
+  description: >-
+    Secure, API-driven command-line client that interacts exclusively with the Airflow REST API
+    (no direct metadata-database access). Every command is authorized through Airflow RBAC, and auth
+    tokens are stored in the OS keyring (macOS Keychain / Windows Credential Manager / Linux Secret Service).
+  install:
+  - method: pip
+    command: pip install apache-airflow-ctl
+    note: Officially supported via pip with constraints.
+  command_groups:
+  - auth (login / token management against a remote Airflow API)
+  - dags (list, trigger, pause/unpause, manage DAGs)
+  - dagruns
+  - tasks / taskinstances
+  - connections
+  - variables
+  - pools
+  - version
+- name: airflow
+  package: apache-airflow
+  docs: https://airflow.apache.org/docs/apache-airflow/stable/cli-and-env-variables-ref.html
+  description: >-
+    The bundled Airflow CLI shipped with the platform. Covers local/admin operations that manage
+    Airflow components and the metadata database (db init/migrate, standalone, scheduler, api-server,
+    dags, tasks, users, roles, connections, variables, pools, config, providers, celery/kubernetes).
+  install:
+  - method: pip
+    command: pip install apache-airflow
+  local_admin_note: >-
+    Local/admin commands (component lifecycle, db operations) remain in the airflow CLI; remote,
+    API-expressible operations are also available through airflowctl.

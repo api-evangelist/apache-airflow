@@ -1,0 +1,47 @@
+generated: '2026-06-20'
+method: searched
+source: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+scheme: semver
+cadence: Feature releases (X.Y.0) roughly every 2-3 months; patch releases as needed.
+current_major: '3'
+also_documented_at:
+- https://airflow.apache.org/blog/
+- https://github.com/apache/airflow/releases
+entries:
+- version: 3.3.0
+  date: '2026-07-06'
+  type: minor
+  breaking: false
+  highlights:
+  - Stateful tasks and multi-language task authoring.
+  source: https://airflow.apache.org/blog/apache-airflow-3.3.0/
+- version: 3.2.0
+  date: '2026-04-07'
+  type: minor
+  breaking: false
+  highlights:
+  - Data-aware workflows at scale; scheduling and asset improvements.
+  source: https://airflow.apache.org/blog/apache-airflow-3.2.0/
+- version: 3.1.0
+  date: '2025-09-25'
+  type: minor
+  breaking: false
+  highlights:
+  - Human-centered workflows.
+  source: https://airflow.apache.org/blog/apache-airflow-3.1.0/
+- version: 3.0.0
+  date: '2025-04-22'
+  type: major
+  breaking: true
+  highlights:
+  - Airflow 3 general availability.
+  - REST API moved to /api/v2 with JWT authentication; /api/v1 dropped from the 3.x Python client.
+  - New service-oriented architecture (API server, task execution API).
+  source: https://airflow.apache.org/blog/apache-airflow-3-is-generally-available/
+- version: 2.10.0
+  date: '2024-08-08'
+  type: minor
+  breaking: false
+  highlights:
+  - Final 2.x feature line before Airflow 3.
+  source: https://airflow.apache.org/blog/apache-airflow-2.10.0/

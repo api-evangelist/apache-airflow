@@ -1,0 +1,33 @@
+generated: '2026-06-20'
+method: searched
+source: live /.well-known probes
+note: >-
+  Apache Airflow is self-hosted; the OpenAPI servers[] hosts (/api/v1, apache.local) are
+  placeholders with no public .well-known surface. The applicable security.txt is the Apache
+  Software Foundation project-wide document served from www.apache.org.
+hosts:
+- host: https://www.apache.org
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: apache-airflow-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://airflow.apache.org
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404

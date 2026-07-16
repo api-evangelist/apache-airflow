@@ -1,0 +1,59 @@
+generated: '2026-06-20'
+method: searched
+source: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+derived_from: openapi/apache-airflow-openapi.yaml
+summary: >-
+  Cross-cutting request/response semantics for the Airflow stable REST API (v1). JSON in / JSON out,
+  RBAC-enforced, limit/offset pagination, RFC 7807 problem responses, and pluggable authentication.
+media_types:
+  request: application/json
+  response: application/json
+  required_headers:
+  - Content-Type: application/json
+  - Accept: application/json
+authentication:
+  ref: authentication/apache-airflow-authentication.yml
+  styles: [http-basic, kerberos-negotiate, openid-connect]
+  note: >-
+    Auth backend is pluggable and must be configured by the operator (api_auth backends). The v1 API
+    commonly uses Basic auth; Airflow 3.x /api/v2 defaults to JWT bearer tokens.
+pagination:
+  style: limit-offset
+  params:
+    limit: {default: 100, description: Number of items to return.}
+    offset: {description: Number of items to skip.}
+  response_envelope:
+    collection_field: <resource plural> (e.g. dags, dag_runs, connections)
+    total_field: total_entries
+    schema: '#/components/schemas/CollectionInfo'
+ordering:
+  param: order_by
+  note: Many list endpoints accept order_by with a field name; prefix with '-' for descending.
+filtering:
+  note: >-
+    Endpoint-specific query filters (e.g. dag_id_pattern, only_active, tags, state, execution_date
+    ranges). Batch list endpoints (dags/~/dagRuns/list, .../taskInstances/list) accept JSON filter bodies.
+error_envelope:
+  format: rfc7807
+  media_type: application/json
+  schema: '#/components/schemas/Error'
+  fields: [type, title, status, detail, instance]
+  ref: errors/apache-airflow-problem-types.yml
+idempotency:
+  header: null
+  note: >-
+    No idempotency-key header. Writes are keyed by natural identifiers (dag_id, dag_run_id, pool_name,
+    variable_key, connection_id); re-creating an existing resource returns 409 AlreadyExists.
+request_tracing:
+  request_id_header: null
+  note: No documented request-id/correlation header on the v1 API.
+metadata:
+  note: CollectionInfo.total_entries is the only envelope-level metadata on list responses.
+versioning:
+  ref: lifecycle/apache-airflow-lifecycle.yml
+  style: uri-path (/api/v1, /api/v2)
+rate_limiting:
+  ref: rate-limits/apache-airflow-rate-limits.yml
+  note: >-
+    No built-in per-tenant rate limiting in the core API; operators may place a reverse proxy /
+    API gateway in front. Airflow exposes maxpagelimit config to cap page size.

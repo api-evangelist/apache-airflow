@@ -1,0 +1,22 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Apache Airflow REST API
+  version: 1.0.0
+extends: openapi/apache-airflow-openapi.yaml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-slug: apache-airflow
+    x-apievangelist-provider: Apache Software Foundation
+    x-apievangelist-category: Workflow Orchestration
+    x-api-lifecycle: stable
+    x-deployment: self-hosted
+- target: $.components.schemas.Error
+  update:
+    x-error-catalog: errors/apache-airflow-problem-types.yml
+    x-error-format: rfc7807
+- target: $.components.securitySchemes
+  update:
+    x-authentication-profile: authentication/apache-airflow-authentication.yml
+    x-note: Auth backend is pluggable (basic_auth, kerberos, google_openid); default deployment requires
+      configuration.

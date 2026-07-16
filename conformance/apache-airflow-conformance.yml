@@ -1,0 +1,43 @@
+generated: '2026-06-20'
+method: derived
+source: openapi/apache-airflow-openapi.yaml
+standards:
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 securityScheme; auth is Basic (http), Kerberos (negotiate), and openIdConnect (GoogleOpenId).
+- id: openid-connect
+  conforms: true
+  evidence: securityScheme GoogleOpenId type openIdConnect (accounts.google.com discovery). Pluggable
+    auth backend.
+- id: http-basic-auth
+  conforms: true
+  evidence: securityScheme Basic type http scheme basic.
+- id: kerberos-spnego
+  conforms: true
+  evidence: securityScheme Kerberos type http scheme negotiate.
+- id: rfc7807-problem-details
+  conforms: true
+  evidence: components/schemas/Error is RFC7807-compliant (type,title,status,detail,instance); all 4xx/5xx
+    responses reference it.
+- id: rfc9457-problem-details
+  conforms: partial
+  evidence: RFC7807 shape (RFC9457 supersedes 7807) but served as application/json, not application/problem+json.
+- id: openapi-3
+  conforms: true
+  evidence: 'openapi: 3.0.3 document.'
+- id: json-api
+  conforms: false
+  evidence: Custom collection envelope (resource array + total_entries CollectionInfo), not JSON:API.
+- id: pagination
+  conforms: true
+  evidence: Consistent limit/offset query params with CollectionInfo.total_entries across list endpoints.
+- id: rbac
+  conforms: true
+  evidence: 'FlaskAppBuilder RBAC: Role/Permission/Action/Resource resources and 403 PermissionDenied
+    enforcement.'
+- id: cron
+  conforms: true
+  evidence: CronExpression / ScheduleInterval schemas for scheduling.
+- id: semver
+  conforms: true
+  evidence: Airflow and the REST API follow Semantic Versioning per the release/versioning policy.

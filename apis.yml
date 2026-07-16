@@ -19,7 +19,7 @@ tags:
 - Scheduling
 - Workflow
 created: '2024-01-15'
-modified: '2026-05-19'
+modified: '2026-06-20'
 url: https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/apis.yml
 specificationVersion: '0.19'
 apis:
@@ -39,6 +39,10 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   - type: OpenAPI
     url: openapi/apache-airflow-openapi.yaml
+  - type: Overlay
+    url: overlays/apache-airflow-openapi-overlay.yaml
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
   - type: Authentication
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
@@ -94,6 +98,28 @@ apis:
 common:
 - type: AgenticAccess
   url: agentic-access/apache-airflow-agentic-access.yml
+- type: Packages
+  url: packages/apache-airflow-packages.yml
+- type: WellKnown
+  url: well-known/apache-airflow-well-known.yml
+- type: SecurityTxt
+  url: well-known/apache-airflow-security.txt
+- type: MCPServer
+  url: mcp/apache-airflow-mcp.yml
+- type: LLMsTxt
+  url: llms/apache-airflow-llms.txt
+- type: Conformance
+  url: conformance/apache-airflow-conformance.yml
+- type: Lifecycle
+  url: lifecycle/apache-airflow-lifecycle.yml
+- type: Conventions
+  url: conventions/apache-airflow-conventions.yml
+- type: ChangeLog
+  url: changelog/apache-airflow-changelog.yml
+- type: CLI
+  url: cli/apache-airflow-cli.yml
+- type: DataModel
+  url: data-model/apache-airflow-data-model.yml
 - type: VulnerabilityDisclosure
   url: security/apache-airflow-vulnerability-disclosure.yml
 - type: DomainSecurity

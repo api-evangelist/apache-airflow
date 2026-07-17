@@ -1,0 +1,140 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Trace Dataset-Driven Lineage
+  summary: Find a dataset by URI, read the tasks that produce it and the DAGs that consume it, and trace the events that triggered a downstream run.
+  description: >-
+    Dataset-driven scheduling lets one DAG declare that it produced a dataset and
+    another DAG declare that it waits on one, replacing brittle cross-DAG sensors
+    with real data dependencies. The cost is that the schedule becomes invisible:
+    a consuming DAG has no cron to read, so when it does not run the question is
+    which upstream update never arrived. This workflow answers that. It resolves
+    the dataset, reads its producing tasks and consuming DAGs, lists the update
+    events against it, and then reads the upstream dataset events for a specific
+    downstream run to show exactly which updates triggered it. Every step spells
+    out its request inline so the flow can be read and executed without opening
+    the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: dataset-lineage
+  summary: Trace a dataset's producers, consumers, update events, and the run it triggered.
+  description: >-
+    Searches datasets by URI pattern, reads the matched dataset's producing tasks
+    and consuming DAGs, lists its recent update events, and resolves the upstream
+    dataset events behind a given downstream DAG run.
+  inputs:
+    type: object
+    required:
+    - uriPattern
+    - datasetUri
+    properties:
+      uriPattern:
+        type: string
+        description: >-
+          A substring to search dataset URIs against, e.g. "warehouse" or
+          "s3://curated".
+      datasetUri:
+        type: string
+        description: >-
+          The full dataset URI to profile. It is a path parameter, so it must be
+          URL-encoded — the slashes in "s3://bucket/key" included.
+      consumerDagId:
+        type: string
+        description: The dataset-scheduled DAG whose trigger is being traced.
+      consumerDagRunId:
+        type: string
+        description: >-
+          The run of the consuming DAG to explain. Its upstream dataset events are
+          the updates that caused it to start.
+  steps:
+  - stepId: findDataset
+    description: >-
+      Search the dataset inventory by URI pattern to resolve the exact dataset,
+      and to confirm the deployment is registering datasets at all.
+    operationId: get_datasets
+    parameters:
+    - name: uri_pattern
+      in: query
+      value: $inputs.uriPattern
+    - name: limit
+      in: query
+      value: 100
+    - name: order_by
+      in: query
+      value: uri
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.total_entries > 0
+      type: jsonpath
+    outputs:
+      datasets: $response.body#/datasets
+      matchCount: $response.body#/total_entries
+      firstDatasetId: $response.body#/datasets/0/id
+      firstDatasetUri: $response.body#/datasets/0/uri
+  - stepId: readDataset
+    description: >-
+      Read the dataset to get both sides of the dependency in one payload: the
+      tasks that produce it and the DAGs that are scheduled on it.
+    operationId: get_dataset
+    parameters:
+    - name: uri
+      in: path
+      value: $inputs.datasetUri
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      datasetId: $response.body#/id
+      uri: $response.body#/uri
+      producingTasks: $response.body#/producing_tasks
+      consumingDags: $response.body#/consuming_dags
+      createdAt: $response.body#/created_at
+      updatedAt: $response.body#/updated_at
+  - stepId: listDatasetEvents
+    description: >-
+      List the update events recorded against this dataset, newest first. An empty
+      or stale list here is the answer when a consuming DAG has not run: nothing
+      updated the dataset, so nothing triggered.
+    operationId: get_dataset_events
+    parameters:
+    - name: dataset_id
+      in: query
+      value: $steps.readDataset.outputs.datasetId
+    - name: limit
+      in: query
+      value: 100
+    - name: order_by
+      in: query
+      value: -timestamp
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      datasetEvents: $response.body#/dataset_events
+      eventCount: $response.body#/total_entries
+  - stepId: readUpstreamEventsForRun
+    description: >-
+      Read the dataset events that triggered a specific run of the consuming DAG.
+      This is the direct causal link between an upstream producer and a downstream
+      run, which no cron schedule can express.
+    operationId: get_upstream_dataset_events
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.consumerDagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.consumerDagRunId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      upstreamEvents: $response.body#/dataset_events
+      upstreamEventCount: $response.body#/total_entries
+  outputs:
+    datasets: $steps.findDataset.outputs.datasets
+    producingTasks: $steps.readDataset.outputs.producingTasks
+    consumingDags: $steps.readDataset.outputs.consumingDags
+    datasetEvents: $steps.listDatasetEvents.outputs.datasetEvents
+    upstreamEvents: $steps.readUpstreamEventsForRun.outputs.upstreamEvents

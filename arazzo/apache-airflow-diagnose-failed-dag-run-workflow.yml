@@ -1,0 +1,200 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Diagnose a Failed DAG Run
+  summary: Isolate the failed task in a DAG run, pull its logs for the last attempt, and record the diagnosis as a note.
+  description: >-
+    When a pipeline fails, the first job is always the same: find which task
+    failed, read its log, and write down what happened. This workflow filters the
+    run's task instances to the failed and upstream_failed states, reads the
+    failing task instance to learn its try_number, pulls the full log for that
+    attempt, and then annotates both the task instance and the DAG run so the next
+    person to look sees the diagnosis in the Airflow UI. Every step spells out its
+    request inline so the flow can be read and executed without opening the
+    underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: diagnose-failed-dag-run
+  summary: Find the failed task in a DAG run, retrieve its log, and annotate the finding.
+  description: >-
+    Confirms the run failed, lists failed task instances, reads the target task to
+    resolve its latest try number, fetches the full log for that attempt, and
+    writes a note onto the task instance and the DAG run.
+  inputs:
+    type: object
+    required:
+    - dagId
+    - dagRunId
+    - taskId
+    properties:
+      dagId:
+        type: string
+        description: The DAG identifier the failed run belongs to.
+      dagRunId:
+        type: string
+        description: The run identifier to diagnose.
+      taskId:
+        type: string
+        description: >-
+          The task instance to pull logs for, normally one of the task ids
+          returned by the listFailedTasks step.
+      diagnosis:
+        type: string
+        description: >-
+          The human written finding to record against the task instance and the
+          DAG run once the log has been read.
+  steps:
+  - stepId: confirmRunFailed
+    description: >-
+      Read the DAG run and require the failed state so the workflow is not run
+      against a healthy pipeline.
+    operationId: get_dag_run
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.state == "failed"
+      type: jsonpath
+    outputs:
+      state: $response.body#/state
+      startDate: $response.body#/start_date
+      endDate: $response.body#/end_date
+      conf: $response.body#/conf
+  - stepId: listFailedTasks
+    description: >-
+      Filter the run's task instances to the failed and upstream_failed states.
+      The state filter repeats to express an OR condition, so both the task that
+      actually broke and the tasks blocked behind it come back in one call.
+    operationId: get_task_instances
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    - name: state
+      in: query
+      value:
+      - failed
+      - upstream_failed
+    - name: limit
+      in: query
+      value: 100
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.total_entries > 0
+      type: jsonpath
+    outputs:
+      failedTasks: $response.body#/task_instances
+      failedCount: $response.body#/total_entries
+      firstFailedTaskId: $response.body#/task_instances/0/task_id
+  - stepId: readFailedTaskInstance
+    description: >-
+      Read the target task instance to resolve the try_number of its most recent
+      attempt, which the log endpoint requires as a path parameter.
+    operationId: get_task_instance
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    - name: task_id
+      in: path
+      value: $inputs.taskId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      tryNumber: $response.body#/try_number
+      maxTries: $response.body#/max_tries
+      state: $response.body#/state
+      operator: $response.body#/operator
+      hostname: $response.body#/hostname
+      pool: $response.body#/pool
+  - stepId: fetchTaskLog
+    description: >-
+      Pull the complete log for the failing attempt. full_content returns the
+      whole log body rather than a paginated slice, which is what a diagnosis
+      needs.
+    operationId: get_log
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    - name: task_id
+      in: path
+      value: $inputs.taskId
+    - name: task_try_number
+      in: path
+      value: $steps.readFailedTaskInstance.outputs.tryNumber
+    - name: full_content
+      in: query
+      value: true
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      logContent: $response.body#/content
+      continuationToken: $response.body#/continuation_token
+  - stepId: annotateTaskInstance
+    description: >-
+      Record the diagnosis on the task instance so it surfaces in the Airflow UI
+      next to the failure itself.
+    operationId: set_task_instance_note
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    - name: task_id
+      in: path
+      value: $inputs.taskId
+    requestBody:
+      contentType: application/json
+      payload:
+        note: $inputs.diagnosis
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      note: $response.body#/note
+  - stepId: annotateDagRun
+    description: >-
+      Record the same diagnosis on the DAG run so anyone scanning the run list
+      sees why this run failed without drilling into a task.
+    operationId: set_dag_run_note
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    requestBody:
+      contentType: application/json
+      payload:
+        note: $inputs.diagnosis
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      note: $response.body#/note
+  outputs:
+    failedTasks: $steps.listFailedTasks.outputs.failedTasks
+    failedCount: $steps.listFailedTasks.outputs.failedCount
+    tryNumber: $steps.readFailedTaskInstance.outputs.tryNumber
+    logContent: $steps.fetchTaskLog.outputs.logContent

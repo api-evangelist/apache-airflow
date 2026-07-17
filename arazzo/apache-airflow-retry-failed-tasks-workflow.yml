@@ -1,0 +1,173 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Retry Failed Tasks in a DAG Run
+  summary: Preview which task instances a clear would touch, clear the failed ones for real, and wait for the re-run to settle.
+  description: >-
+    Clearing task instances is how Airflow re-runs work, and it is destructive
+    enough that it deserves a dry run first. This workflow confirms the run
+    failed, calls the clear endpoint with dry_run enabled to enumerate exactly
+    which task instances would be reset, repeats the call for real with
+    reset_dag_runs so the DAG run itself returns to the queued state, polls the
+    re-run to a terminal state, and records the outcome as a note. Every step
+    spells out its request inline so the flow can be read and executed without
+    opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: retry-failed-tasks
+  summary: Dry-run a clear, execute it, and wait for the resulting re-run to finish.
+  description: >-
+    Verifies the DAG run failed, previews the blast radius of the clear, performs
+    the clear against only the failed tasks and their downstream dependents,
+    polls the re-run, and annotates the DAG run with the result.
+  inputs:
+    type: object
+    required:
+    - dagId
+    - dagRunId
+    properties:
+      dagId:
+        type: string
+        description: The DAG identifier the failed run belongs to.
+      dagRunId:
+        type: string
+        description: The run identifier whose failed tasks should be cleared and re-run.
+      taskIds:
+        type: array
+        description: >-
+          An optional explicit list of task ids to clear. When omitted the clear
+          applies to every failed task in the run.
+        items:
+          type: string
+      note:
+        type: string
+        description: The note to record against the DAG run once the re-run settles.
+  steps:
+  - stepId: confirmRunFailed
+    description: >-
+      Read the DAG run and require the failed state. Clearing a healthy run would
+      throw away good work, so the workflow refuses to proceed on anything else.
+    operationId: get_dag_run
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.state == "failed"
+      type: jsonpath
+    outputs:
+      state: $response.body#/state
+      endDate: $response.body#/end_date
+  - stepId: previewClear
+    description: >-
+      Call the clear endpoint with dry_run enabled. Nothing changes; Airflow just
+      returns the task instances the real call would reset, which is the blast
+      radius the operator should approve before continuing.
+    operationId: post_clear_task_instances
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    requestBody:
+      contentType: application/json
+      payload:
+        dag_run_id: $inputs.dagRunId
+        task_ids: $inputs.taskIds
+        dry_run: true
+        only_failed: true
+        include_downstream: true
+        include_upstream: false
+        include_future: false
+        include_past: false
+        reset_dag_runs: false
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      affectedTaskInstances: $response.body#/task_instances
+  - stepId: clearTasks
+    description: >-
+      Perform the clear for real. reset_dag_runs returns the DAG run itself to the
+      queued state so the scheduler picks the cleared tasks back up; without it
+      the run stays failed and the tasks never re-run.
+    operationId: post_clear_task_instances
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    requestBody:
+      contentType: application/json
+      payload:
+        dag_run_id: $inputs.dagRunId
+        task_ids: $inputs.taskIds
+        dry_run: false
+        only_failed: true
+        include_downstream: true
+        include_upstream: false
+        include_future: false
+        include_past: false
+        reset_dag_runs: true
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      clearedTaskInstances: $response.body#/task_instances
+  - stepId: waitForRerun
+    description: >-
+      Poll the DAG run until Airflow stamps a fresh end_date, marking the re-run
+      as finished. Retries every 15 seconds for up to 80 attempts (~20 minutes).
+    operationId: get_dag_run
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.end_date != null
+      type: jsonpath
+    onFailure:
+    - name: pollAgain
+      type: retry
+      retryAfter: 15
+      retryLimit: 80
+      criteria:
+      - context: $response.body
+        condition: $.end_date == null
+        type: jsonpath
+    outputs:
+      finalState: $response.body#/state
+      endDate: $response.body#/end_date
+  - stepId: recordOutcome
+    description: >-
+      Write the retry note onto the DAG run so the history explains why the run
+      was cleared and what happened on the second attempt.
+    operationId: set_dag_run_note
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    requestBody:
+      contentType: application/json
+      payload:
+        note: $inputs.note
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      note: $response.body#/note
+  outputs:
+    affectedTaskInstances: $steps.previewClear.outputs.affectedTaskInstances
+    clearedTaskInstances: $steps.clearTasks.outputs.clearedTaskInstances
+    finalState: $steps.waitForRerun.outputs.finalState

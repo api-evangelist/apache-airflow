@@ -1,0 +1,123 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Deployment Preflight Check
+  summary: Verify scheduler and metadatabase health, capture the version, and surface DAG import errors and warnings before trusting a deployment.
+  description: >-
+    After a deploy — new DAG files, an upgraded image, a restarted scheduler — the
+    question is whether Airflow is actually healthy and whether the DAGs parsed.
+    This workflow answers both. It requires the scheduler and metadatabase to
+    report healthy, records the version and git build for the change log, and then
+    surfaces the two failure modes that a green health check hides: DAG files that
+    raised an exception during parsing and therefore silently do not exist, and
+    DAG warnings such as non-existent pool references. Every step spells out its
+    request inline so the flow can be read and executed without opening the
+    underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: deployment-preflight
+  summary: Gate on Airflow health, then report import errors and DAG warnings.
+  description: >-
+    Requires healthy scheduler and metadatabase status, captures version
+    information, lists import errors and DAG warnings, and counts the active DAGs
+    the deployment is serving.
+  inputs:
+    type: object
+    properties:
+      errorLimit:
+        type: integer
+        description: How many import errors to return. Defaults to 100 when omitted.
+  steps:
+  - stepId: checkHealth
+    description: >-
+      Require both the metadatabase and the scheduler to report healthy. A
+      scheduler whose latest heartbeat has gone stale reports unhealthy here,
+      which is the single most useful signal that queued tasks will never start.
+    operationId: get_health
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.metadatabase.status == "healthy"
+      type: jsonpath
+    - context: $response.body
+      condition: $.scheduler.status == "healthy"
+      type: jsonpath
+    outputs:
+      metadatabaseStatus: $response.body#/metadatabase/status
+      schedulerStatus: $response.body#/scheduler/status
+      latestSchedulerHeartbeat: $response.body#/scheduler/latest_scheduler_heartbeat
+  - stepId: readVersion
+    description: >-
+      Capture the running Airflow version and git build so the deployment record
+      states exactly what is serving traffic.
+    operationId: get_version
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      version: $response.body#/version
+      gitVersion: $response.body#/git_version
+  - stepId: listImportErrors
+    description: >-
+      List DAG files that failed to parse. This is the check a health endpoint
+      cannot make: a DAG with a syntax or import error never registers, so it does
+      not appear as broken — it simply is not there.
+    operationId: get_import_errors
+    parameters:
+    - name: limit
+      in: query
+      value: $inputs.errorLimit
+    - name: order_by
+      in: query
+      value: -timestamp
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      importErrors: $response.body#/import_errors
+      importErrorCount: $response.body#/total_entries
+  - stepId: listDagWarnings
+    description: >-
+      List DAG warnings, such as a DAG referencing a pool that does not exist.
+      Note that this collection returns its items under an "import_errors"
+      property rather than a warnings-specific name — an upstream quirk of the
+      Airflow OpenAPI description that the payload genuinely carries.
+    operationId: get_dag_warnings
+    parameters:
+    - name: limit
+      in: query
+      value: 100
+    - name: order_by
+      in: query
+      value: -timestamp
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      dagWarnings: $response.body#/import_errors
+      dagWarningCount: $response.body#/total_entries
+  - stepId: countActiveDags
+    description: >-
+      Count the active DAGs the deployment is serving, giving the preflight a
+      concrete number to compare against the expected inventory.
+    operationId: get_dags
+    parameters:
+    - name: only_active
+      in: query
+      value: true
+    - name: limit
+      in: query
+      value: 100
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      dags: $response.body#/dags
+      activeDagCount: $response.body#/total_entries
+  outputs:
+    schedulerStatus: $steps.checkHealth.outputs.schedulerStatus
+    metadatabaseStatus: $steps.checkHealth.outputs.metadatabaseStatus
+    version: $steps.readVersion.outputs.version
+    importErrorCount: $steps.listImportErrors.outputs.importErrorCount
+    importErrors: $steps.listImportErrors.outputs.importErrors
+    dagWarningCount: $steps.listDagWarnings.outputs.dagWarningCount
+    activeDagCount: $steps.countActiveDags.outputs.activeDagCount

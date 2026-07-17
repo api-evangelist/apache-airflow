@@ -1,0 +1,188 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Trigger a DAG Run and Wait for Completion
+  summary: Unpause a DAG if needed, trigger a run with a configuration payload, and poll until the run reaches a terminal state.
+  description: >-
+    The canonical Airflow integration pattern: an external system asks Airflow to
+    do work and then waits for the answer. The workflow confirms the DAG exists,
+    unpauses it when it is paused (a paused DAG accepts a triggered run but never
+    schedules the tasks, which is the most common cause of a run that appears to
+    hang at "queued"), triggers the run with an explicit run id so the caller owns
+    the identifier, polls the DAG run until Airflow stamps an end_date, and then
+    summarizes the task instances. Every step spells out its request inline so the
+    flow can be read and executed without opening the underlying OpenAPI
+    description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: trigger-dag-run
+  summary: Trigger an Airflow DAG run and block until it succeeds or fails.
+  description: >-
+    Resolves the DAG, unpauses it when paused, creates a DAG run with a caller
+    supplied run id and conf payload, polls the run to a terminal state, and
+    returns the final state alongside the task instance roster.
+  inputs:
+    type: object
+    required:
+    - dagId
+    - dagRunId
+    properties:
+      dagId:
+        type: string
+        description: The DAG identifier to trigger (e.g. "example_bash_operator").
+      dagRunId:
+        type: string
+        description: >-
+          The run identifier to assign. Supplying this makes the trigger
+          idempotent from the caller's side: re-posting the same run id returns a
+          409 rather than starting a duplicate run.
+      logicalDate:
+        type: string
+        description: >-
+          The logical (execution) date for the run in ISO 8601 form, e.g.
+          "2026-07-17T00:00:00+00:00". When omitted Airflow uses the current time.
+      conf:
+        type: object
+        description: >-
+          The JSON configuration passed to the DAG run and read by tasks via
+          dag_run.conf. Defaults to an empty object.
+      note:
+        type: string
+        description: A free-text note recorded against the DAG run for auditability.
+  steps:
+  - stepId: confirmDag
+    description: >-
+      Read the DAG to confirm it exists and to learn whether it is currently
+      paused before attempting to trigger it.
+    operationId: get_dag
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      isPaused: $response.body#/is_paused
+      isActive: $response.body#/is_active
+      hasImportErrors: $response.body#/has_import_errors
+      fileToken: $response.body#/file_token
+    onSuccess:
+    - name: dagIsPaused
+      type: goto
+      stepId: unpauseDag
+      criteria:
+      - context: $response.body
+        condition: $.is_paused == true
+        type: jsonpath
+    - name: dagIsActive
+      type: goto
+      stepId: triggerRun
+      criteria:
+      - context: $response.body
+        condition: $.is_paused == false
+        type: jsonpath
+  - stepId: unpauseDag
+    description: >-
+      Unpause the DAG so the scheduler will actually run the tasks. The
+      update_mask limits the patch to the is_paused field, leaving every other
+      DAG attribute untouched.
+    operationId: patch_dag
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: update_mask
+      in: query
+      value:
+      - is_paused
+    requestBody:
+      contentType: application/json
+      payload:
+        is_paused: false
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      isPaused: $response.body#/is_paused
+  - stepId: triggerRun
+    description: >-
+      Create the DAG run with the caller supplied run id, logical date, and conf
+      payload. Airflow returns the run immediately in the queued state.
+    operationId: post_dag_run
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    requestBody:
+      contentType: application/json
+      payload:
+        dag_run_id: $inputs.dagRunId
+        logical_date: $inputs.logicalDate
+        conf: $inputs.conf
+        note: $inputs.note
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      dagRunId: $response.body#/dag_run_id
+      state: $response.body#/state
+      logicalDate: $response.body#/logical_date
+      dataIntervalStart: $response.body#/data_interval_start
+      dataIntervalEnd: $response.body#/data_interval_end
+  - stepId: waitForRun
+    description: >-
+      Poll the DAG run until Airflow stamps an end_date, which it does only when
+      the run reaches a terminal state (success or failed). Retries every 15
+      seconds for up to 80 attempts (~20 minutes).
+    operationId: get_dag_run
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $steps.triggerRun.outputs.dagRunId
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.end_date != null
+      type: jsonpath
+    onFailure:
+    - name: pollAgain
+      type: retry
+      retryAfter: 15
+      retryLimit: 80
+      criteria:
+      - context: $response.body
+        condition: $.end_date == null
+        type: jsonpath
+    outputs:
+      finalState: $response.body#/state
+      startDate: $response.body#/start_date
+      endDate: $response.body#/end_date
+  - stepId: summarizeTasks
+    description: >-
+      List the task instances for the finished run so the caller can report which
+      tasks ran, how long they took, and where any failure landed.
+    operationId: get_task_instances
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $steps.triggerRun.outputs.dagRunId
+    - name: limit
+      in: query
+      value: 100
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      taskInstances: $response.body#/task_instances
+      totalEntries: $response.body#/total_entries
+  outputs:
+    dagRunId: $steps.triggerRun.outputs.dagRunId
+    finalState: $steps.waitForRun.outputs.finalState
+    endDate: $steps.waitForRun.outputs.endDate
+    taskInstances: $steps.summarizeTasks.outputs.taskInstances

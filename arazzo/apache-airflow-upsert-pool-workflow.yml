@@ -1,0 +1,156 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Upsert a Slot Pool
+  summary: Create or resize an Airflow pool by name, then read back its slot accounting.
+  description: >-
+    Pools are how Airflow caps concurrency against a shared resource — a database
+    that tolerates ten connections, an API with a rate limit, a cluster with
+    finite workers. Provisioning pipelines need to declare a pool and its size
+    without caring whether it already exists, so this workflow builds the upsert
+    the API does not provide: look the pool up by name, branch on 200 versus 404,
+    patch the slot count or create the pool, then read back the open, used, and
+    queued slot accounting so the caller can see the real capacity picture. Every
+    step spells out its request inline so the flow can be read and executed
+    without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: upsert-pool
+  summary: Create an Airflow pool or resize it if it already exists.
+  description: >-
+    Resolves the pool by name, patches its slot count when present and creates it
+    when absent, then reads back the slot accounting and the deployment-wide pool
+    inventory.
+  inputs:
+    type: object
+    required:
+    - poolName
+    - slots
+    properties:
+      poolName:
+        type: string
+        description: The pool name DAG tasks reference via the pool argument (e.g. "warehouse_writes").
+      slots:
+        type: integer
+        description: >-
+          The number of concurrent task slots the pool allows. Shrinking a pool
+          below its currently used slots does not evict running tasks; it only
+          prevents new ones from starting.
+      description:
+        type: string
+        description: A human readable description of the resource this pool protects.
+  steps:
+  - stepId: lookupPool
+    description: >-
+      Look the pool up by name. A 200 means it exists and should be resized; a 404
+      means it must be created. Both are expected outcomes, so the branch is
+      decided on the status code.
+    operationId: get_pool
+    parameters:
+    - name: pool_name
+      in: path
+      value: $inputs.poolName
+    successCriteria:
+    - condition: $statusCode == 200 || $statusCode == 404
+    onSuccess:
+    - name: poolExists
+      type: goto
+      stepId: updatePool
+      criteria:
+      - condition: $statusCode == 200
+    - name: poolMissing
+      type: goto
+      stepId: createPool
+      criteria:
+      - condition: $statusCode == 404
+  - stepId: updatePool
+    description: >-
+      Resize the existing pool. The update_mask restricts the patch to slots and
+      description so the pool is not accidentally renamed, which is what happens
+      when the name field is included in the mask.
+    operationId: patch_pool
+    parameters:
+    - name: pool_name
+      in: path
+      value: $inputs.poolName
+    - name: update_mask
+      in: query
+      value:
+      - slots
+      - description
+    requestBody:
+      contentType: application/json
+      payload:
+        name: $inputs.poolName
+        slots: $inputs.slots
+        description: $inputs.description
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      name: $response.body#/name
+      slots: $response.body#/slots
+    onSuccess:
+    - name: verify
+      type: goto
+      stepId: readBackPool
+  - stepId: createPool
+    description: >-
+      Create the pool when the lookup found nothing under this name.
+    operationId: post_pool
+    requestBody:
+      contentType: application/json
+      payload:
+        name: $inputs.poolName
+        slots: $inputs.slots
+        description: $inputs.description
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      name: $response.body#/name
+      slots: $response.body#/slots
+  - stepId: readBackPool
+    description: >-
+      Read the pool back and require the slot count to match what was requested,
+      returning the live occupied, used, queued, and open slot accounting.
+    operationId: get_pool
+    parameters:
+    - name: pool_name
+      in: path
+      value: $inputs.poolName
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.slots == $inputs.slots
+      type: jsonpath
+    outputs:
+      name: $response.body#/name
+      slots: $response.body#/slots
+      openSlots: $response.body#/open_slots
+      usedSlots: $response.body#/used_slots
+      queuedSlots: $response.body#/queued_slots
+      occupiedSlots: $response.body#/occupied_slots
+  - stepId: listPools
+    description: >-
+      List every pool so the caller can see the deployment's full concurrency
+      budget alongside the pool just written.
+    operationId: get_pools
+    parameters:
+    - name: limit
+      in: query
+      value: 100
+    - name: order_by
+      in: query
+      value: name
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      pools: $response.body#/pools
+      totalEntries: $response.body#/total_entries
+  outputs:
+    name: $steps.readBackPool.outputs.name
+    slots: $steps.readBackPool.outputs.slots
+    openSlots: $steps.readBackPool.outputs.openSlots
+    pools: $steps.listPools.outputs.pools

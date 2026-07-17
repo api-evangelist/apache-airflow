@@ -1,0 +1,165 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Provision a User with a Role
+  summary: Ensure a role exists with the intended permissions, create a user bound to it, and verify the assignment.
+  description: >-
+    Onboarding a person or a service account into Airflow means two things must be
+    true in order: the role has to exist with the right actions, and the user has
+    to be created against it. Creating the user first and fixing permissions later
+    is how accounts end up with the default role and more access than intended.
+    This workflow enumerates the available permissions, looks the role up and
+    creates it when absent, creates the user bound to that role, and reads the
+    user back to confirm the binding. These endpoints belong to the Flask AppBuilder
+    auth manager and are unavailable on deployments using a different auth manager.
+    Every step spells out its request inline so the flow can be read and executed
+    without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: provision-user
+  summary: Create a role if needed, then create a user assigned to it and verify.
+  description: >-
+    Lists the permission catalog, resolves or creates the target role, creates the
+    user with that role attached, and reads the user back to confirm the role
+    assignment took.
+  inputs:
+    type: object
+    required:
+    - roleName
+    - username
+    - email
+    properties:
+      roleName:
+        type: string
+        description: The role to bind the user to (e.g. "PipelineViewer").
+      roleActions:
+        type: array
+        description: >-
+          The action/resource pairs granted to the role when it must be created,
+          each shaped as {"action": {"name": "can_read"}, "resource": {"name":
+          "DAGs"}}. Valid names come from the permission catalog.
+        items:
+          type: object
+      username:
+        type: string
+        description: The login name for the new user.
+      email:
+        type: string
+        description: The user's email address, which must be unique in the deployment.
+      firstName:
+        type: string
+        description: The user's given name.
+      lastName:
+        type: string
+        description: The user's family name.
+      password:
+        type: string
+        description: >-
+          The initial password. Airflow stores it hashed and never returns it on
+          read.
+  steps:
+  - stepId: listPermissions
+    description: >-
+      List the deployment's permission catalog so the role's action and resource
+      names are drawn from what this Airflow actually offers rather than guessed.
+    operationId: get_permissions
+    parameters:
+    - name: limit
+      in: query
+      value: 100
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      actions: $response.body#/actions
+      totalEntries: $response.body#/total_entries
+  - stepId: lookupRole
+    description: >-
+      Look the role up by name. A 200 means it already exists and the user can be
+      bound straight to it; a 404 means it must be created first. Both are
+      expected outcomes.
+    operationId: get_role
+    parameters:
+    - name: role_name
+      in: path
+      value: $inputs.roleName
+    successCriteria:
+    - condition: $statusCode == 200 || $statusCode == 404
+    onSuccess:
+    - name: roleExists
+      type: goto
+      stepId: createUser
+      criteria:
+      - condition: $statusCode == 200
+    - name: roleMissing
+      type: goto
+      stepId: createRole
+      criteria:
+      - condition: $statusCode == 404
+  - stepId: createRole
+    description: >-
+      Create the role with the requested action/resource pairs before any user is
+      attached to it.
+    operationId: post_role
+    requestBody:
+      contentType: application/json
+      payload:
+        name: $inputs.roleName
+        actions: $inputs.roleActions
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      name: $response.body#/name
+      actions: $response.body#/actions
+  - stepId: createUser
+    description: >-
+      Create the user with the role attached at creation time, so the account
+      never exists in an unintended permission state.
+    operationId: post_user
+    requestBody:
+      contentType: application/json
+      payload:
+        username: $inputs.username
+        email: $inputs.email
+        first_name: $inputs.firstName
+        last_name: $inputs.lastName
+        password: $inputs.password
+        roles:
+        - name: $inputs.roleName
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      username: $response.body#/username
+      email: $response.body#/email
+      roles: $response.body#/roles
+    onSuccess:
+    - name: verify
+      type: goto
+      stepId: readBackUser
+  - stepId: readBackUser
+    description: >-
+      Read the user back and require the account to be active, returning the roles
+      Airflow actually recorded against it.
+    operationId: get_user
+    parameters:
+    - name: username
+      in: path
+      value: $inputs.username
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.active == true
+      type: jsonpath
+    outputs:
+      username: $response.body#/username
+      email: $response.body#/email
+      roles: $response.body#/roles
+      active: $response.body#/active
+      createdOn: $response.body#/created_on
+  outputs:
+    roleName: $inputs.roleName
+    username: $steps.readBackUser.outputs.username
+    roles: $steps.readBackUser.outputs.roles
+    active: $steps.readBackUser.outputs.active

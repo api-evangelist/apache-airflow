@@ -1,0 +1,133 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Upsert a Variable
+  summary: Look up an Airflow variable and update it if it exists, otherwise create it, then read the result back.
+  description: >-
+    Airflow variables carry the environment-specific configuration that DAGs read
+    at parse and run time, which makes "set this variable to this value, whether
+    or not it already exists" one of the most common things a deployment pipeline
+    asks of the API. The variables API has no upsert, so this workflow builds one:
+    it looks the key up, branches on whether the lookup returned 200 or 404,
+    patches or creates accordingly, and reads the value back to confirm. Every
+    step spells out its request inline so the flow can be read and executed
+    without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: upsert-variable
+  summary: Create or update an Airflow variable by key.
+  description: >-
+    Resolves the variable by key, patches it when present and creates it when
+    absent, then reads it back to verify the stored value.
+  inputs:
+    type: object
+    required:
+    - variableKey
+    - value
+    properties:
+      variableKey:
+        type: string
+        description: The variable key to upsert (e.g. "warehouse_conn_target").
+      value:
+        type: string
+        description: >-
+          The variable value. Airflow stores variable values as strings; JSON
+          payloads should be serialized by the caller.
+      description:
+        type: string
+        description: A human readable description stored alongside the variable.
+  steps:
+  - stepId: lookupVariable
+    description: >-
+      Look the variable up by key. A 200 means it exists and should be patched; a
+      404 means it must be created. Both outcomes are expected, so both are
+      treated as success and the branch is decided on the status code.
+    operationId: get_variable
+    parameters:
+    - name: variable_key
+      in: path
+      value: $inputs.variableKey
+    successCriteria:
+    - condition: $statusCode == 200 || $statusCode == 404
+    onSuccess:
+    - name: variableExists
+      type: goto
+      stepId: updateVariable
+      criteria:
+      - condition: $statusCode == 200
+    - name: variableMissing
+      type: goto
+      stepId: createVariable
+      criteria:
+      - condition: $statusCode == 404
+  - stepId: updateVariable
+    description: >-
+      Patch the existing variable. The update_mask restricts the write to the
+      value and description fields, and the key in the body must match the key in
+      the path.
+    operationId: patch_variable
+    parameters:
+    - name: variable_key
+      in: path
+      value: $inputs.variableKey
+    - name: update_mask
+      in: query
+      value:
+      - value
+      - description
+    requestBody:
+      contentType: application/json
+      payload:
+        key: $inputs.variableKey
+        value: $inputs.value
+        description: $inputs.description
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      key: $response.body#/key
+      value: $response.body#/value
+    onSuccess:
+    - name: verify
+      type: goto
+      stepId: readBackVariable
+  - stepId: createVariable
+    description: >-
+      Create the variable when the lookup found nothing under this key.
+    operationId: post_variables
+    requestBody:
+      contentType: application/json
+      payload:
+        key: $inputs.variableKey
+        value: $inputs.value
+        description: $inputs.description
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      key: $response.body#/key
+      value: $response.body#/value
+  - stepId: readBackVariable
+    description: >-
+      Read the variable back and require the stored value to match what was sent,
+      closing the loop on either branch.
+    operationId: get_variable
+    parameters:
+    - name: variable_key
+      in: path
+      value: $inputs.variableKey
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.value == $inputs.value
+      type: jsonpath
+    outputs:
+      key: $response.body#/key
+      value: $response.body#/value
+      description: $response.body#/description
+  outputs:
+    key: $steps.readBackVariable.outputs.key
+    value: $steps.readBackVariable.outputs.value
+    createdKey: $steps.createVariable.outputs.key
+    updatedKey: $steps.updateVariable.outputs.key

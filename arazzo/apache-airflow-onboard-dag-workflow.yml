@@ -1,0 +1,140 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Onboard a DAG
+  summary: Orient on an unfamiliar DAG by reading its metadata, schedule details, task graph, source code, and recent run history.
+  description: >-
+    Before triggering someone else's pipeline you need to know what it does, when
+    it runs, what it touches, and whether it has been healthy. This read-only
+    workflow assembles that briefing in five calls: find the DAG, read its details
+    for the schedule and timetable description, list its tasks to see the graph
+    and each operator, fetch the source file using the file_token the DAG record
+    hands out, and pull the recent run history to judge reliability. Nothing is
+    written. Every step spells out its request inline so the flow can be read and
+    executed without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: onboard-dag
+  summary: Assemble a complete read-only briefing on a single DAG.
+  description: >-
+    Reads the DAG record, its extended details, its task list, its Python source,
+    and its recent runs, returning everything an integrator needs before depending
+    on the pipeline.
+  inputs:
+    type: object
+    required:
+    - dagId
+    properties:
+      dagId:
+        type: string
+        description: The DAG identifier to profile.
+      runLimit:
+        type: integer
+        description: >-
+          How many recent DAG runs to pull for the reliability check. Defaults to
+          25 when omitted.
+  steps:
+  - stepId: readDag
+    description: >-
+      Read the DAG record for its owners, tags, paused state, and the file_token
+      that authorizes fetching its source in a later step.
+    operationId: get_dag
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      dagId: $response.body#/dag_id
+      description: $response.body#/description
+      isPaused: $response.body#/is_paused
+      isActive: $response.body#/is_active
+      hasImportErrors: $response.body#/has_import_errors
+      owners: $response.body#/owners
+      tags: $response.body#/tags
+      fileToken: $response.body#/file_token
+      fileloc: $response.body#/fileloc
+      scheduleInterval: $response.body#/schedule_interval
+      nextDagrun: $response.body#/next_dagrun
+  - stepId: readDagDetails
+    description: >-
+      Read the extended DAG details for the timetable description, concurrency
+      limits, catchup posture, start date, and default arguments — the fields that
+      explain how the DAG actually behaves.
+    operationId: get_dag_details
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      timetableDescription: $response.body#/timetable_description
+      maxActiveRuns: $response.body#/max_active_runs
+      maxActiveTasks: $response.body#/max_active_tasks
+      startDate: $response.body#/start_date
+      catchup: $response.body#/catchup
+      defaultView: $response.body#/default_view
+  - stepId: listTasks
+    description: >-
+      List the DAG's tasks to see the graph: each task id, its operator class, its
+      downstream ids, its pool, and its retry posture.
+    operationId: get_tasks
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: order_by
+      in: query
+      value: task_id
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      tasks: $response.body#/tasks
+      firstTaskId: $response.body#/tasks/0/task_id
+  - stepId: readDagSource
+    description: >-
+      Fetch the DAG's Python source using the file_token from the DAG record. The
+      token is a signed reference to the file path rather than the path itself,
+      which is why the source cannot be requested by filename.
+    operationId: get_dag_source
+    parameters:
+    - name: file_token
+      in: path
+      value: $steps.readDag.outputs.fileToken
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      content: $response.body#/content
+  - stepId: readRecentRuns
+    description: >-
+      Pull the most recent DAG runs, newest first, so the caller can judge whether
+      this pipeline has been finishing cleanly before depending on it.
+    operationId: get_dag_runs
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: limit
+      in: query
+      value: $inputs.runLimit
+    - name: order_by
+      in: query
+      value: -execution_date
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      dagRuns: $response.body#/dag_runs
+      totalEntries: $response.body#/total_entries
+  outputs:
+    dagId: $steps.readDag.outputs.dagId
+    isPaused: $steps.readDag.outputs.isPaused
+    scheduleInterval: $steps.readDag.outputs.scheduleInterval
+    timetableDescription: $steps.readDagDetails.outputs.timetableDescription
+    tasks: $steps.listTasks.outputs.tasks
+    source: $steps.readDagSource.outputs.content
+    recentRuns: $steps.readRecentRuns.outputs.dagRuns

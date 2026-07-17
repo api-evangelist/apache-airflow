@@ -1,0 +1,159 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Collect DAG Run Results from XCom
+  summary: Wait for a DAG run to finish, find the producing task instance, and pull its XCom return value.
+  description: >-
+    Airflow pipelines hand results back through XCom, so an integrator that
+    triggers a DAG needs a reliable way to fetch what the pipeline produced. This
+    workflow polls the run to a terminal state, confirms the producing task
+    actually succeeded, lists the XCom keys that task published, and reads the
+    requested key with deserialize enabled so the caller receives the real value
+    rather than the serialized representation. Every step spells out its request
+    inline so the flow can be read and executed without opening the underlying
+    OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: collect-dag-run-results
+  summary: Retrieve the XCom value a finished DAG run's task published.
+  description: >-
+    Polls the DAG run until it ends, verifies the producing task instance reached
+    the success state, enumerates its XCom entries, and reads the named key.
+  inputs:
+    type: object
+    required:
+    - dagId
+    - dagRunId
+    - taskId
+    properties:
+      dagId:
+        type: string
+        description: The DAG identifier the run belongs to.
+      dagRunId:
+        type: string
+        description: The run identifier to collect results from.
+      taskId:
+        type: string
+        description: The task within the DAG that publishes the result to XCom.
+      xcomKey:
+        type: string
+        description: >-
+          The XCom key to read. Airflow stores a task's plain return value under
+          the key "return_value", which is the sensible default.
+  steps:
+  - stepId: waitForRun
+    description: >-
+      Poll the DAG run until Airflow stamps an end_date. XCom values are only
+      dependable once the run has reached a terminal state.
+    operationId: get_dag_run
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.end_date != null
+      type: jsonpath
+    onFailure:
+    - name: pollAgain
+      type: retry
+      retryAfter: 15
+      retryLimit: 80
+      criteria:
+      - context: $response.body
+        condition: $.end_date == null
+        type: jsonpath
+    outputs:
+      runState: $response.body#/state
+      endDate: $response.body#/end_date
+  - stepId: confirmProducerSucceeded
+    description: >-
+      Read the producing task instance and require the success state. A failed or
+      skipped producer publishes no XCom, so stopping here yields a clear error
+      instead of an empty result.
+    operationId: get_task_instance
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    - name: task_id
+      in: path
+      value: $inputs.taskId
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.state == "success"
+      type: jsonpath
+    outputs:
+      taskState: $response.body#/state
+      tryNumber: $response.body#/try_number
+      operator: $response.body#/operator
+      duration: $response.body#/duration
+  - stepId: listXcomKeys
+    description: >-
+      List every XCom entry the producing task published in this run so the caller
+      can see what is available before reading a specific key.
+    operationId: get_xcom_entries
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    - name: task_id
+      in: path
+      value: $inputs.taskId
+    - name: limit
+      in: query
+      value: 100
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.total_entries > 0
+      type: jsonpath
+    outputs:
+      xcomEntries: $response.body#/xcom_entries
+      totalEntries: $response.body#/total_entries
+  - stepId: readXcomValue
+    description: >-
+      Read the requested XCom key with deserialize enabled so the response carries
+      the actual value. Note that deserialize is rejected unless the Airflow
+      deployment has enabled allow_deserialize_xcom_via_api.
+    operationId: get_xcom_entry
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    - name: task_id
+      in: path
+      value: $inputs.taskId
+    - name: xcom_key
+      in: path
+      value: $inputs.xcomKey
+    - name: deserialize
+      in: query
+      value: true
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      value: $response.body#/value
+      key: $response.body#/key
+      timestamp: $response.body#/timestamp
+  outputs:
+    runState: $steps.waitForRun.outputs.runState
+    xcomEntries: $steps.listXcomKeys.outputs.xcomEntries
+    value: $steps.readXcomValue.outputs.value

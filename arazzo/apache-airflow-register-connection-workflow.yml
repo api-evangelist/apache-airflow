@@ -1,0 +1,161 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Register a Connection After Testing It
+  summary: Test a connection's credentials against the target system before saving it, then create and verify the stored connection.
+  description: >-
+    Airflow connections hold the credentials every operator uses to reach an
+    external system, and a bad connection surfaces as a task failure hours later
+    rather than as an error at write time. This workflow closes that gap by using
+    the test endpoint first: it submits the candidate connection to Airflow, which
+    instantiates the hook and attempts a real connection, and only creates the
+    stored connection when the test reports success. The connection is then read
+    back to confirm what was persisted. Every step spells out its request inline
+    so the flow can be read and executed without opening the underlying OpenAPI
+    description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: register-connection
+  summary: Validate connection credentials, then persist and verify the connection.
+  description: >-
+    Tests the candidate connection against the target system, creates it only on a
+    successful test, reads it back, and confirms it appears in the connections
+    list.
+  inputs:
+    type: object
+    required:
+    - connectionId
+    - connType
+    properties:
+      connectionId:
+        type: string
+        description: The connection id DAGs will reference (e.g. "warehouse_postgres").
+      connType:
+        type: string
+        description: >-
+          The connection type, matching an installed provider hook (e.g.
+          "postgres", "http", "aws", "snowflake").
+      host:
+        type: string
+        description: The host name or endpoint for the target system.
+      schemaName:
+        type: string
+        description: >-
+          The schema or database name. Sent as the connection's "schema" field,
+          which is named for the database concept rather than a JSON schema.
+      login:
+        type: string
+        description: The user name or access key used to authenticate.
+      password:
+        type: string
+        description: >-
+          The secret used to authenticate. Airflow stores this encrypted with the
+          Fernet key and never returns it on read.
+      port:
+        type: integer
+        description: The port on the target host.
+      extra:
+        type: string
+        description: >-
+          Provider-specific options as a JSON-encoded string, e.g.
+          "{\"sslmode\": \"require\"}".
+      description:
+        type: string
+        description: A human readable description of what this connection reaches.
+  steps:
+  - stepId: testConnection
+    description: >-
+      Ask Airflow to instantiate the hook for this connection type and actually
+      attempt to reach the target system. Nothing is stored. Note that this
+      endpoint is disabled unless the deployment sets test_connection to Enabled
+      in the core config, so a 403 here means the feature is turned off rather
+      than that the credentials are wrong.
+    operationId: test_connection
+    requestBody:
+      contentType: application/json
+      payload:
+        connection_id: $inputs.connectionId
+        conn_type: $inputs.connType
+        host: $inputs.host
+        schema: $inputs.schemaName
+        login: $inputs.login
+        password: $inputs.password
+        port: $inputs.port
+        extra: $inputs.extra
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.status == true
+      type: jsonpath
+    outputs:
+      status: $response.body#/status
+      message: $response.body#/message
+  - stepId: createConnection
+    description: >-
+      Persist the connection now that the credentials are known to work.
+    operationId: post_connection
+    requestBody:
+      contentType: application/json
+      payload:
+        connection_id: $inputs.connectionId
+        conn_type: $inputs.connType
+        host: $inputs.host
+        schema: $inputs.schemaName
+        login: $inputs.login
+        password: $inputs.password
+        port: $inputs.port
+        extra: $inputs.extra
+        description: $inputs.description
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      connectionId: $response.body#/connection_id
+      connType: $response.body#/conn_type
+      host: $response.body#/host
+  - stepId: readBackConnection
+    description: >-
+      Read the stored connection to confirm what Airflow persisted. The password
+      is deliberately absent from the response; only the non-secret fields come
+      back.
+    operationId: get_connection
+    parameters:
+    - name: connection_id
+      in: path
+      value: $steps.createConnection.outputs.connectionId
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.conn_type == $inputs.connType
+      type: jsonpath
+    outputs:
+      connectionId: $response.body#/connection_id
+      connType: $response.body#/conn_type
+      host: $response.body#/host
+      schemaName: $response.body#/schema
+      login: $response.body#/login
+      port: $response.body#/port
+  - stepId: confirmInInventory
+    description: >-
+      List the connections to confirm the new one is present in the deployment's
+      inventory, which is the view an operator audits against.
+    operationId: get_connections
+    parameters:
+    - name: limit
+      in: query
+      value: 100
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.total_entries > 0
+      type: jsonpath
+    outputs:
+      connections: $response.body#/connections
+      totalEntries: $response.body#/total_entries
+  outputs:
+    testStatus: $steps.testConnection.outputs.status
+    testMessage: $steps.testConnection.outputs.message
+    connectionId: $steps.readBackConnection.outputs.connectionId
+    totalConnections: $steps.confirmInInventory.outputs.totalEntries

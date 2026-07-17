@@ -1,0 +1,169 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Force a Task Instance State
+  summary: Preview and then set a task instance's state to unblock a stuck pipeline, verifying the DAG run recovers.
+  description: >-
+    Sometimes a task fails for a reason that lives outside Airflow — a partner
+    system was down, a file landed late, an operator fixed the data by hand — and
+    the right move is to mark the task successful and let the rest of the pipeline
+    proceed rather than re-run it. This is the "mark success" escape hatch, and
+    because it overrides reality it is gated behind a dry run. The workflow reads
+    the current state, previews which task instances the change would touch,
+    applies the new state with downstream propagation, and confirms the run
+    recovered. Every step spells out its request inline so the flow can be read
+    and executed without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: force-task-instance-state
+  summary: Override a task instance's state after previewing the affected instances.
+  description: >-
+    Reads the task instance, dry-runs the state change to enumerate the affected
+    instances, applies the new state for real, and re-reads the task instance and
+    DAG run to confirm the override took.
+  inputs:
+    type: object
+    required:
+    - dagId
+    - dagRunId
+    - taskId
+    - newState
+    properties:
+      dagId:
+        type: string
+        description: The DAG identifier the task belongs to.
+      dagRunId:
+        type: string
+        description: The run identifier containing the task instance to override.
+      taskId:
+        type: string
+        description: The task id whose state should be forced.
+      newState:
+        type: string
+        description: >-
+          The state to set. The endpoint accepts "success", "failed", and
+          "skipped"; "success" is the common unblock-the-pipeline choice.
+      includeDownstream:
+        type: boolean
+        description: >-
+          Whether to propagate the new state to downstream tasks. Defaults to
+          false, which changes only the named task and lets the scheduler decide
+          what runs next.
+  steps:
+  - stepId: readCurrentState
+    description: >-
+      Read the task instance so the caller can see and record the state being
+      overridden before anything changes.
+    operationId: get_task_instance
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    - name: task_id
+      in: path
+      value: $inputs.taskId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      priorState: $response.body#/state
+      tryNumber: $response.body#/try_number
+      operator: $response.body#/operator
+  - stepId: previewStateChange
+    description: >-
+      Dry-run the state change. Airflow returns the task instances the real call
+      would modify without touching any of them, which matters because downstream
+      propagation can reach further than expected.
+    operationId: post_set_task_instances_state
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    requestBody:
+      contentType: application/json
+      payload:
+        dag_run_id: $inputs.dagRunId
+        task_id: $inputs.taskId
+        new_state: $inputs.newState
+        dry_run: true
+        include_downstream: $inputs.includeDownstream
+        include_upstream: false
+        include_future: false
+        include_past: false
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      affectedTaskInstances: $response.body#/task_instances
+  - stepId: applyStateChange
+    description: >-
+      Apply the state change for real against the same selection that was
+      previewed.
+    operationId: post_set_task_instances_state
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    requestBody:
+      contentType: application/json
+      payload:
+        dag_run_id: $inputs.dagRunId
+        task_id: $inputs.taskId
+        new_state: $inputs.newState
+        dry_run: false
+        include_downstream: $inputs.includeDownstream
+        include_upstream: false
+        include_future: false
+        include_past: false
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      updatedTaskInstances: $response.body#/task_instances
+  - stepId: verifyTaskState
+    description: >-
+      Re-read the task instance and require that its state now matches the
+      requested override.
+    operationId: get_task_instance
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    - name: task_id
+      in: path
+      value: $inputs.taskId
+    successCriteria:
+    - condition: $statusCode == 200
+    - context: $response.body
+      condition: $.state == $inputs.newState
+      type: jsonpath
+    outputs:
+      currentState: $response.body#/state
+  - stepId: checkRunRecovered
+    description: >-
+      Read the DAG run to report whether overriding the task released the rest of
+      the pipeline.
+    operationId: get_dag_run
+    parameters:
+    - name: dag_id
+      in: path
+      value: $inputs.dagId
+    - name: dag_run_id
+      in: path
+      value: $inputs.dagRunId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      runState: $response.body#/state
+      endDate: $response.body#/end_date
+  outputs:
+    priorState: $steps.readCurrentState.outputs.priorState
+    affectedTaskInstances: $steps.previewStateChange.outputs.affectedTaskInstances
+    currentState: $steps.verifyTaskState.outputs.currentState
+    runState: $steps.checkRunRecovered.outputs.runState

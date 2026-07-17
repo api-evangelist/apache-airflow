@@ -1,0 +1,138 @@
+arazzo: 1.0.1
+info:
+  title: Apache Airflow Audit DAG Runs Across the Fleet
+  summary: Use the batch endpoints to pull failed runs and their task instances across many DAGs in a date window, then check the event log for who intervened.
+  description: >-
+    Reporting on reliability across a fleet of pipelines one DAG at a time does not
+    scale. Airflow provides batch list endpoints for exactly this: they are POST
+    requests whose bodies carry the filters, letting a caller ask about many DAGs
+    and many states in a single call. This workflow picks up the DAG inventory,
+    pulls every failed or queued run across the requested DAGs inside a date
+    window, pulls the failed task instances behind those runs, and then reads the
+    event log so the report shows what operators did in the same period. Every
+    step spells out its request inline so the flow can be read and executed
+    without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: airflowApi
+  url: ../openapi/apache-airflow-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: audit-dag-runs
+  summary: Batch-report failed runs and task instances across many DAGs in a time window.
+  description: >-
+    Lists the DAG inventory, batch-queries DAG runs by state and date window,
+    batch-queries the failed task instances underneath them, and reads the event
+    log for the same period.
+  inputs:
+    type: object
+    required:
+    - dagIds
+    - startDateGte
+    properties:
+      dagIds:
+        type: array
+        description: >-
+          The DAG ids to audit. The batch endpoints accept many at once, which is
+          the whole reason to use them over the per-DAG list endpoints.
+        items:
+          type: string
+      startDateGte:
+        type: string
+        description: The inclusive start of the audit window in ISO 8601 form.
+      startDateLte:
+        type: string
+        description: The inclusive end of the audit window in ISO 8601 form.
+      states:
+        type: array
+        description: >-
+          The DAG run states to report on, e.g. ["failed", "queued"]. Valid values
+          are queued, running, success, and failed.
+        items:
+          type: string
+  steps:
+  - stepId: listDagInventory
+    description: >-
+      List the active DAGs so the audit can state the denominator it is reporting
+      against rather than only the failures.
+    operationId: get_dags
+    parameters:
+    - name: only_active
+      in: query
+      value: true
+    - name: limit
+      in: query
+      value: 100
+    - name: order_by
+      in: query
+      value: dag_id
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      dags: $response.body#/dags
+      totalDags: $response.body#/total_entries
+  - stepId: batchListDagRuns
+    description: >-
+      Query DAG runs across every requested DAG in one call. This endpoint is a
+      POST carrying its filters in the body — not because it writes anything, but
+      because the filter lists are too large for a query string.
+    operationId: get_dag_runs_batch
+    requestBody:
+      contentType: application/json
+      payload:
+        dag_ids: $inputs.dagIds
+        states: $inputs.states
+        start_date_gte: $inputs.startDateGte
+        start_date_lte: $inputs.startDateLte
+        order_by: -start_date
+        page_limit: 100
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      dagRuns: $response.body#/dag_runs
+      matchingRunCount: $response.body#/total_entries
+  - stepId: batchListFailedTaskInstances
+    description: >-
+      Pull the failed and upstream_failed task instances across the same DAGs and
+      window, which is what turns a list of failed runs into an actionable report
+      about which tasks are actually breaking.
+    operationId: get_task_instances_batch
+    requestBody:
+      contentType: application/json
+      payload:
+        dag_ids: $inputs.dagIds
+        state:
+        - failed
+        - upstream_failed
+        start_date_gte: $inputs.startDateGte
+        start_date_lte: $inputs.startDateLte
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      taskInstances: $response.body#/task_instances
+      failedTaskCount: $response.body#/total_entries
+  - stepId: readEventLog
+    description: >-
+      Read the audit trail for the same period so the report distinguishes
+      pipelines that broke on their own from pipelines a person cleared, paused,
+      or triggered by hand.
+    operationId: get_event_logs
+    parameters:
+    - name: limit
+      in: query
+      value: 100
+    - name: order_by
+      in: query
+      value: -when
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      eventLogs: $response.body#/event_logs
+      eventCount: $response.body#/total_entries
+  outputs:
+    totalDags: $steps.listDagInventory.outputs.totalDags
+    dagRuns: $steps.batchListDagRuns.outputs.dagRuns
+    matchingRunCount: $steps.batchListDagRuns.outputs.matchingRunCount
+    taskInstances: $steps.batchListFailedTaskInstances.outputs.taskInstances
+    failedTaskCount: $steps.batchListFailedTaskInstances.outputs.failedTaskCount
+    eventLogs: $steps.readEventLog.outputs.eventLogs

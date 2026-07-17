@@ -156,6 +156,45 @@ common:
   url: rules/apache-airflow-spectral-rules.yml
 - type: Vocabulary
   url: vocabulary/apache-airflow-vocabulary.yaml
+- type: Arazzo
+  url: arazzo/apache-airflow-trigger-dag-run-workflow.yml
+  name: Apache Airflow Trigger a DAG Run and Wait for Completion
+- type: Arazzo
+  url: arazzo/apache-airflow-collect-dag-run-results-workflow.yml
+  name: Apache Airflow Collect DAG Run Results from XCom
+- type: Arazzo
+  url: arazzo/apache-airflow-diagnose-failed-dag-run-workflow.yml
+  name: Apache Airflow Diagnose a Failed DAG Run
+- type: Arazzo
+  url: arazzo/apache-airflow-retry-failed-tasks-workflow.yml
+  name: Apache Airflow Retry Failed Tasks in a DAG Run
+- type: Arazzo
+  url: arazzo/apache-airflow-force-task-instance-state-workflow.yml
+  name: Apache Airflow Force a Task Instance State
+- type: Arazzo
+  url: arazzo/apache-airflow-upsert-variable-workflow.yml
+  name: Apache Airflow Upsert a Variable
+- type: Arazzo
+  url: arazzo/apache-airflow-register-connection-workflow.yml
+  name: Apache Airflow Register a Connection After Testing It
+- type: Arazzo
+  url: arazzo/apache-airflow-upsert-pool-workflow.yml
+  name: Apache Airflow Upsert a Slot Pool
+- type: Arazzo
+  url: arazzo/apache-airflow-onboard-dag-workflow.yml
+  name: Apache Airflow Onboard a DAG
+- type: Arazzo
+  url: arazzo/apache-airflow-deployment-preflight-workflow.yml
+  name: Apache Airflow Deployment Preflight Check
+- type: Arazzo
+  url: arazzo/apache-airflow-audit-dag-runs-workflow.yml
+  name: Apache Airflow Audit DAG Runs Across the Fleet
+- type: Arazzo
+  url: arazzo/apache-airflow-dataset-lineage-workflow.yml
+  name: Apache Airflow Trace Dataset-Driven Lineage
+- type: Arazzo
+  url: arazzo/apache-airflow-provision-user-workflow.yml
+  name: Apache Airflow Provision a User with a Role
 - type: Features
   data:
   - name: DAG-as-Code

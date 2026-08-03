@@ -1,0 +1,689 @@
+{
+  "info": {
+    "_postman_id": "42df63c3-5f3d-430e-8c98-4e2fc6e0bbfd",
+    "name": "Airflow API (Stable) Config XCom API",
+    "description": "# Overview\n\nTo facilitate management, Apache Airflow supports a range of REST API endpoints across its\nobjects.\nThis section provides an overview of the API design, methods, and supported use cases.\n\nMost of the endpoints accept `JSON` as input and return `JSON` responses.\nThis means that you must usually add the following headers to your request:\n```\nContent-type: application/json\nAccept: application/json\n```\n\n## Resources\n\nThe term `resource` refers to a single type of object in the Airflow metadata. An API is broken up by its\nendpoint's corresponding resource.\nThe name of a resource is typically plural and expressed in camelCase. Example: `dagRuns`.\n\nResource names are used as part of endpoint URLs, as well as in API parameters and responses.\n\n## CRUD Operations\n\nThe platform supports **C**reate, **R**ead, **U**pdate, and **D**elete operations on most resources.\nYou can review the standards for these operations and their standard parameters below.\n\nSome endpoints have special behavior as exceptions.\n\n### Create\n\nTo create a resource, you typically submit an HTTP `POST` request with the resource's required metadata\nin the request body.\nThe response returns a `201 Created` response code upon success with the resource's metadata, including\nits internal `id`, in the response body.\n\n### Read\n\nThe HTTP `GET` request can be used to read a resource or to list a number of resources.\n\nA resource's `id` can be submitted in the request parameters to read a specific resource.\nThe response usually returns a `200 OK` response code upon success, with the resource's metadata in\nthe response body.\n\nIf a `GET` request does not include a specific resource `id`, it is treated as a list request.\nThe response usually returns a `200 OK` response code upon success, with an object containing a list\nof resources' metadata in the response body.\n\nWhen reading resources, some common query parameters are usually available. e.g.:\n```\nv1/connections?limit=25&offset=25\n```\n\n|Query Parameter|Type|Description|\n|---------------|----|-----------|\n|limit|integer|Maximum number of objects to fetch. Usually 25 by default|\n|offset|integer|Offset after which to start returning objects. For use with limit query parameter.|\n\n### Update\n\nUpdating a resource requires the resource `id`, and is typically done using an HTTP `PATCH` request,\nwith the fields to modify in the request body.\nThe response usually returns a `200 OK` response code upon success, with information about the modified\nresource in the response body.\n\n### Delete\n\nDeleting a resource requires the resource `id` and is typically executing via an HTTP `DELETE` request.\nThe response usually returns a `204 No Content` response code upon success.\n\n## Conventions\n\n- Resource names are plural and expressed in camelCase.\n- Names are consistent between URL parameter name and field name.\n\n- Field names are in snake_case.\n```json\n{\n    \"name\": \"string\",\n    \"slots\": 0,\n    \"occupied_slots\": 0,\n    \"used_slots\": 0,\n    \"queued_slots\": 0,\n    \"open_slots\": 0\n}\n```\n\n### Update Mask\n\nUpdate mask is available as a query parameter in patch endpoints. It is used to notify the\nAPI which fields you want to update. Using `update_mask` makes it easier to update objects\nby helping the server know which fields to update in an object instead of updating all fields.\nThe update request ignores any fields that aren't specified in the field mask, leaving them with\ntheir current values.\n\nExample:\n```\n  resource = request.get('/resource/my-id').json()\n  resource['my_field'] = 'new-value'\n  request.patch('/resource/my-id?update_mask=my_field', data=json.dumps(resource))\n```\n\n## Versioning and Endpoint Lifecycle\n\n- API versioning is not synchronized to specific releases of the Apache Airflow.\n- APIs are designed to be backward compatible.\n- Any changes to the API will first go through a deprecation phase.\n\n# Trying the API\n\nYou can use a third party client, such as [curl](https://curl.haxx.se/), [HTTPie](https://httpie.org/),\n[Postman](https://www.postman.com/) or [the Insomnia rest client](https://insomnia.rest/) to test\nthe Apache Airflow API.\n\nNote that you will need to pass credentials data.\n\nFor e.g., here is how to pause a DAG with [curl](https://curl.haxx.se/), when basic authorization is used:\n```bash\ncurl -X PATCH 'https://example.com/api/v1/dags/{dag_id}?update_mask=is_paused' \\\n-H 'Content-Type: application/json' \\\n--user \"username:password\" \\\n-d '{\n    \"is_paused\": true\n}'\n```\n\nUsing a graphical tool such as [Postman](https://www.postman.com/) or [Insomnia](https://insomnia.rest/),\nit is possible to import the API specifications directly:\n\n1. Download the API specification by clicking the **Download** button at top of this document\n2. Import the JSON specification in the graphical tool of your choice.\n  - In *Postman*, you can click the **import** button at the top\n  - With *Insomnia*, you can just drag-and-drop the file on the UI\n\nNote that with *Postman*, you can also generate code snippets by selecting a request and clicking on\nthe **Code** button.\n\n## Enabling CORS\n\n[Cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)\nis a browser security feature that restricts HTTP requests that are\ninitiated from scripts running in the browser.\n\nFor details on enabling/configuring CORS, see\n[Enabling CORS](https://airflow.apache.org/docs/apache-airflow/stable/security/api.html).\n\n# Authentication\n\nTo be able to meet the requirements of many organizations, Airflow supports many authentication methods,\nand it is even possible to add your own method.\n\nIf you want to check which auth backend is currently set, you can use\n`airflow config get-value api auth_backends` command as in the example below.\n```bash\n$ airflow config get-value api auth_backends\nairflow.api.auth.backend.basic_auth\n```\nThe default is to deny all requests.\n\nFor details on configuring the authentication, see\n[API Authorization](https://airflow.apache.org/docs/apache-airflow/stable/security/api.html).\n\n# Errors\n\nWe follow the error response format proposed in [RFC 7807](https://tools.ietf.org/html/rfc7807)\nalso known as Problem Details for HTTP APIs. As with our normal API responses,\nyour client must be prepared to gracefully handle additional members of the response.\n\n## Unauthenticated\n\nThis indicates that the request has not been applied because it lacks valid authentication\ncredentials for the target resource. Please check that you have valid credentials.\n\n## PermissionDenied\n\nThis response means that the server understood the request but refuses to authorize\nit because it lacks sufficient rights to the resource. It happens when you do not have the\nnecessary permission to execute the action you performed. You need to get the appropriate\npermissions in other to resolve this error.\n\n## BadRequest\n\nThis response means that the server cannot or will not process the request due to something\nthat is perceived to be a client error (e.g., malformed request syntax, invalid request message\nframing, or deceptive request routing). To resolve this, please ensure that your syntax is correct.\n\n## NotFound\n\nThis client error response indicates that the server cannot find the requested resource.\n\n## MethodNotAllowed\n\nIndicates that the request method is known by the server but is not supported by the target resource.\n\n## NotAcceptable\n\nThe target resource does not have a current representation that would be acceptable to the user\nagent, according to the proactive negotiation header fields received in the request, and the\nserver is unwilling to supply a default representation.\n\n## AlreadyExists\n\nThe request could not be completed due to a conflict with the current state of the target\nresource, e.g. the resource it tries to create already exists.\n\n## Unknown\n\nThis means that the server encountered an unexpected condition that prevented it from\nfulfilling the request.\n\n\nContact Support:\n Name: Apache Software Foundation\n Email: dev@airflow.apache.org",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-07-28T10:51:25.000Z",
+    "updatedAt": "2026-07-28T10:51:26.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-42df63c3-5f3d-430e-8c98-4e2fc6e0bbfd"
+  },
+  "item": [
+    {
+      "name": "dags",
+      "item": [
+        {
+          "name": "{dag_id}",
+          "item": [
+            {
+              "name": "dagRuns",
+              "item": [
+                {
+                  "name": "{dag_run_id}",
+                  "item": [
+                    {
+                      "name": "taskInstances",
+                      "item": [
+                        {
+                          "name": "{task_id}",
+                          "item": [
+                            {
+                              "name": "xcomEntries",
+                              "item": [
+                                {
+                                  "name": "{xcom_key}",
+                                  "item": [
+                                    {
+                                      "name": "Apache Airflow Get an XCom Entry",
+                                      "id": "ed115ac7-fb17-4df8-8266-b5c6afa3e988",
+                                      "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                      },
+                                      "request": {
+                                        "method": "GET",
+                                        "header": [
+                                          {
+                                            "key": "Accept",
+                                            "value": "application/json"
+                                          }
+                                        ],
+                                        "url": {
+                                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries/:xcom_key?deserialize=false",
+                                          "host": [
+                                            "{{baseUrl}}"
+                                          ],
+                                          "path": [
+                                            "dags",
+                                            ":dag_id",
+                                            "dagRuns",
+                                            ":dag_run_id",
+                                            "taskInstances",
+                                            ":task_id",
+                                            "xcomEntries",
+                                            ":xcom_key"
+                                          ],
+                                          "query": [
+                                            {
+                                              "description": "Whether to deserialize an XCom value when using a custom XCom backend.\n\nThe XCom API endpoint calls `orm_deserialize_value` by default since an XCom may contain value\nthat is potentially expensive to deserialize in the web server. Setting this to true overrides\nthe consideration, and calls `deserialize_value` instead.\n\nThis parameter is not meaningful when using the default XCom backend.\n\n*New in version 2.4.0*\n",
+                                              "key": "deserialize",
+                                              "value": "false"
+                                            }
+                                          ],
+                                          "variable": [
+                                            {
+                                              "id": "8cbbe930-babc-44fc-a471-5273c431679d",
+                                              "key": "dag_id",
+                                              "value": "<string>",
+                                              "description": "(Required) The DAG ID."
+                                            },
+                                            {
+                                              "id": "c95b1a69-aeff-45bd-b12c-375c17d81316",
+                                              "key": "dag_run_id",
+                                              "value": "<string>",
+                                              "description": "(Required) The DAG run ID."
+                                            },
+                                            {
+                                              "id": "23de730b-a078-4b03-8632-0a59a4817ed6",
+                                              "key": "task_id",
+                                              "value": "<string>",
+                                              "description": "(Required) The task ID."
+                                            },
+                                            {
+                                              "id": "342709a9-4afe-4520-a280-e905866c680d",
+                                              "key": "xcom_key",
+                                              "value": "<string>",
+                                              "description": "(Required) The XCom key."
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "response": [
+                                        {
+                                          "id": "2059fe92-2005-4df7-88d0-0048044410b3",
+                                          "name": "Success.",
+                                          "originalRequest": {
+                                            "method": "GET",
+                                            "header": [
+                                              {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                              }
+                                            ],
+                                            "url": {
+                                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries/:xcom_key?deserialize=false",
+                                              "host": [
+                                                "{{baseUrl}}"
+                                              ],
+                                              "path": [
+                                                "dags",
+                                                ":dag_id",
+                                                "dagRuns",
+                                                ":dag_run_id",
+                                                "taskInstances",
+                                                ":task_id",
+                                                "xcomEntries",
+                                                ":xcom_key"
+                                              ],
+                                              "query": [
+                                                {
+                                                  "description": "Whether to deserialize an XCom value when using a custom XCom backend.\n\nThe XCom API endpoint calls `orm_deserialize_value` by default since an XCom may contain value\nthat is potentially expensive to deserialize in the web server. Setting this to true overrides\nthe consideration, and calls `deserialize_value` instead.\n\nThis parameter is not meaningful when using the default XCom backend.\n\n*New in version 2.4.0*\n",
+                                                  "key": "deserialize",
+                                                  "value": "false"
+                                                }
+                                              ],
+                                              "variable": [
+                                                {
+                                                  "key": "dag_id"
+                                                },
+                                                {
+                                                  "key": "dag_run_id"
+                                                },
+                                                {
+                                                  "key": "task_id"
+                                                },
+                                                {
+                                                  "key": "xcom_key"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          "status": "OK",
+                                          "code": 200,
+                                          "_postman_previewlanguage": "json",
+                                          "header": [
+                                            {
+                                              "key": "Content-Type",
+                                              "value": "application/json"
+                                            }
+                                          ],
+                                          "cookie": [],
+                                          "responseTime": null,
+                                          "body": "{\n  \"dag_id\": \"<string>\",\n  \"execution_date\": \"<string>\",\n  \"key\": \"<string>\",\n  \"task_id\": \"<string>\",\n  \"timestamp\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                                          "createdAt": "2026-07-28T10:51:26.000Z",
+                                          "updatedAt": "2026-07-28T10:51:26.000Z",
+                                          "uid": "35240-2059fe92-2005-4df7-88d0-0048044410b3"
+                                        },
+                                        {
+                                          "id": "956be24d-c2ff-4f08-801d-e6f7f3e565ce",
+                                          "name": "Request not authenticated due to missing, invalid, authentication info.",
+                                          "originalRequest": {
+                                            "method": "GET",
+                                            "header": [
+                                              {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                              }
+                                            ],
+                                            "url": {
+                                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries/:xcom_key?deserialize=false",
+                                              "host": [
+                                                "{{baseUrl}}"
+                                              ],
+                                              "path": [
+                                                "dags",
+                                                ":dag_id",
+                                                "dagRuns",
+                                                ":dag_run_id",
+                                                "taskInstances",
+                                                ":task_id",
+                                                "xcomEntries",
+                                                ":xcom_key"
+                                              ],
+                                              "query": [
+                                                {
+                                                  "description": "Whether to deserialize an XCom value when using a custom XCom backend.\n\nThe XCom API endpoint calls `orm_deserialize_value` by default since an XCom may contain value\nthat is potentially expensive to deserialize in the web server. Setting this to true overrides\nthe consideration, and calls `deserialize_value` instead.\n\nThis parameter is not meaningful when using the default XCom backend.\n\n*New in version 2.4.0*\n",
+                                                  "key": "deserialize",
+                                                  "value": "false"
+                                                }
+                                              ],
+                                              "variable": [
+                                                {
+                                                  "key": "dag_id"
+                                                },
+                                                {
+                                                  "key": "dag_run_id"
+                                                },
+                                                {
+                                                  "key": "task_id"
+                                                },
+                                                {
+                                                  "key": "xcom_key"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          "status": "Unauthorized",
+                                          "code": 401,
+                                          "_postman_previewlanguage": "json",
+                                          "header": [
+                                            {
+                                              "key": "Content-Type",
+                                              "value": "application/json"
+                                            }
+                                          ],
+                                          "cookie": [],
+                                          "responseTime": null,
+                                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                                          "createdAt": "2026-07-28T10:51:26.000Z",
+                                          "updatedAt": "2026-07-28T10:51:26.000Z",
+                                          "uid": "35240-956be24d-c2ff-4f08-801d-e6f7f3e565ce"
+                                        },
+                                        {
+                                          "id": "630c983b-7f60-4ea0-a02a-e192b06978d1",
+                                          "name": "Client does not have sufficient permission.",
+                                          "originalRequest": {
+                                            "method": "GET",
+                                            "header": [
+                                              {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                              }
+                                            ],
+                                            "url": {
+                                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries/:xcom_key?deserialize=false",
+                                              "host": [
+                                                "{{baseUrl}}"
+                                              ],
+                                              "path": [
+                                                "dags",
+                                                ":dag_id",
+                                                "dagRuns",
+                                                ":dag_run_id",
+                                                "taskInstances",
+                                                ":task_id",
+                                                "xcomEntries",
+                                                ":xcom_key"
+                                              ],
+                                              "query": [
+                                                {
+                                                  "description": "Whether to deserialize an XCom value when using a custom XCom backend.\n\nThe XCom API endpoint calls `orm_deserialize_value` by default since an XCom may contain value\nthat is potentially expensive to deserialize in the web server. Setting this to true overrides\nthe consideration, and calls `deserialize_value` instead.\n\nThis parameter is not meaningful when using the default XCom backend.\n\n*New in version 2.4.0*\n",
+                                                  "key": "deserialize",
+                                                  "value": "false"
+                                                }
+                                              ],
+                                              "variable": [
+                                                {
+                                                  "key": "dag_id"
+                                                },
+                                                {
+                                                  "key": "dag_run_id"
+                                                },
+                                                {
+                                                  "key": "task_id"
+                                                },
+                                                {
+                                                  "key": "xcom_key"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          "status": "Forbidden",
+                                          "code": 403,
+                                          "_postman_previewlanguage": "json",
+                                          "header": [
+                                            {
+                                              "key": "Content-Type",
+                                              "value": "application/json"
+                                            }
+                                          ],
+                                          "cookie": [],
+                                          "responseTime": null,
+                                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                                          "createdAt": "2026-07-28T10:51:26.000Z",
+                                          "updatedAt": "2026-07-28T10:51:26.000Z",
+                                          "uid": "35240-630c983b-7f60-4ea0-a02a-e192b06978d1"
+                                        },
+                                        {
+                                          "id": "bb3756ff-0d50-4790-9b9e-ecf0395c27a0",
+                                          "name": "A specified resource is not found.",
+                                          "originalRequest": {
+                                            "method": "GET",
+                                            "header": [
+                                              {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                              }
+                                            ],
+                                            "url": {
+                                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries/:xcom_key?deserialize=false",
+                                              "host": [
+                                                "{{baseUrl}}"
+                                              ],
+                                              "path": [
+                                                "dags",
+                                                ":dag_id",
+                                                "dagRuns",
+                                                ":dag_run_id",
+                                                "taskInstances",
+                                                ":task_id",
+                                                "xcomEntries",
+                                                ":xcom_key"
+                                              ],
+                                              "query": [
+                                                {
+                                                  "description": "Whether to deserialize an XCom value when using a custom XCom backend.\n\nThe XCom API endpoint calls `orm_deserialize_value` by default since an XCom may contain value\nthat is potentially expensive to deserialize in the web server. Setting this to true overrides\nthe consideration, and calls `deserialize_value` instead.\n\nThis parameter is not meaningful when using the default XCom backend.\n\n*New in version 2.4.0*\n",
+                                                  "key": "deserialize",
+                                                  "value": "false"
+                                                }
+                                              ],
+                                              "variable": [
+                                                {
+                                                  "key": "dag_id"
+                                                },
+                                                {
+                                                  "key": "dag_run_id"
+                                                },
+                                                {
+                                                  "key": "task_id"
+                                                },
+                                                {
+                                                  "key": "xcom_key"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          "status": "Not Found",
+                                          "code": 404,
+                                          "_postman_previewlanguage": "json",
+                                          "header": [
+                                            {
+                                              "key": "Content-Type",
+                                              "value": "application/json"
+                                            }
+                                          ],
+                                          "cookie": [],
+                                          "responseTime": null,
+                                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                                          "createdAt": "2026-07-28T10:51:26.000Z",
+                                          "updatedAt": "2026-07-28T10:51:26.000Z",
+                                          "uid": "35240-bb3756ff-0d50-4790-9b9e-ecf0395c27a0"
+                                        }
+                                      ],
+                                      "createdAt": "2026-07-28T10:51:26.000Z",
+                                      "updatedAt": "2026-07-28T10:51:26.000Z",
+                                      "uid": "35240-ed115ac7-fb17-4df8-8266-b5c6afa3e988"
+                                    }
+                                  ],
+                                  "id": "38f76618-17e4-49a2-b27f-e5bb8fb03ea3",
+                                  "createdAt": "2026-07-28T10:51:26.000Z",
+                                  "updatedAt": "2026-07-28T10:51:26.000Z",
+                                  "uid": "35240-38f76618-17e4-49a2-b27f-e5bb8fb03ea3"
+                                },
+                                {
+                                  "name": "Apache Airflow List XCom Entries",
+                                  "id": "1f5773e1-4e3b-4354-84d9-e6b8c7273a27",
+                                  "protocolProfileBehavior": {
+                                    "disableBodyPruning": true
+                                  },
+                                  "request": {
+                                    "method": "GET",
+                                    "header": [
+                                      {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                      }
+                                    ],
+                                    "url": {
+                                      "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries?limit=100&offset=<integer>",
+                                      "host": [
+                                        "{{baseUrl}}"
+                                      ],
+                                      "path": [
+                                        "dags",
+                                        ":dag_id",
+                                        "dagRuns",
+                                        ":dag_run_id",
+                                        "taskInstances",
+                                        ":task_id",
+                                        "xcomEntries"
+                                      ],
+                                      "query": [
+                                        {
+                                          "description": "The numbers of items to return.",
+                                          "key": "limit",
+                                          "value": "100"
+                                        },
+                                        {
+                                          "description": "The number of items to skip before starting to collect the result set.",
+                                          "key": "offset",
+                                          "value": "<integer>"
+                                        }
+                                      ],
+                                      "variable": [
+                                        {
+                                          "id": "c36e3b79-0503-43a8-a5d2-28421c73d177",
+                                          "key": "dag_id",
+                                          "value": "<string>",
+                                          "description": "(Required) The DAG ID."
+                                        },
+                                        {
+                                          "id": "b15df03d-411d-4f88-90ab-bf8193315282",
+                                          "key": "dag_run_id",
+                                          "value": "<string>",
+                                          "description": "(Required) The DAG run ID."
+                                        },
+                                        {
+                                          "id": "2e703508-f1b2-44de-84fb-fc2bac388047",
+                                          "key": "task_id",
+                                          "value": "<string>",
+                                          "description": "(Required) The task ID."
+                                        }
+                                      ]
+                                    },
+                                    "description": "This endpoint allows specifying `~` as the dag_id, dag_run_id, task_id to retrieve XCOM entries for for all DAGs, DAG runs and task instances. XCom values won't be returned as they can be large. Use this endpoint to get a list of XCom entries and then fetch individual entry to get value."
+                                  },
+                                  "response": [
+                                    {
+                                      "id": "622913cf-82de-4879-811a-9fe76471ac06",
+                                      "name": "Success.",
+                                      "originalRequest": {
+                                        "method": "GET",
+                                        "header": [
+                                          {
+                                            "key": "Accept",
+                                            "value": "application/json"
+                                          }
+                                        ],
+                                        "url": {
+                                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries?limit=100&offset=<integer>",
+                                          "host": [
+                                            "{{baseUrl}}"
+                                          ],
+                                          "path": [
+                                            "dags",
+                                            ":dag_id",
+                                            "dagRuns",
+                                            ":dag_run_id",
+                                            "taskInstances",
+                                            ":task_id",
+                                            "xcomEntries"
+                                          ],
+                                          "query": [
+                                            {
+                                              "description": "The numbers of items to return.",
+                                              "key": "limit",
+                                              "value": "100"
+                                            },
+                                            {
+                                              "description": "The number of items to skip before starting to collect the result set.",
+                                              "key": "offset",
+                                              "value": "<integer>"
+                                            }
+                                          ],
+                                          "variable": [
+                                            {
+                                              "key": "dag_id"
+                                            },
+                                            {
+                                              "key": "dag_run_id"
+                                            },
+                                            {
+                                              "key": "task_id"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "status": "OK",
+                                      "code": 200,
+                                      "_postman_previewlanguage": "json",
+                                      "header": [
+                                        {
+                                          "key": "Content-Type",
+                                          "value": "application/json"
+                                        }
+                                      ],
+                                      "cookie": [],
+                                      "responseTime": null,
+                                      "body": "{\n  \"xcom_entries\": [\n    {\n      \"dag_id\": \"<string>\",\n      \"execution_date\": \"<string>\",\n      \"key\": \"<string>\",\n      \"task_id\": \"<string>\",\n      \"timestamp\": \"<string>\"\n    },\n    {\n      \"dag_id\": \"<string>\",\n      \"execution_date\": \"<string>\",\n      \"key\": \"<string>\",\n      \"task_id\": \"<string>\",\n      \"timestamp\": \"<string>\"\n    }\n  ],\n  \"total_entries\": \"<integer>\"\n}",
+                                      "createdAt": "2026-07-28T10:51:26.000Z",
+                                      "updatedAt": "2026-07-28T10:51:26.000Z",
+                                      "uid": "35240-622913cf-82de-4879-811a-9fe76471ac06"
+                                    },
+                                    {
+                                      "id": "bd717b82-12fc-4163-9d56-9f20d8e1fa7d",
+                                      "name": "Request not authenticated due to missing, invalid, authentication info.",
+                                      "originalRequest": {
+                                        "method": "GET",
+                                        "header": [
+                                          {
+                                            "key": "Accept",
+                                            "value": "application/json"
+                                          }
+                                        ],
+                                        "url": {
+                                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries?limit=100&offset=<integer>",
+                                          "host": [
+                                            "{{baseUrl}}"
+                                          ],
+                                          "path": [
+                                            "dags",
+                                            ":dag_id",
+                                            "dagRuns",
+                                            ":dag_run_id",
+                                            "taskInstances",
+                                            ":task_id",
+                                            "xcomEntries"
+                                          ],
+                                          "query": [
+                                            {
+                                              "description": "The numbers of items to return.",
+                                              "key": "limit",
+                                              "value": "100"
+                                            },
+                                            {
+                                              "description": "The number of items to skip before starting to collect the result set.",
+                                              "key": "offset",
+                                              "value": "<integer>"
+                                            }
+                                          ],
+                                          "variable": [
+                                            {
+                                              "key": "dag_id"
+                                            },
+                                            {
+                                              "key": "dag_run_id"
+                                            },
+                                            {
+                                              "key": "task_id"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "status": "Unauthorized",
+                                      "code": 401,
+                                      "_postman_previewlanguage": "json",
+                                      "header": [
+                                        {
+                                          "key": "Content-Type",
+                                          "value": "application/json"
+                                        }
+                                      ],
+                                      "cookie": [],
+                                      "responseTime": null,
+                                      "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                                      "createdAt": "2026-07-28T10:51:26.000Z",
+                                      "updatedAt": "2026-07-28T10:51:26.000Z",
+                                      "uid": "35240-bd717b82-12fc-4163-9d56-9f20d8e1fa7d"
+                                    },
+                                    {
+                                      "id": "56672e25-3cd2-45dc-90b3-5a0a6445bdab",
+                                      "name": "Client does not have sufficient permission.",
+                                      "originalRequest": {
+                                        "method": "GET",
+                                        "header": [
+                                          {
+                                            "key": "Accept",
+                                            "value": "application/json"
+                                          }
+                                        ],
+                                        "url": {
+                                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries?limit=100&offset=<integer>",
+                                          "host": [
+                                            "{{baseUrl}}"
+                                          ],
+                                          "path": [
+                                            "dags",
+                                            ":dag_id",
+                                            "dagRuns",
+                                            ":dag_run_id",
+                                            "taskInstances",
+                                            ":task_id",
+                                            "xcomEntries"
+                                          ],
+                                          "query": [
+                                            {
+                                              "description": "The numbers of items to return.",
+                                              "key": "limit",
+                                              "value": "100"
+                                            },
+                                            {
+                                              "description": "The number of items to skip before starting to collect the result set.",
+                                              "key": "offset",
+                                              "value": "<integer>"
+                                            }
+                                          ],
+                                          "variable": [
+                                            {
+                                              "key": "dag_id"
+                                            },
+                                            {
+                                              "key": "dag_run_id"
+                                            },
+                                            {
+                                              "key": "task_id"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "status": "Forbidden",
+                                      "code": 403,
+                                      "_postman_previewlanguage": "json",
+                                      "header": [
+                                        {
+                                          "key": "Content-Type",
+                                          "value": "application/json"
+                                        }
+                                      ],
+                                      "cookie": [],
+                                      "responseTime": null,
+                                      "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                                      "createdAt": "2026-07-28T10:51:26.000Z",
+                                      "updatedAt": "2026-07-28T10:51:26.000Z",
+                                      "uid": "35240-56672e25-3cd2-45dc-90b3-5a0a6445bdab"
+                                    }
+                                  ],
+                                  "createdAt": "2026-07-28T10:51:26.000Z",
+                                  "updatedAt": "2026-07-28T10:51:26.000Z",
+                                  "uid": "35240-1f5773e1-4e3b-4354-84d9-e6b8c7273a27"
+                                }
+                              ],
+                              "id": "91c0179f-77ef-4989-a5a4-a4e3a0bf373a",
+                              "createdAt": "2026-07-28T10:51:26.000Z",
+                              "updatedAt": "2026-07-28T10:51:26.000Z",
+                              "uid": "35240-91c0179f-77ef-4989-a5a4-a4e3a0bf373a"
+                            }
+                          ],
+                          "id": "4ad15c5c-6f2d-4e69-ba6f-62bc9fd409f6",
+                          "createdAt": "2026-07-28T10:51:26.000Z",
+                          "updatedAt": "2026-07-28T10:51:26.000Z",
+                          "uid": "35240-4ad15c5c-6f2d-4e69-ba6f-62bc9fd409f6"
+                        }
+                      ],
+                      "id": "f29a642d-1e2e-4085-a5b4-ce1adac59810",
+                      "createdAt": "2026-07-28T10:51:26.000Z",
+                      "updatedAt": "2026-07-28T10:51:26.000Z",
+                      "uid": "35240-f29a642d-1e2e-4085-a5b4-ce1adac59810"
+                    }
+                  ],
+                  "id": "2f8fcc28-08bd-489d-b82b-ed504b314fd5",
+                  "createdAt": "2026-07-28T10:51:26.000Z",
+                  "updatedAt": "2026-07-28T10:51:26.000Z",
+                  "uid": "35240-2f8fcc28-08bd-489d-b82b-ed504b314fd5"
+                }
+              ],
+              "id": "8e3e48aa-5d59-4d36-a78d-cc6ec9e532bd",
+              "createdAt": "2026-07-28T10:51:26.000Z",
+              "updatedAt": "2026-07-28T10:51:26.000Z",
+              "uid": "35240-8e3e48aa-5d59-4d36-a78d-cc6ec9e532bd"
+            }
+          ],
+          "id": "889fb45a-1b38-4988-8b33-f6341047bd47",
+          "createdAt": "2026-07-28T10:51:26.000Z",
+          "updatedAt": "2026-07-28T10:51:26.000Z",
+          "uid": "35240-889fb45a-1b38-4988-8b33-f6341047bd47"
+        }
+      ],
+      "id": "a438bb61-7c36-4a84-951d-344b14f78b12",
+      "createdAt": "2026-07-28T10:51:26.000Z",
+      "updatedAt": "2026-07-28T10:51:26.000Z",
+      "uid": "35240-a438bb61-7c36-4a84-951d-344b14f78b12"
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "/api/v1"
+    }
+  ]
+}

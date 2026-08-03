@@ -10,7 +10,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Airflow API (Stable) Config Provider API
-  version: 2.5.3
+  version: '3.0'
   x-apisguru-categories:
   - messaging
   x-logo:
@@ -18,7 +18,6 @@ info:
   x-origin:
   - format: openapi
     url: https://airflow.apache.org/docs/apache-airflow/stable/_specs/v1.yaml
-    version: '3.0'
   x-providerName: apache.org
   x-serviceName: airflow
 servers:

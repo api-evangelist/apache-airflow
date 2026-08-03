@@ -1,0 +1,1333 @@
+{
+  "info": {
+    "_postman_id": "f5142bd8-1a36-455d-9532-a3d2d572ea83",
+    "name": "Airflow API (Stable) Config Variable API",
+    "description": "# Overview\n\nTo facilitate management, Apache Airflow supports a range of REST API endpoints across its\nobjects.\nThis section provides an overview of the API design, methods, and supported use cases.\n\nMost of the endpoints accept `JSON` as input and return `JSON` responses.\nThis means that you must usually add the following headers to your request:\n```\nContent-type: application/json\nAccept: application/json\n```\n\n## Resources\n\nThe term `resource` refers to a single type of object in the Airflow metadata. An API is broken up by its\nendpoint's corresponding resource.\nThe name of a resource is typically plural and expressed in camelCase. Example: `dagRuns`.\n\nResource names are used as part of endpoint URLs, as well as in API parameters and responses.\n\n## CRUD Operations\n\nThe platform supports **C**reate, **R**ead, **U**pdate, and **D**elete operations on most resources.\nYou can review the standards for these operations and their standard parameters below.\n\nSome endpoints have special behavior as exceptions.\n\n### Create\n\nTo create a resource, you typically submit an HTTP `POST` request with the resource's required metadata\nin the request body.\nThe response returns a `201 Created` response code upon success with the resource's metadata, including\nits internal `id`, in the response body.\n\n### Read\n\nThe HTTP `GET` request can be used to read a resource or to list a number of resources.\n\nA resource's `id` can be submitted in the request parameters to read a specific resource.\nThe response usually returns a `200 OK` response code upon success, with the resource's metadata in\nthe response body.\n\nIf a `GET` request does not include a specific resource `id`, it is treated as a list request.\nThe response usually returns a `200 OK` response code upon success, with an object containing a list\nof resources' metadata in the response body.\n\nWhen reading resources, some common query parameters are usually available. e.g.:\n```\nv1/connections?limit=25&offset=25\n```\n\n|Query Parameter|Type|Description|\n|---------------|----|-----------|\n|limit|integer|Maximum number of objects to fetch. Usually 25 by default|\n|offset|integer|Offset after which to start returning objects. For use with limit query parameter.|\n\n### Update\n\nUpdating a resource requires the resource `id`, and is typically done using an HTTP `PATCH` request,\nwith the fields to modify in the request body.\nThe response usually returns a `200 OK` response code upon success, with information about the modified\nresource in the response body.\n\n### Delete\n\nDeleting a resource requires the resource `id` and is typically executing via an HTTP `DELETE` request.\nThe response usually returns a `204 No Content` response code upon success.\n\n## Conventions\n\n- Resource names are plural and expressed in camelCase.\n- Names are consistent between URL parameter name and field name.\n\n- Field names are in snake_case.\n```json\n{\n    \"name\": \"string\",\n    \"slots\": 0,\n    \"occupied_slots\": 0,\n    \"used_slots\": 0,\n    \"queued_slots\": 0,\n    \"open_slots\": 0\n}\n```\n\n### Update Mask\n\nUpdate mask is available as a query parameter in patch endpoints. It is used to notify the\nAPI which fields you want to update. Using `update_mask` makes it easier to update objects\nby helping the server know which fields to update in an object instead of updating all fields.\nThe update request ignores any fields that aren't specified in the field mask, leaving them with\ntheir current values.\n\nExample:\n```\n  resource = request.get('/resource/my-id').json()\n  resource['my_field'] = 'new-value'\n  request.patch('/resource/my-id?update_mask=my_field', data=json.dumps(resource))\n```\n\n## Versioning and Endpoint Lifecycle\n\n- API versioning is not synchronized to specific releases of the Apache Airflow.\n- APIs are designed to be backward compatible.\n- Any changes to the API will first go through a deprecation phase.\n\n# Trying the API\n\nYou can use a third party client, such as [curl](https://curl.haxx.se/), [HTTPie](https://httpie.org/),\n[Postman](https://www.postman.com/) or [the Insomnia rest client](https://insomnia.rest/) to test\nthe Apache Airflow API.\n\nNote that you will need to pass credentials data.\n\nFor e.g., here is how to pause a DAG with [curl](https://curl.haxx.se/), when basic authorization is used:\n```bash\ncurl -X PATCH 'https://example.com/api/v1/dags/{dag_id}?update_mask=is_paused' \\\n-H 'Content-Type: application/json' \\\n--user \"username:password\" \\\n-d '{\n    \"is_paused\": true\n}'\n```\n\nUsing a graphical tool such as [Postman](https://www.postman.com/) or [Insomnia](https://insomnia.rest/),\nit is possible to import the API specifications directly:\n\n1. Download the API specification by clicking the **Download** button at top of this document\n2. Import the JSON specification in the graphical tool of your choice.\n  - In *Postman*, you can click the **import** button at the top\n  - With *Insomnia*, you can just drag-and-drop the file on the UI\n\nNote that with *Postman*, you can also generate code snippets by selecting a request and clicking on\nthe **Code** button.\n\n## Enabling CORS\n\n[Cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)\nis a browser security feature that restricts HTTP requests that are\ninitiated from scripts running in the browser.\n\nFor details on enabling/configuring CORS, see\n[Enabling CORS](https://airflow.apache.org/docs/apache-airflow/stable/security/api.html).\n\n# Authentication\n\nTo be able to meet the requirements of many organizations, Airflow supports many authentication methods,\nand it is even possible to add your own method.\n\nIf you want to check which auth backend is currently set, you can use\n`airflow config get-value api auth_backends` command as in the example below.\n```bash\n$ airflow config get-value api auth_backends\nairflow.api.auth.backend.basic_auth\n```\nThe default is to deny all requests.\n\nFor details on configuring the authentication, see\n[API Authorization](https://airflow.apache.org/docs/apache-airflow/stable/security/api.html).\n\n# Errors\n\nWe follow the error response format proposed in [RFC 7807](https://tools.ietf.org/html/rfc7807)\nalso known as Problem Details for HTTP APIs. As with our normal API responses,\nyour client must be prepared to gracefully handle additional members of the response.\n\n## Unauthenticated\n\nThis indicates that the request has not been applied because it lacks valid authentication\ncredentials for the target resource. Please check that you have valid credentials.\n\n## PermissionDenied\n\nThis response means that the server understood the request but refuses to authorize\nit because it lacks sufficient rights to the resource. It happens when you do not have the\nnecessary permission to execute the action you performed. You need to get the appropriate\npermissions in other to resolve this error.\n\n## BadRequest\n\nThis response means that the server cannot or will not process the request due to something\nthat is perceived to be a client error (e.g., malformed request syntax, invalid request message\nframing, or deceptive request routing). To resolve this, please ensure that your syntax is correct.\n\n## NotFound\n\nThis client error response indicates that the server cannot find the requested resource.\n\n## MethodNotAllowed\n\nIndicates that the request method is known by the server but is not supported by the target resource.\n\n## NotAcceptable\n\nThe target resource does not have a current representation that would be acceptable to the user\nagent, according to the proactive negotiation header fields received in the request, and the\nserver is unwilling to supply a default representation.\n\n## AlreadyExists\n\nThe request could not be completed due to a conflict with the current state of the target\nresource, e.g. the resource it tries to create already exists.\n\n## Unknown\n\nThis means that the server encountered an unexpected condition that prevented it from\nfulfilling the request.\n\n\nContact Support:\n Name: Apache Software Foundation\n Email: dev@airflow.apache.org",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-07-28T10:51:24.000Z",
+    "updatedAt": "2026-07-28T10:51:25.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-f5142bd8-1a36-455d-9532-a3d2d572ea83"
+  },
+  "item": [
+    {
+      "name": "variables",
+      "item": [
+        {
+          "name": "{variable_key}",
+          "item": [
+            {
+              "name": "Apache Airflow Delete a Variable",
+              "id": "ee88dbec-4d5a-40ec-bba0-296ff46c32d2",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/variables/:variable_key",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables",
+                    ":variable_key"
+                  ],
+                  "variable": [
+                    {
+                      "id": "2482fb0f-2f40-4873-ba6b-bb2952d64fe8",
+                      "key": "variable_key",
+                      "value": "<string>",
+                      "description": "(Required) The variable Key."
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "id": "747c6337-1a7c-4506-9f8d-a84a719828ef",
+                  "name": "Success.",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "No Content",
+                  "code": 204,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-747c6337-1a7c-4506-9f8d-a84a719828ef"
+                },
+                {
+                  "id": "daf8dcff-9702-4f28-a077-1b8ae55d9eed",
+                  "name": "Client specified an invalid argument.",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-daf8dcff-9702-4f28-a077-1b8ae55d9eed"
+                },
+                {
+                  "id": "dd473a8b-0927-40c2-8f5a-76ee2ee4a927",
+                  "name": "Request not authenticated due to missing, invalid, authentication info.",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-dd473a8b-0927-40c2-8f5a-76ee2ee4a927"
+                },
+                {
+                  "id": "a4e523f8-8ef4-4e33-b2a9-3e98326bbf99",
+                  "name": "Client does not have sufficient permission.",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-a4e523f8-8ef4-4e33-b2a9-3e98326bbf99"
+                },
+                {
+                  "id": "d977cdfc-3fb0-4cf0-a325-d5c8f6585048",
+                  "name": "A specified resource is not found.",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-d977cdfc-3fb0-4cf0-a325-d5c8f6585048"
+                }
+              ],
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-ee88dbec-4d5a-40ec-bba0-296ff46c32d2"
+            },
+            {
+              "name": "Apache Airflow Get a Variable",
+              "id": "cf55ffe5-37c0-4621-9dae-bb8be9ad7d93",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/variables/:variable_key",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables",
+                    ":variable_key"
+                  ],
+                  "variable": [
+                    {
+                      "id": "ae0096d9-6035-4af8-abca-d42a84fa5b12",
+                      "key": "variable_key",
+                      "value": "<string>",
+                      "description": "(Required) The variable Key."
+                    }
+                  ]
+                },
+                "description": "Get a variable by key."
+              },
+              "response": [
+                {
+                  "id": "34ddefa0-a424-4a95-8113-5576d771a026",
+                  "name": "Success.",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-34ddefa0-a424-4a95-8113-5576d771a026"
+                },
+                {
+                  "id": "35fe79b4-72d2-453a-a1a6-17256be7ae15",
+                  "name": "Request not authenticated due to missing, invalid, authentication info.",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-35fe79b4-72d2-453a-a1a6-17256be7ae15"
+                },
+                {
+                  "id": "a2313911-a239-414f-a534-59e7e81952a5",
+                  "name": "Client does not have sufficient permission.",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-a2313911-a239-414f-a534-59e7e81952a5"
+                },
+                {
+                  "id": "91abe750-8bdd-4e0c-a794-5fea82e64ba0",
+                  "name": "A specified resource is not found.",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-91abe750-8bdd-4e0c-a794-5fea82e64ba0"
+                }
+              ],
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-cf55ffe5-37c0-4621-9dae-bb8be9ad7d93"
+            },
+            {
+              "name": "Apache Airflow Update a Variable",
+              "id": "838e206d-082e-48d7-8750-ba69fdd0b02d",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/variables/:variable_key?update_mask=<string>,<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables",
+                    ":variable_key"
+                  ],
+                  "query": [
+                    {
+                      "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n",
+                      "key": "update_mask",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "id": "70964a2d-1f85-4e34-ae87-12d3f8db6d43",
+                      "key": "variable_key",
+                      "value": "<string>",
+                      "description": "(Required) The variable Key."
+                    }
+                  ]
+                },
+                "description": "Update a variable by key."
+              },
+              "response": [
+                {
+                  "id": "9ddbfc00-5481-44cf-b4b3-ad31f41286f1",
+                  "name": "Success.",
+                  "originalRequest": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key?update_mask=<string>,<string>",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "query": [
+                        {
+                          "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n",
+                          "key": "update_mask",
+                          "value": "<string>,<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-9ddbfc00-5481-44cf-b4b3-ad31f41286f1"
+                },
+                {
+                  "id": "caab0ca4-badd-4cca-95fd-b908c433a40c",
+                  "name": "Client specified an invalid argument.",
+                  "originalRequest": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key?update_mask=<string>,<string>",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "query": [
+                        {
+                          "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n",
+                          "key": "update_mask",
+                          "value": "<string>,<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-caab0ca4-badd-4cca-95fd-b908c433a40c"
+                },
+                {
+                  "id": "12721cdf-7e2e-440f-896c-86bbb4452d55",
+                  "name": "Request not authenticated due to missing, invalid, authentication info.",
+                  "originalRequest": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key?update_mask=<string>,<string>",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "query": [
+                        {
+                          "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n",
+                          "key": "update_mask",
+                          "value": "<string>,<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-12721cdf-7e2e-440f-896c-86bbb4452d55"
+                },
+                {
+                  "id": "f9263749-2d5a-4ffd-bed3-4cf16ce7f8bf",
+                  "name": "Client does not have sufficient permission.",
+                  "originalRequest": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key?update_mask=<string>,<string>",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "query": [
+                        {
+                          "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n",
+                          "key": "update_mask",
+                          "value": "<string>,<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-f9263749-2d5a-4ffd-bed3-4cf16ce7f8bf"
+                },
+                {
+                  "id": "e581af18-f84a-4753-8bcc-2328f129464f",
+                  "name": "A specified resource is not found.",
+                  "originalRequest": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/variables/:variable_key?update_mask=<string>,<string>",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "variables",
+                        ":variable_key"
+                      ],
+                      "query": [
+                        {
+                          "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n",
+                          "key": "update_mask",
+                          "value": "<string>,<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "key": "variable_key"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                  "createdAt": "2026-07-28T10:51:25.000Z",
+                  "updatedAt": "2026-07-28T10:51:25.000Z",
+                  "uid": "35240-e581af18-f84a-4753-8bcc-2328f129464f"
+                }
+              ],
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-838e206d-082e-48d7-8750-ba69fdd0b02d"
+            }
+          ],
+          "id": "12a4f46d-ea8c-48a8-bb0e-35627383eddd",
+          "createdAt": "2026-07-28T10:51:25.000Z",
+          "updatedAt": "2026-07-28T10:51:25.000Z",
+          "uid": "35240-12a4f46d-ea8c-48a8-bb0e-35627383eddd"
+        },
+        {
+          "name": "Apache Airflow List Variables",
+          "id": "e3960511-04e9-4c03-9069-e38d59eff32a",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/variables?limit=100&offset=<integer>&order_by=<string>",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "variables"
+              ],
+              "query": [
+                {
+                  "description": "The numbers of items to return.",
+                  "key": "limit",
+                  "value": "100"
+                },
+                {
+                  "description": "The number of items to skip before starting to collect the result set.",
+                  "key": "offset",
+                  "value": "<integer>"
+                },
+                {
+                  "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n",
+                  "key": "order_by",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "description": "The collection does not contain data. To get data, you must get a single entity."
+          },
+          "response": [
+            {
+              "id": "c2f9b8fc-9f3a-4d32-adb0-7d59f4f225b5",
+              "name": "Success.",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/variables?limit=100&offset=<integer>&order_by=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables"
+                  ],
+                  "query": [
+                    {
+                      "description": "The numbers of items to return.",
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "description": "The number of items to skip before starting to collect the result set.",
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n",
+                      "key": "order_by",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"variables\": [\n    {\n      \"description\": \"<string>\",\n      \"key\": \"<string>\"\n    },\n    {\n      \"description\": \"<string>\",\n      \"key\": \"<string>\"\n    }\n  ],\n  \"total_entries\": \"<integer>\"\n}",
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-c2f9b8fc-9f3a-4d32-adb0-7d59f4f225b5"
+            },
+            {
+              "id": "e3151da5-a0fb-49d6-90fa-a445af489163",
+              "name": "Request not authenticated due to missing, invalid, authentication info.",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/variables?limit=100&offset=<integer>&order_by=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables"
+                  ],
+                  "query": [
+                    {
+                      "description": "The numbers of items to return.",
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "description": "The number of items to skip before starting to collect the result set.",
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n",
+                      "key": "order_by",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-e3151da5-a0fb-49d6-90fa-a445af489163"
+            },
+            {
+              "id": "7ab49880-cab3-43e2-b197-98752ff4a7b6",
+              "name": "Client does not have sufficient permission.",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/variables?limit=100&offset=<integer>&order_by=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables"
+                  ],
+                  "query": [
+                    {
+                      "description": "The numbers of items to return.",
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "description": "The number of items to skip before starting to collect the result set.",
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n",
+                      "key": "order_by",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-7ab49880-cab3-43e2-b197-98752ff4a7b6"
+            }
+          ],
+          "createdAt": "2026-07-28T10:51:25.000Z",
+          "updatedAt": "2026-07-28T10:51:25.000Z",
+          "uid": "35240-e3960511-04e9-4c03-9069-e38d59eff32a"
+        },
+        {
+          "name": "Apache Airflow Create a Variable",
+          "id": "98a49a38-c05c-4cf9-bd94-2acf044473e9",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/variables",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "variables"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "12f5111c-0ed3-4146-9a81-437b9f4f205f",
+              "name": "Success.",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/variables",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-12f5111c-0ed3-4146-9a81-437b9f4f205f"
+            },
+            {
+              "id": "986ff3e7-bfed-407c-95f9-d02eb0ee1ddc",
+              "name": "Client specified an invalid argument.",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/variables",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-986ff3e7-bfed-407c-95f9-d02eb0ee1ddc"
+            },
+            {
+              "id": "b3942883-eeb1-494c-87ad-8d7247cfc050",
+              "name": "Request not authenticated due to missing, invalid, authentication info.",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/variables",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-b3942883-eeb1-494c-87ad-8d7247cfc050"
+            },
+            {
+              "id": "c5d4ec50-157d-4b27-9206-fbb01cee2bf7",
+              "name": "Client does not have sufficient permission.",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"<string>\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/variables",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "variables"
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+              "createdAt": "2026-07-28T10:51:25.000Z",
+              "updatedAt": "2026-07-28T10:51:25.000Z",
+              "uid": "35240-c5d4ec50-157d-4b27-9206-fbb01cee2bf7"
+            }
+          ],
+          "createdAt": "2026-07-28T10:51:25.000Z",
+          "updatedAt": "2026-07-28T10:51:25.000Z",
+          "uid": "35240-98a49a38-c05c-4cf9-bd94-2acf044473e9"
+        }
+      ],
+      "id": "c1362ede-949b-43ca-8d3d-3a25dfc915c3",
+      "createdAt": "2026-07-28T10:51:25.000Z",
+      "updatedAt": "2026-07-28T10:51:25.000Z",
+      "uid": "35240-c1362ede-949b-43ca-8d3d-3a25dfc915c3"
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "/api/v1"
+    }
+  ]
+}

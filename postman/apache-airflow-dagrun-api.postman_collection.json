@@ -1,0 +1,2955 @@
+{
+  "info": {
+    "_postman_id": "7af0ac26-ba56-4c50-a6dd-987b4203eb64",
+    "name": "Airflow API (Stable) Config DAGRun API",
+    "description": "# Overview\n\nTo facilitate management, Apache Airflow supports a range of REST API endpoints across its\nobjects.\nThis section provides an overview of the API design, methods, and supported use cases.\n\nMost of the endpoints accept `JSON` as input and return `JSON` responses.\nThis means that you must usually add the following headers to your request:\n```\nContent-type: application/json\nAccept: application/json\n```\n\n## Resources\n\nThe term `resource` refers to a single type of object in the Airflow metadata. An API is broken up by its\nendpoint's corresponding resource.\nThe name of a resource is typically plural and expressed in camelCase. Example: `dagRuns`.\n\nResource names are used as part of endpoint URLs, as well as in API parameters and responses.\n\n## CRUD Operations\n\nThe platform supports **C**reate, **R**ead, **U**pdate, and **D**elete operations on most resources.\nYou can review the standards for these operations and their standard parameters below.\n\nSome endpoints have special behavior as exceptions.\n\n### Create\n\nTo create a resource, you typically submit an HTTP `POST` request with the resource's required metadata\nin the request body.\nThe response returns a `201 Created` response code upon success with the resource's metadata, including\nits internal `id`, in the response body.\n\n### Read\n\nThe HTTP `GET` request can be used to read a resource or to list a number of resources.\n\nA resource's `id` can be submitted in the request parameters to read a specific resource.\nThe response usually returns a `200 OK` response code upon success, with the resource's metadata in\nthe response body.\n\nIf a `GET` request does not include a specific resource `id`, it is treated as a list request.\nThe response usually returns a `200 OK` response code upon success, with an object containing a list\nof resources' metadata in the response body.\n\nWhen reading resources, some common query parameters are usually available. e.g.:\n```\nv1/connections?limit=25&offset=25\n```\n\n|Query Parameter|Type|Description|\n|---------------|----|-----------|\n|limit|integer|Maximum number of objects to fetch. Usually 25 by default|\n|offset|integer|Offset after which to start returning objects. For use with limit query parameter.|\n\n### Update\n\nUpdating a resource requires the resource `id`, and is typically done using an HTTP `PATCH` request,\nwith the fields to modify in the request body.\nThe response usually returns a `200 OK` response code upon success, with information about the modified\nresource in the response body.\n\n### Delete\n\nDeleting a resource requires the resource `id` and is typically executing via an HTTP `DELETE` request.\nThe response usually returns a `204 No Content` response code upon success.\n\n## Conventions\n\n- Resource names are plural and expressed in camelCase.\n- Names are consistent between URL parameter name and field name.\n\n- Field names are in snake_case.\n```json\n{\n    \"name\": \"string\",\n    \"slots\": 0,\n    \"occupied_slots\": 0,\n    \"used_slots\": 0,\n    \"queued_slots\": 0,\n    \"open_slots\": 0\n}\n```\n\n### Update Mask\n\nUpdate mask is available as a query parameter in patch endpoints. It is used to notify the\nAPI which fields you want to update. Using `update_mask` makes it easier to update objects\nby helping the server know which fields to update in an object instead of updating all fields.\nThe update request ignores any fields that aren't specified in the field mask, leaving them with\ntheir current values.\n\nExample:\n```\n  resource = request.get('/resource/my-id').json()\n  resource['my_field'] = 'new-value'\n  request.patch('/resource/my-id?update_mask=my_field', data=json.dumps(resource))\n```\n\n## Versioning and Endpoint Lifecycle\n\n- API versioning is not synchronized to specific releases of the Apache Airflow.\n- APIs are designed to be backward compatible.\n- Any changes to the API will first go through a deprecation phase.\n\n# Trying the API\n\nYou can use a third party client, such as [curl](https://curl.haxx.se/), [HTTPie](https://httpie.org/),\n[Postman](https://www.postman.com/) or [the Insomnia rest client](https://insomnia.rest/) to test\nthe Apache Airflow API.\n\nNote that you will need to pass credentials data.\n\nFor e.g., here is how to pause a DAG with [curl](https://curl.haxx.se/), when basic authorization is used:\n```bash\ncurl -X PATCH 'https://example.com/api/v1/dags/{dag_id}?update_mask=is_paused' \\\n-H 'Content-Type: application/json' \\\n--user \"username:password\" \\\n-d '{\n    \"is_paused\": true\n}'\n```\n\nUsing a graphical tool such as [Postman](https://www.postman.com/) or [Insomnia](https://insomnia.rest/),\nit is possible to import the API specifications directly:\n\n1. Download the API specification by clicking the **Download** button at top of this document\n2. Import the JSON specification in the graphical tool of your choice.\n  - In *Postman*, you can click the **import** button at the top\n  - With *Insomnia*, you can just drag-and-drop the file on the UI\n\nNote that with *Postman*, you can also generate code snippets by selecting a request and clicking on\nthe **Code** button.\n\n## Enabling CORS\n\n[Cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)\nis a browser security feature that restricts HTTP requests that are\ninitiated from scripts running in the browser.\n\nFor details on enabling/configuring CORS, see\n[Enabling CORS](https://airflow.apache.org/docs/apache-airflow/stable/security/api.html).\n\n# Authentication\n\nTo be able to meet the requirements of many organizations, Airflow supports many authentication methods,\nand it is even possible to add your own method.\n\nIf you want to check which auth backend is currently set, you can use\n`airflow config get-value api auth_backends` command as in the example below.\n```bash\n$ airflow config get-value api auth_backends\nairflow.api.auth.backend.basic_auth\n```\nThe default is to deny all requests.\n\nFor details on configuring the authentication, see\n[API Authorization](https://airflow.apache.org/docs/apache-airflow/stable/security/api.html).\n\n# Errors\n\nWe follow the error response format proposed in [RFC 7807](https://tools.ietf.org/html/rfc7807)\nalso known as Problem Details for HTTP APIs. As with our normal API responses,\nyour client must be prepared to gracefully handle additional members of the response.\n\n## Unauthenticated\n\nThis indicates that the request has not been applied because it lacks valid authentication\ncredentials for the target resource. Please check that you have valid credentials.\n\n## PermissionDenied\n\nThis response means that the server understood the request but refuses to authorize\nit because it lacks sufficient rights to the resource. It happens when you do not have the\nnecessary permission to execute the action you performed. You need to get the appropriate\npermissions in other to resolve this error.\n\n## BadRequest\n\nThis response means that the server cannot or will not process the request due to something\nthat is perceived to be a client error (e.g., malformed request syntax, invalid request message\nframing, or deceptive request routing). To resolve this, please ensure that your syntax is correct.\n\n## NotFound\n\nThis client error response indicates that the server cannot find the requested resource.\n\n## MethodNotAllowed\n\nIndicates that the request method is known by the server but is not supported by the target resource.\n\n## NotAcceptable\n\nThe target resource does not have a current representation that would be acceptable to the user\nagent, according to the proactive negotiation header fields received in the request, and the\nserver is unwilling to supply a default representation.\n\n## AlreadyExists\n\nThe request could not be completed due to a conflict with the current state of the target\nresource, e.g. the resource it tries to create already exists.\n\n## Unknown\n\nThis means that the server encountered an unexpected condition that prevented it from\nfulfilling the request.\n\n\nContact Support:\n Name: Apache Software Foundation\n Email: dev@airflow.apache.org",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-07-28T10:50:20.000Z",
+    "updatedAt": "2026-07-28T10:50:21.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-7af0ac26-ba56-4c50-a6dd-987b4203eb64"
+  },
+  "item": [
+    {
+      "name": "dags",
+      "item": [
+        {
+          "name": "{dag_id}",
+          "item": [
+            {
+              "name": "dagRuns",
+              "item": [
+                {
+                  "name": "{dag_run_id}",
+                  "item": [
+                    {
+                      "name": "clear",
+                      "item": [
+                        {
+                          "name": "Apache Airflow Clear a DAG Run",
+                          "id": "460b2859-e0ff-4a9c-b7df-d2c5e13e9ca1",
+                          "protocolProfileBehavior": {
+                            "disableBodyPruning": true
+                          },
+                          "request": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"dry_run\": true\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/clear",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id",
+                                "clear"
+                              ],
+                              "variable": [
+                                {
+                                  "id": "c23b855a-04a9-4257-b12e-324c722482a2",
+                                  "key": "dag_id",
+                                  "value": "<string>",
+                                  "description": "(Required) The DAG ID."
+                                },
+                                {
+                                  "id": "c4e41f5f-7e17-4c24-8235-d5d26589b02d",
+                                  "key": "dag_run_id",
+                                  "value": "<string>",
+                                  "description": "(Required) The DAG run ID."
+                                }
+                              ]
+                            },
+                            "description": "Clear a DAG run.\n\n*New in version 2.4.0*\n"
+                          },
+                          "response": [
+                            {
+                              "id": "a781b8c1-2c83-4b90-84b1-07f00775d657",
+                              "name": "Success.",
+                              "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"dry_run\": true\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/clear",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "clear"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-a781b8c1-2c83-4b90-84b1-07f00775d657"
+                            },
+                            {
+                              "id": "14e69bfb-962c-4dc1-84f3-b517a0c0b0c7",
+                              "name": "Client specified an invalid argument.",
+                              "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"dry_run\": true\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/clear",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "clear"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Bad Request",
+                              "code": 400,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-14e69bfb-962c-4dc1-84f3-b517a0c0b0c7"
+                            },
+                            {
+                              "id": "308d6294-a590-498f-bae1-062b78babc8c",
+                              "name": "Request not authenticated due to missing, invalid, authentication info.",
+                              "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"dry_run\": true\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/clear",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "clear"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Unauthorized",
+                              "code": 401,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-308d6294-a590-498f-bae1-062b78babc8c"
+                            },
+                            {
+                              "id": "cfd65240-2e04-49bb-8c75-7c9b3df0e922",
+                              "name": "Client does not have sufficient permission.",
+                              "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"dry_run\": true\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/clear",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "clear"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Forbidden",
+                              "code": 403,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-cfd65240-2e04-49bb-8c75-7c9b3df0e922"
+                            },
+                            {
+                              "id": "ff84d600-9d77-4c77-9823-566ad4f54f86",
+                              "name": "A specified resource is not found.",
+                              "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"dry_run\": true\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/clear",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "clear"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Not Found",
+                              "code": 404,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-ff84d600-9d77-4c77-9823-566ad4f54f86"
+                            }
+                          ],
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-460b2859-e0ff-4a9c-b7df-d2c5e13e9ca1"
+                        }
+                      ],
+                      "id": "7fc56623-c7f2-4dcc-b2d9-564994c69e6d",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-7fc56623-c7f2-4dcc-b2d9-564994c69e6d"
+                    },
+                    {
+                      "name": "setNote",
+                      "item": [
+                        {
+                          "name": "Apache Airflow Update the DagRun Note.",
+                          "id": "0925da9b-8431-4cc9-9156-6e154d4ff05b",
+                          "protocolProfileBehavior": {
+                            "disableBodyPruning": true
+                          },
+                          "request": {
+                            "method": "PATCH",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"note\": \"<string>\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/setNote",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id",
+                                "setNote"
+                              ],
+                              "variable": [
+                                {
+                                  "id": "ec6df0ee-f224-48b6-989b-fddde64cd059",
+                                  "key": "dag_id",
+                                  "value": "<string>",
+                                  "description": "(Required) The DAG ID."
+                                },
+                                {
+                                  "id": "3a2806db-adc7-43cf-b13b-d4702b738b5f",
+                                  "key": "dag_run_id",
+                                  "value": "<string>",
+                                  "description": "(Required) The DAG run ID."
+                                }
+                              ]
+                            },
+                            "description": "Update the manual user note of a DagRun.\n\n*New in version 2.5.0*\n"
+                          },
+                          "response": [
+                            {
+                              "id": "96909b15-0927-449c-aef5-0d7120d55ef8",
+                              "name": "Success.",
+                              "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"note\": \"<string>\"\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/setNote",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "setNote"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-96909b15-0927-449c-aef5-0d7120d55ef8"
+                            },
+                            {
+                              "id": "656778a3-2fc5-4b79-bf06-a5ef74357e2b",
+                              "name": "Client specified an invalid argument.",
+                              "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"note\": \"<string>\"\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/setNote",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "setNote"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Bad Request",
+                              "code": 400,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-656778a3-2fc5-4b79-bf06-a5ef74357e2b"
+                            },
+                            {
+                              "id": "e58577d3-1750-4aef-ae09-7eacd96c62f1",
+                              "name": "Request not authenticated due to missing, invalid, authentication info.",
+                              "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"note\": \"<string>\"\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/setNote",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "setNote"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Unauthorized",
+                              "code": 401,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-e58577d3-1750-4aef-ae09-7eacd96c62f1"
+                            },
+                            {
+                              "id": "35df86af-1d2f-4ad9-8169-f903619db313",
+                              "name": "Client does not have sufficient permission.",
+                              "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"note\": \"<string>\"\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/setNote",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "setNote"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Forbidden",
+                              "code": 403,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-35df86af-1d2f-4ad9-8169-f903619db313"
+                            },
+                            {
+                              "id": "bcc25e20-08b8-4ec9-aad7-e36c3b6b3675",
+                              "name": "A specified resource is not found.",
+                              "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"note\": \"<string>\"\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/setNote",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "setNote"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Not Found",
+                              "code": 404,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-bcc25e20-08b8-4ec9-aad7-e36c3b6b3675"
+                            }
+                          ],
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-0925da9b-8431-4cc9-9156-6e154d4ff05b"
+                        }
+                      ],
+                      "id": "9e128449-ed01-4655-b16c-db9f9de0b570",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-9e128449-ed01-4655-b16c-db9f9de0b570"
+                    },
+                    {
+                      "name": "upstreamDatasetEvents",
+                      "item": [
+                        {
+                          "name": "Apache Airflow Get Dataset Events for a DAG Run",
+                          "id": "92f56a0d-3eb6-44f3-9b11-fc4f55568381",
+                          "protocolProfileBehavior": {
+                            "disableBodyPruning": true
+                          },
+                          "request": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/upstreamDatasetEvents",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id",
+                                "upstreamDatasetEvents"
+                              ],
+                              "variable": [
+                                {
+                                  "id": "89261002-3703-4815-8cbe-2577e5aa65fb",
+                                  "key": "dag_id",
+                                  "value": "<string>",
+                                  "description": "(Required) The DAG ID."
+                                },
+                                {
+                                  "id": "b0c3584a-73d4-4ee5-8212-5fdb823500bc",
+                                  "key": "dag_run_id",
+                                  "value": "<string>",
+                                  "description": "(Required) The DAG run ID."
+                                }
+                              ]
+                            },
+                            "description": "Get datasets for a dag run.\n\n*New in version 2.4.0*\n"
+                          },
+                          "response": [
+                            {
+                              "id": "3a7d1ca1-c7b3-4c84-99b0-8be96300ac97",
+                              "name": "Success.",
+                              "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/upstreamDatasetEvents",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "upstreamDatasetEvents"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"dataset_events\": [\n    {\n      \"created_dagruns\": [\n        {\n          \"dag_id\": \"<string>\",\n          \"data_interval_end\": \"<dateTime>\",\n          \"data_interval_start\": \"<dateTime>\",\n          \"end_date\": \"<dateTime>\",\n          \"logical_date\": \"<dateTime>\",\n          \"run_id\": \"<string>\",\n          \"start_date\": \"<dateTime>\",\n          \"state\": \"running\"\n        },\n        {\n          \"dag_id\": \"<string>\",\n          \"data_interval_end\": \"<dateTime>\",\n          \"data_interval_start\": \"<dateTime>\",\n          \"end_date\": \"<dateTime>\",\n          \"logical_date\": \"<dateTime>\",\n          \"run_id\": \"<string>\",\n          \"start_date\": \"<dateTime>\",\n          \"state\": \"failed\"\n        }\n      ],\n      \"dataset_id\": \"<integer>\",\n      \"dataset_uri\": \"<string>\",\n      \"extra\": {},\n      \"source_dag_id\": \"<string>\",\n      \"source_map_index\": \"<integer>\",\n      \"source_run_id\": \"<string>\",\n      \"source_task_id\": \"<string>\",\n      \"timestamp\": \"<string>\"\n    },\n    {\n      \"created_dagruns\": [\n        {\n          \"dag_id\": \"<string>\",\n          \"data_interval_end\": \"<dateTime>\",\n          \"data_interval_start\": \"<dateTime>\",\n          \"end_date\": \"<dateTime>\",\n          \"logical_date\": \"<dateTime>\",\n          \"run_id\": \"<string>\",\n          \"start_date\": \"<dateTime>\",\n          \"state\": \"queued\"\n        },\n        {\n          \"dag_id\": \"<string>\",\n          \"data_interval_end\": \"<dateTime>\",\n          \"data_interval_start\": \"<dateTime>\",\n          \"end_date\": \"<dateTime>\",\n          \"logical_date\": \"<dateTime>\",\n          \"run_id\": \"<string>\",\n          \"start_date\": \"<dateTime>\",\n          \"state\": \"running\"\n        }\n      ],\n      \"dataset_id\": \"<integer>\",\n      \"dataset_uri\": \"<string>\",\n      \"extra\": {},\n      \"source_dag_id\": \"<string>\",\n      \"source_map_index\": \"<integer>\",\n      \"source_run_id\": \"<string>\",\n      \"source_task_id\": \"<string>\",\n      \"timestamp\": \"<string>\"\n    }\n  ],\n  \"total_entries\": \"<integer>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-3a7d1ca1-c7b3-4c84-99b0-8be96300ac97"
+                            },
+                            {
+                              "id": "d229cfb3-1af1-4457-8fe0-46ece27ce318",
+                              "name": "Request not authenticated due to missing, invalid, authentication info.",
+                              "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/upstreamDatasetEvents",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "upstreamDatasetEvents"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Unauthorized",
+                              "code": 401,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-d229cfb3-1af1-4457-8fe0-46ece27ce318"
+                            },
+                            {
+                              "id": "4f99494b-0ba4-4d64-9fc9-a9e04e161f43",
+                              "name": "Client does not have sufficient permission.",
+                              "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/upstreamDatasetEvents",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "upstreamDatasetEvents"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Forbidden",
+                              "code": 403,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-4f99494b-0ba4-4d64-9fc9-a9e04e161f43"
+                            },
+                            {
+                              "id": "b6103947-9f93-4726-9af0-554140c3cd05",
+                              "name": "A specified resource is not found.",
+                              "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "application/json"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id/upstreamDatasetEvents",
+                                  "host": [
+                                    "{{baseUrl}}"
+                                  ],
+                                  "path": [
+                                    "dags",
+                                    ":dag_id",
+                                    "dagRuns",
+                                    ":dag_run_id",
+                                    "upstreamDatasetEvents"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "dag_id"
+                                    },
+                                    {
+                                      "key": "dag_run_id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "Not Found",
+                              "code": 404,
+                              "_postman_previewlanguage": "json",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "application/json"
+                                }
+                              ],
+                              "cookie": [],
+                              "responseTime": null,
+                              "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                              "createdAt": "2026-07-28T10:50:21.000Z",
+                              "updatedAt": "2026-07-28T10:50:21.000Z",
+                              "uid": "35240-b6103947-9f93-4726-9af0-554140c3cd05"
+                            }
+                          ],
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-92f56a0d-3eb6-44f3-9b11-fc4f55568381"
+                        }
+                      ],
+                      "id": "749141db-8e80-4ed0-9c1b-3c00e8e4f751",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-749141db-8e80-4ed0-9c1b-3c00e8e4f751"
+                    },
+                    {
+                      "name": "Apache Airflow Delete a DAG Run",
+                      "id": "5c25348e-8b31-47cc-b955-c160f814ed88",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "DELETE",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns",
+                            ":dag_run_id"
+                          ],
+                          "variable": [
+                            {
+                              "id": "55417a17-f7d2-4e44-8543-a1e29b4c2229",
+                              "key": "dag_id",
+                              "value": "<string>",
+                              "description": "(Required) The DAG ID."
+                            },
+                            {
+                              "id": "65236931-43d5-478d-a6ad-8f4ddcb342f2",
+                              "key": "dag_run_id",
+                              "value": "<string>",
+                              "description": "(Required) The DAG run ID."
+                            }
+                          ]
+                        }
+                      },
+                      "response": [
+                        {
+                          "id": "a7ad1734-0272-42b0-b10c-0e788219a9f2",
+                          "name": "Success.",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "No Content",
+                          "code": 204,
+                          "_postman_previewlanguage": "text",
+                          "header": [],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": null,
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-a7ad1734-0272-42b0-b10c-0e788219a9f2"
+                        },
+                        {
+                          "id": "e1ade975-df9a-4de2-ac09-f4abb7d09076",
+                          "name": "Client specified an invalid argument.",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Bad Request",
+                          "code": 400,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-e1ade975-df9a-4de2-ac09-f4abb7d09076"
+                        },
+                        {
+                          "id": "3807fba3-69a9-4695-b305-7b0d518492ea",
+                          "name": "Request not authenticated due to missing, invalid, authentication info.",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Unauthorized",
+                          "code": 401,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-3807fba3-69a9-4695-b305-7b0d518492ea"
+                        },
+                        {
+                          "id": "27bc0044-8e92-4a81-a81c-9fcf5f6658e2",
+                          "name": "Client does not have sufficient permission.",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Forbidden",
+                          "code": 403,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-27bc0044-8e92-4a81-a81c-9fcf5f6658e2"
+                        },
+                        {
+                          "id": "3b0951f0-1013-4fd2-a589-a8abe31408fb",
+                          "name": "A specified resource is not found.",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Not Found",
+                          "code": 404,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-3b0951f0-1013-4fd2-a589-a8abe31408fb"
+                        }
+                      ],
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-5c25348e-8b31-47cc-b955-c160f814ed88"
+                    },
+                    {
+                      "name": "Apache Airflow Get a DAG Run",
+                      "id": "30ff2dcd-67b2-4f47-ab20-f2780167d4aa",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns",
+                            ":dag_run_id"
+                          ],
+                          "variable": [
+                            {
+                              "id": "834811b2-baeb-42a2-a2f7-36b8d3d12f3d",
+                              "key": "dag_id",
+                              "value": "<string>",
+                              "description": "(Required) The DAG ID."
+                            },
+                            {
+                              "id": "438a329a-4fc4-4d63-b7e9-fafac9b54053",
+                              "key": "dag_run_id",
+                              "value": "<string>",
+                              "description": "(Required) The DAG run ID."
+                            }
+                          ]
+                        }
+                      },
+                      "response": [
+                        {
+                          "id": "83a3dd2c-21af-4431-86c7-3096b8a0b961",
+                          "name": "Success.",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-83a3dd2c-21af-4431-86c7-3096b8a0b961"
+                        },
+                        {
+                          "id": "3bc668ee-6b03-42b6-ab1b-363a81604f81",
+                          "name": "Request not authenticated due to missing, invalid, authentication info.",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Unauthorized",
+                          "code": 401,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-3bc668ee-6b03-42b6-ab1b-363a81604f81"
+                        },
+                        {
+                          "id": "8a84dd5e-a28d-4a8b-b226-a660a6e41402",
+                          "name": "Client does not have sufficient permission.",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Forbidden",
+                          "code": 403,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-8a84dd5e-a28d-4a8b-b226-a660a6e41402"
+                        },
+                        {
+                          "id": "4b55b25a-d3ed-4d9b-a409-598b878b642d",
+                          "name": "A specified resource is not found.",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Not Found",
+                          "code": 404,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-4b55b25a-d3ed-4d9b-a409-598b878b642d"
+                        }
+                      ],
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-30ff2dcd-67b2-4f47-ab20-f2780167d4aa"
+                    },
+                    {
+                      "name": "Apache Airflow Modify a DAG Run",
+                      "id": "5560b090-94f8-444b-b16f-896a44aaeccd",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "PATCH",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"state\": \"success\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns",
+                            ":dag_run_id"
+                          ],
+                          "variable": [
+                            {
+                              "id": "b77d9519-31cf-428f-8f16-8fe2a57aff59",
+                              "key": "dag_id",
+                              "value": "<string>",
+                              "description": "(Required) The DAG ID."
+                            },
+                            {
+                              "id": "0dcc7646-be6f-4a2a-93d1-276d8215c16a",
+                              "key": "dag_run_id",
+                              "value": "<string>",
+                              "description": "(Required) The DAG run ID."
+                            }
+                          ]
+                        },
+                        "description": "Modify a DAG run.\n\n*New in version 2.2.0*\n"
+                      },
+                      "response": [
+                        {
+                          "id": "da3f23fe-fcbc-4471-9a40-21bfd629e6ac",
+                          "name": "Success.",
+                          "originalRequest": {
+                            "method": "PATCH",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"state\": \"success\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-da3f23fe-fcbc-4471-9a40-21bfd629e6ac"
+                        },
+                        {
+                          "id": "32fe78cf-434d-42bd-a476-4e346ba53e9b",
+                          "name": "Client specified an invalid argument.",
+                          "originalRequest": {
+                            "method": "PATCH",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"state\": \"success\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Bad Request",
+                          "code": 400,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-32fe78cf-434d-42bd-a476-4e346ba53e9b"
+                        },
+                        {
+                          "id": "1b033696-500e-446d-b292-f825e5ea51ec",
+                          "name": "Request not authenticated due to missing, invalid, authentication info.",
+                          "originalRequest": {
+                            "method": "PATCH",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"state\": \"success\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Unauthorized",
+                          "code": 401,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-1b033696-500e-446d-b292-f825e5ea51ec"
+                        },
+                        {
+                          "id": "b9d4a98b-51d8-4b31-9a9d-8a607a7d5650",
+                          "name": "Client does not have sufficient permission.",
+                          "originalRequest": {
+                            "method": "PATCH",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"state\": \"success\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Forbidden",
+                          "code": 403,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-b9d4a98b-51d8-4b31-9a9d-8a607a7d5650"
+                        },
+                        {
+                          "id": "67ae0385-c621-4489-9b67-21dac9afa46d",
+                          "name": "A specified resource is not found.",
+                          "originalRequest": {
+                            "method": "PATCH",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"state\": \"success\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/:dag_id/dagRuns/:dag_run_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                ":dag_id",
+                                "dagRuns",
+                                ":dag_run_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "dag_id"
+                                },
+                                {
+                                  "key": "dag_run_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Not Found",
+                          "code": 404,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-67ae0385-c621-4489-9b67-21dac9afa46d"
+                        }
+                      ],
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-5560b090-94f8-444b-b16f-896a44aaeccd"
+                    }
+                  ],
+                  "id": "a7082533-8839-43ef-a538-60cec0b6a3be",
+                  "createdAt": "2026-07-28T10:50:21.000Z",
+                  "updatedAt": "2026-07-28T10:50:21.000Z",
+                  "uid": "35240-a7082533-8839-43ef-a538-60cec0b6a3be"
+                },
+                {
+                  "name": "Apache Airflow List DAG Runs",
+                  "id": "df54fca1-e9a7-434f-b6c6-d86105129d21",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/dags/:dag_id/dagRuns?limit=100&offset=<integer>&execution_date_gte=<dateTime>&execution_date_lte=<dateTime>&start_date_gte=<dateTime>&start_date_lte=<dateTime>&end_date_gte=<dateTime>&end_date_lte=<dateTime>&state=<string>&state=<string>&order_by=<string>",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "dags",
+                        ":dag_id",
+                        "dagRuns"
+                      ],
+                      "query": [
+                        {
+                          "description": "The numbers of items to return.",
+                          "key": "limit",
+                          "value": "100"
+                        },
+                        {
+                          "description": "The number of items to skip before starting to collect the result set.",
+                          "key": "offset",
+                          "value": "<integer>"
+                        },
+                        {
+                          "description": "Returns objects greater or equal to the specified date.\n\nThis can be combined with execution_date_lte parameter to receive only the selected period.\n",
+                          "key": "execution_date_gte",
+                          "value": "<dateTime>"
+                        },
+                        {
+                          "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with execution_date_gte parameter to receive only the selected period.\n",
+                          "key": "execution_date_lte",
+                          "value": "<dateTime>"
+                        },
+                        {
+                          "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n",
+                          "key": "start_date_gte",
+                          "value": "<dateTime>"
+                        },
+                        {
+                          "description": "Returns objects less or equal the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n",
+                          "key": "start_date_lte",
+                          "value": "<dateTime>"
+                        },
+                        {
+                          "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n",
+                          "key": "end_date_gte",
+                          "value": "<dateTime>"
+                        },
+                        {
+                          "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n",
+                          "key": "end_date_lte",
+                          "value": "<dateTime>"
+                        },
+                        {
+                          "description": "The value can be repeated to retrieve multiple matching values (OR condition).",
+                          "key": "state",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "The value can be repeated to retrieve multiple matching values (OR condition).",
+                          "key": "state",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n",
+                          "key": "order_by",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "id": "ac063431-18ec-4346-abd7-ef019aada6bb",
+                          "key": "dag_id",
+                          "value": "<string>",
+                          "description": "(Required) The DAG ID."
+                        }
+                      ]
+                    },
+                    "description": "This endpoint allows specifying `~` as the dag_id to retrieve DAG runs for all DAGs.\n"
+                  },
+                  "response": [
+                    {
+                      "id": "48acdc71-e19d-48ef-aab9-3c7846f8c06d",
+                      "name": "List of DAG runs.",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns?limit=100&offset=<integer>&execution_date_gte=<dateTime>&execution_date_lte=<dateTime>&start_date_gte=<dateTime>&start_date_lte=<dateTime>&end_date_gte=<dateTime>&end_date_lte=<dateTime>&state=<string>&order_by=<string>",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns"
+                          ],
+                          "query": [
+                            {
+                              "description": "The numbers of items to return.",
+                              "key": "limit",
+                              "value": "100"
+                            },
+                            {
+                              "description": "The number of items to skip before starting to collect the result set.",
+                              "key": "offset",
+                              "value": "<integer>"
+                            },
+                            {
+                              "description": "Returns objects greater or equal to the specified date.\n\nThis can be combined with execution_date_lte parameter to receive only the selected period.\n",
+                              "key": "execution_date_gte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with execution_date_gte parameter to receive only the selected period.\n",
+                              "key": "execution_date_lte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n",
+                              "key": "start_date_gte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects less or equal the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n",
+                              "key": "start_date_lte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n",
+                              "key": "end_date_gte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n",
+                              "key": "end_date_lte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "The value can be repeated to retrieve multiple matching values (OR condition).",
+                              "key": "state",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n",
+                              "key": "order_by",
+                              "value": "<string>"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "dag_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"dag_runs\": [\n    {\n      \"conf\": {},\n      \"dag_id\": \"<string>\",\n      \"dag_run_id\": \"<string>\",\n      \"data_interval_end\": \"<dateTime>\",\n      \"data_interval_start\": \"<dateTime>\",\n      \"end_date\": \"<dateTime>\",\n      \"execution_date\": \"<dateTime>\",\n      \"external_trigger\": true,\n      \"last_scheduling_decision\": \"<dateTime>\",\n      \"logical_date\": \"<dateTime>\",\n      \"note\": \"<string>\",\n      \"run_type\": \"manual\",\n      \"start_date\": \"<dateTime>\",\n      \"state\": \"queued\"\n    },\n    {\n      \"conf\": {},\n      \"dag_id\": \"<string>\",\n      \"dag_run_id\": \"<string>\",\n      \"data_interval_end\": \"<dateTime>\",\n      \"data_interval_start\": \"<dateTime>\",\n      \"end_date\": \"<dateTime>\",\n      \"execution_date\": \"<dateTime>\",\n      \"external_trigger\": true,\n      \"last_scheduling_decision\": \"<dateTime>\",\n      \"logical_date\": \"<dateTime>\",\n      \"note\": \"<string>\",\n      \"run_type\": \"backfill\",\n      \"start_date\": \"<dateTime>\",\n      \"state\": \"success\"\n    }\n  ],\n  \"total_entries\": \"<integer>\"\n}",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-48acdc71-e19d-48ef-aab9-3c7846f8c06d"
+                    },
+                    {
+                      "id": "4bf37273-ef45-44b4-b52a-1a33d8667f7e",
+                      "name": "Request not authenticated due to missing, invalid, authentication info.",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns?limit=100&offset=<integer>&execution_date_gte=<dateTime>&execution_date_lte=<dateTime>&start_date_gte=<dateTime>&start_date_lte=<dateTime>&end_date_gte=<dateTime>&end_date_lte=<dateTime>&state=<string>&order_by=<string>",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns"
+                          ],
+                          "query": [
+                            {
+                              "description": "The numbers of items to return.",
+                              "key": "limit",
+                              "value": "100"
+                            },
+                            {
+                              "description": "The number of items to skip before starting to collect the result set.",
+                              "key": "offset",
+                              "value": "<integer>"
+                            },
+                            {
+                              "description": "Returns objects greater or equal to the specified date.\n\nThis can be combined with execution_date_lte parameter to receive only the selected period.\n",
+                              "key": "execution_date_gte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with execution_date_gte parameter to receive only the selected period.\n",
+                              "key": "execution_date_lte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n",
+                              "key": "start_date_gte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects less or equal the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n",
+                              "key": "start_date_lte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n",
+                              "key": "end_date_gte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n",
+                              "key": "end_date_lte",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "The value can be repeated to retrieve multiple matching values (OR condition).",
+                              "key": "state",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n",
+                              "key": "order_by",
+                              "value": "<string>"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "dag_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Unauthorized",
+                      "code": 401,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-4bf37273-ef45-44b4-b52a-1a33d8667f7e"
+                    }
+                  ],
+                  "createdAt": "2026-07-28T10:50:21.000Z",
+                  "updatedAt": "2026-07-28T10:50:21.000Z",
+                  "uid": "35240-df54fca1-e9a7-434f-b6c6-d86105129d21"
+                },
+                {
+                  "name": "Apache Airflow Trigger a New DAG Run",
+                  "id": "95f42ca8-d090-459c-8334-7553e62705c1",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/dags/:dag_id/dagRuns",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "dags",
+                        ":dag_id",
+                        "dagRuns"
+                      ],
+                      "variable": [
+                        {
+                          "id": "7c33a771-0486-4770-8165-4ea04038acdd",
+                          "key": "dag_id",
+                          "value": "<string>",
+                          "description": "(Required) The DAG ID."
+                        }
+                      ]
+                    }
+                  },
+                  "response": [
+                    {
+                      "id": "08104250-5e61-49bd-b360-084c45ff9fc5",
+                      "name": "Success.",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns"
+                          ],
+                          "variable": [
+                            {
+                              "key": "dag_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-08104250-5e61-49bd-b360-084c45ff9fc5"
+                    },
+                    {
+                      "id": "70cb5755-19a3-4009-bee8-2ea72b7d5c1d",
+                      "name": "Client specified an invalid argument.",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns"
+                          ],
+                          "variable": [
+                            {
+                              "key": "dag_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Bad Request",
+                      "code": 400,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-70cb5755-19a3-4009-bee8-2ea72b7d5c1d"
+                    },
+                    {
+                      "id": "87ad060d-faae-4de0-9e01-f8281a8f8dbc",
+                      "name": "Request not authenticated due to missing, invalid, authentication info.",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns"
+                          ],
+                          "variable": [
+                            {
+                              "key": "dag_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Unauthorized",
+                      "code": 401,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-87ad060d-faae-4de0-9e01-f8281a8f8dbc"
+                    },
+                    {
+                      "id": "838a3ea2-a62b-43be-9216-ec728c4e7b80",
+                      "name": "Client does not have sufficient permission.",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns"
+                          ],
+                          "variable": [
+                            {
+                              "key": "dag_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Forbidden",
+                      "code": 403,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-838a3ea2-a62b-43be-9216-ec728c4e7b80"
+                    },
+                    {
+                      "id": "251034b3-23a6-488e-aa6b-6a3521663243",
+                      "name": "A specified resource is not found.",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns"
+                          ],
+                          "variable": [
+                            {
+                              "key": "dag_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Not Found",
+                      "code": 404,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-251034b3-23a6-488e-aa6b-6a3521663243"
+                    },
+                    {
+                      "id": "f2103805-c4a6-43ec-9c44-f616efdaca2f",
+                      "name": "An existing resource conflicts with the request.",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"conf\": {},\n  \"dag_id\": \"<string>\",\n  \"dag_run_id\": \"<string>\",\n  \"data_interval_end\": \"<dateTime>\",\n  \"data_interval_start\": \"<dateTime>\",\n  \"end_date\": \"<dateTime>\",\n  \"execution_date\": \"<dateTime>\",\n  \"external_trigger\": true,\n  \"last_scheduling_decision\": \"<dateTime>\",\n  \"logical_date\": \"<dateTime>\",\n  \"note\": \"<string>\",\n  \"run_type\": \"manual\",\n  \"start_date\": \"<dateTime>\",\n  \"state\": \"queued\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/:dag_id/dagRuns",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            ":dag_id",
+                            "dagRuns"
+                          ],
+                          "variable": [
+                            {
+                              "key": "dag_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Conflict",
+                      "code": 409,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-f2103805-c4a6-43ec-9c44-f616efdaca2f"
+                    }
+                  ],
+                  "createdAt": "2026-07-28T10:50:21.000Z",
+                  "updatedAt": "2026-07-28T10:50:21.000Z",
+                  "uid": "35240-95f42ca8-d090-459c-8334-7553e62705c1"
+                }
+              ],
+              "id": "f45f9280-847f-44ba-b608-a1c2df384174",
+              "createdAt": "2026-07-28T10:50:21.000Z",
+              "updatedAt": "2026-07-28T10:50:21.000Z",
+              "uid": "35240-f45f9280-847f-44ba-b608-a1c2df384174"
+            }
+          ],
+          "id": "21712932-4911-4224-b8fe-7e79ea4ecefc",
+          "createdAt": "2026-07-28T10:50:21.000Z",
+          "updatedAt": "2026-07-28T10:50:21.000Z",
+          "uid": "35240-21712932-4911-4224-b8fe-7e79ea4ecefc"
+        },
+        {
+          "name": "~",
+          "item": [
+            {
+              "name": "dagRuns",
+              "item": [
+                {
+                  "name": "list",
+                  "item": [
+                    {
+                      "name": "Apache Airflow List DAG Runs (batch)",
+                      "id": "c058a137-33af-44b4-9ef6-ed0d49937b29",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"dag_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"end_date_gte\": \"<dateTime>\",\n  \"end_date_lte\": \"<dateTime>\",\n  \"execution_date_gte\": \"<dateTime>\",\n  \"execution_date_lte\": \"<dateTime>\",\n  \"order_by\": \"<string>\",\n  \"page_limit\": 100,\n  \"page_offset\": \"<integer>\",\n  \"start_date_gte\": \"<dateTime>\",\n  \"start_date_lte\": \"<dateTime>\",\n  \"states\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/dags/~/dagRuns/list",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "dags",
+                            "~",
+                            "dagRuns",
+                            "list"
+                          ]
+                        },
+                        "description": "This endpoint is a POST to allow filtering across a large number of DAG IDs, where as a GET it would run in to maximum HTTP request URL length limit.\n"
+                      },
+                      "response": [
+                        {
+                          "id": "426daae0-b035-48ee-a167-e29a0d54a93a",
+                          "name": "Success.",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"dag_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"end_date_gte\": \"<dateTime>\",\n  \"end_date_lte\": \"<dateTime>\",\n  \"execution_date_gte\": \"<dateTime>\",\n  \"execution_date_lte\": \"<dateTime>\",\n  \"order_by\": \"<string>\",\n  \"page_limit\": 100,\n  \"page_offset\": \"<integer>\",\n  \"start_date_gte\": \"<dateTime>\",\n  \"start_date_lte\": \"<dateTime>\",\n  \"states\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/~/dagRuns/list",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                "~",
+                                "dagRuns",
+                                "list"
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"dag_runs\": [\n    {\n      \"conf\": {},\n      \"dag_id\": \"<string>\",\n      \"dag_run_id\": \"<string>\",\n      \"data_interval_end\": \"<dateTime>\",\n      \"data_interval_start\": \"<dateTime>\",\n      \"end_date\": \"<dateTime>\",\n      \"execution_date\": \"<dateTime>\",\n      \"external_trigger\": true,\n      \"last_scheduling_decision\": \"<dateTime>\",\n      \"logical_date\": \"<dateTime>\",\n      \"note\": \"<string>\",\n      \"run_type\": \"manual\",\n      \"start_date\": \"<dateTime>\",\n      \"state\": \"queued\"\n    },\n    {\n      \"conf\": {},\n      \"dag_id\": \"<string>\",\n      \"dag_run_id\": \"<string>\",\n      \"data_interval_end\": \"<dateTime>\",\n      \"data_interval_start\": \"<dateTime>\",\n      \"end_date\": \"<dateTime>\",\n      \"execution_date\": \"<dateTime>\",\n      \"external_trigger\": true,\n      \"last_scheduling_decision\": \"<dateTime>\",\n      \"logical_date\": \"<dateTime>\",\n      \"note\": \"<string>\",\n      \"run_type\": \"backfill\",\n      \"start_date\": \"<dateTime>\",\n      \"state\": \"success\"\n    }\n  ],\n  \"total_entries\": \"<integer>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-426daae0-b035-48ee-a167-e29a0d54a93a"
+                        },
+                        {
+                          "id": "25b38731-9f1b-4e92-9e8b-d3aa448118c9",
+                          "name": "Client specified an invalid argument.",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"dag_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"end_date_gte\": \"<dateTime>\",\n  \"end_date_lte\": \"<dateTime>\",\n  \"execution_date_gte\": \"<dateTime>\",\n  \"execution_date_lte\": \"<dateTime>\",\n  \"order_by\": \"<string>\",\n  \"page_limit\": 100,\n  \"page_offset\": \"<integer>\",\n  \"start_date_gte\": \"<dateTime>\",\n  \"start_date_lte\": \"<dateTime>\",\n  \"states\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/~/dagRuns/list",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                "~",
+                                "dagRuns",
+                                "list"
+                              ]
+                            }
+                          },
+                          "status": "Bad Request",
+                          "code": 400,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-25b38731-9f1b-4e92-9e8b-d3aa448118c9"
+                        },
+                        {
+                          "id": "7b866fb2-e355-44d8-8537-9f47c54d0aea",
+                          "name": "Request not authenticated due to missing, invalid, authentication info.",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"dag_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"end_date_gte\": \"<dateTime>\",\n  \"end_date_lte\": \"<dateTime>\",\n  \"execution_date_gte\": \"<dateTime>\",\n  \"execution_date_lte\": \"<dateTime>\",\n  \"order_by\": \"<string>\",\n  \"page_limit\": 100,\n  \"page_offset\": \"<integer>\",\n  \"start_date_gte\": \"<dateTime>\",\n  \"start_date_lte\": \"<dateTime>\",\n  \"states\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/~/dagRuns/list",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                "~",
+                                "dagRuns",
+                                "list"
+                              ]
+                            }
+                          },
+                          "status": "Unauthorized",
+                          "code": 401,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-7b866fb2-e355-44d8-8537-9f47c54d0aea"
+                        },
+                        {
+                          "id": "b99f8fc2-b6de-48b2-9952-99440a33e511",
+                          "name": "Client does not have sufficient permission.",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"dag_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"end_date_gte\": \"<dateTime>\",\n  \"end_date_lte\": \"<dateTime>\",\n  \"execution_date_gte\": \"<dateTime>\",\n  \"execution_date_lte\": \"<dateTime>\",\n  \"order_by\": \"<string>\",\n  \"page_limit\": 100,\n  \"page_offset\": \"<integer>\",\n  \"start_date_gte\": \"<dateTime>\",\n  \"start_date_lte\": \"<dateTime>\",\n  \"states\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/dags/~/dagRuns/list",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "dags",
+                                "~",
+                                "dagRuns",
+                                "list"
+                              ]
+                            }
+                          },
+                          "status": "Forbidden",
+                          "code": 403,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<number>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\"\n}",
+                          "createdAt": "2026-07-28T10:50:21.000Z",
+                          "updatedAt": "2026-07-28T10:50:21.000Z",
+                          "uid": "35240-b99f8fc2-b6de-48b2-9952-99440a33e511"
+                        }
+                      ],
+                      "createdAt": "2026-07-28T10:50:21.000Z",
+                      "updatedAt": "2026-07-28T10:50:21.000Z",
+                      "uid": "35240-c058a137-33af-44b4-9ef6-ed0d49937b29"
+                    }
+                  ],
+                  "id": "d8c61127-bb62-4f69-b2ac-7b94593fcbc9",
+                  "createdAt": "2026-07-28T10:50:21.000Z",
+                  "updatedAt": "2026-07-28T10:50:21.000Z",
+                  "uid": "35240-d8c61127-bb62-4f69-b2ac-7b94593fcbc9"
+                }
+              ],
+              "id": "dc11bc1d-e103-4fed-a65f-e56f7bcf9797",
+              "createdAt": "2026-07-28T10:50:21.000Z",
+              "updatedAt": "2026-07-28T10:50:21.000Z",
+              "uid": "35240-dc11bc1d-e103-4fed-a65f-e56f7bcf9797"
+            }
+          ],
+          "id": "e97c8d24-72d7-4207-adb0-7eb4bf941028",
+          "createdAt": "2026-07-28T10:50:21.000Z",
+          "updatedAt": "2026-07-28T10:50:21.000Z",
+          "uid": "35240-e97c8d24-72d7-4207-adb0-7eb4bf941028"
+        }
+      ],
+      "id": "ad94dce8-b46e-4bd5-8e8d-7f1e9857f837",
+      "createdAt": "2026-07-28T10:50:21.000Z",
+      "updatedAt": "2026-07-28T10:50:21.000Z",
+      "uid": "35240-ad94dce8-b46e-4bd5-8e8d-7f1e9857f837"
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "/api/v1"
+    }
+  ]
+}

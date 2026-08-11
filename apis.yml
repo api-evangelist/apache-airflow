@@ -68,42 +68,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-connection-api
   name: Apache Airflow Connection API
   description: The Connection API from Apache Airflow — 3 operation(s) for connection.
@@ -122,42 +86,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-dag-api
   name: Apache Airflow DAG API
   description: The DAG API from Apache Airflow — 8 operation(s) for dag.
@@ -176,42 +104,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-dagrun-api
   name: Apache Airflow DAGRun API
   description: The DAGRun API from Apache Airflow — 6 operation(s) for dagrun.
@@ -230,42 +122,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-dagwarning-api
   name: Apache Airflow DagWarning API
   description: The DagWarning API from Apache Airflow — 1 operation(s) for dagwarning.
@@ -284,42 +140,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-dataset-api
   name: Apache Airflow Dataset API
   description: The Dataset API from Apache Airflow — 4 operation(s) for dataset.
@@ -338,42 +158,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-eventlog-api
   name: Apache Airflow EventLog API
   description: The EventLog API from Apache Airflow — 2 operation(s) for eventlog.
@@ -392,42 +176,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-importerror-api
   name: Apache Airflow ImportError API
   description: The ImportError API from Apache Airflow — 2 operation(s) for importerror.
@@ -446,42 +194,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-monitoring-api
   name: Apache Airflow Monitoring API
   description: The Monitoring API from Apache Airflow — 2 operation(s) for monitoring.
@@ -500,42 +212,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-permission-api
   name: Apache Airflow Permission API
   description: The Permission API from Apache Airflow — 1 operation(s) for permission.
@@ -554,42 +230,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-plugin-api
   name: Apache Airflow Plugin API
   description: The Plugin API from Apache Airflow — 1 operation(s) for plugin.
@@ -608,42 +248,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-pool-api
   name: Apache Airflow Pool API
   description: The Pool API from Apache Airflow — 2 operation(s) for pool.
@@ -662,42 +266,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-provider-api
   name: Apache Airflow Provider API
   description: The Provider API from Apache Airflow — 1 operation(s) for provider.
@@ -716,42 +284,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-role-api
   name: Apache Airflow Role API
   description: The Role API from Apache Airflow — 2 operation(s) for role.
@@ -770,42 +302,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-taskinstance-api
   name: Apache Airflow TaskInstance API
   description: The TaskInstance API from Apache Airflow — 9 operation(s) for taskinstance.
@@ -824,42 +320,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-user-api
   name: Apache Airflow User API
   description: The User API from Apache Airflow — 2 operation(s) for user.
@@ -878,42 +338,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-variable-api
   name: Apache Airflow Variable API
   description: The Variable API from Apache Airflow — 2 operation(s) for variable.
@@ -932,42 +356,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 - aid: apache-airflow:apache-airflow-xcom-api
   name: Apache Airflow XCom API
   description: The XCom API from Apache Airflow — 2 operation(s) for xcom.
@@ -986,43 +374,22 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-config.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-connection.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dag.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagrun.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dagwarning.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-dataset.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-eventlog.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-importerror.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-monitoring.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-permission.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-plugin.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-pool.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-provider.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-role.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-taskinstance.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-user.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-variable.yaml
-  - type: X-NaftikoCapability
-    url: capabilities/apache-airflow-xcom.yaml
 common:
+- type: Overlay
+  url: overlays/apache-airflow-openapi-overlay.yaml
+- type: IssueTracker
+  url: https://github.com/apache/airflow/issues
+- type: Releases
+  url: https://github.com/apache/airflow/releases
+- type: SecurityPolicy
+  url: https://github.com/apache/airflow/blob/main/.github/SECURITY.md
+- type: CodeOfConduct
+  url: https://github.com/apache/airflow/blob/main/CODE_OF_CONDUCT.md
+- type: ContributionGuide
+  url: https://github.com/apache/airflow/blob/main/CONTRIBUTING.rst
+- type: License
+  name: Apache-2.0
+  url: https://github.com/apache/airflow/blob/main/LICENSE
 - type: PostmanWorkspace
   url: https://www.postman.com/kinlaneapi/apache-airflow/overview
 - type: AgenticAccess

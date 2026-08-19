@@ -1,0 +1,131 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config Role API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Role",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow List Roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/roles",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n"
+              }
+            ]
+          },
+          "docs": "Get a list of roles.\n\n*New in version 2.1.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Create a Role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/roles",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new role.\n\n*New in version 2.1.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get a Role",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/roles/:role_name",
+            "params": [
+              {
+                "name": "role_name",
+                "value": "",
+                "type": "path",
+                "description": "The role name"
+              }
+            ]
+          },
+          "docs": "Get a role.\n\n*New in version 2.1.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Update a Role",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/roles/:role_name",
+            "params": [
+              {
+                "name": "role_name",
+                "value": "",
+                "type": "path",
+                "description": "The role name"
+              },
+              {
+                "name": "update_mask",
+                "value": "",
+                "type": "query",
+                "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a role.\n\n*New in version 2.1.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Delete a Role",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/roles/:role_name",
+            "params": [
+              {
+                "name": "role_name",
+                "value": "",
+                "type": "path",
+                "description": "The role name"
+              }
+            ]
+          },
+          "docs": "Delete a role.\n\n*New in version 2.1.0*\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

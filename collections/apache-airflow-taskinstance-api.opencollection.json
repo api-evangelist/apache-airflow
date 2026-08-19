@@ -1,0 +1,557 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config TaskInstance API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "TaskInstance",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow List Task Instances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "execution_date_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater or equal to the specified date.\n\nThis can be combined with execution_date_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "execution_date_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with execution_date_gte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "start_date_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "start_date_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less or equal the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "end_date_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "end_date_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "duration_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater than or equal to the specified values.\n\nThis can be combined with duration_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "duration_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less than or equal to the specified values.\n\nThis can be combined with duration_gte parameter to receive only the selected range.\n"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "The value can be repeated to retrieve multiple matching values (OR condition)."
+              },
+              {
+                "name": "pool",
+                "value": "",
+                "type": "query",
+                "description": "The value can be repeated to retrieve multiple matching values (OR condition)."
+              },
+              {
+                "name": "queue",
+                "value": "",
+                "type": "query",
+                "description": "The value can be repeated to retrieve multiple matching values (OR condition)."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              }
+            ]
+          },
+          "docs": "This endpoint allows specifying `~` as the dag_id, dag_run_id to retrieve DAG runs for all DAGs and DAG runs.\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get a Task Instance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ]
+          },
+          "docs": "Apache Airflow Get a Task Instance"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Updates the State of a Task Instance",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the state for single task instance.\n*New in version 2.5.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow List Extra Links",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/links",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ]
+          },
+          "docs": "List extra links for task instance.\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow List Mapped Task Instances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/listMapped",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              },
+              {
+                "name": "execution_date_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater or equal to the specified date.\n\nThis can be combined with execution_date_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "execution_date_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with execution_date_gte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "start_date_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "start_date_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less or equal the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "end_date_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "end_date_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "duration_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater than or equal to the specified values.\n\nThis can be combined with duration_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "duration_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less than or equal to the specified values.\n\nThis can be combined with duration_gte parameter to receive only the selected range.\n"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "The value can be repeated to retrieve multiple matching values (OR condition)."
+              },
+              {
+                "name": "pool",
+                "value": "",
+                "type": "query",
+                "description": "The value can be repeated to retrieve multiple matching values (OR condition)."
+              },
+              {
+                "name": "queue",
+                "value": "",
+                "type": "query",
+                "description": "The value can be repeated to retrieve multiple matching values (OR condition)."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n"
+              }
+            ]
+          },
+          "docs": "Get details of all mapped task instances.\n\n*New in version 2.3.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get Logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/logs/:task_try_number",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              },
+              {
+                "name": "task_try_number",
+                "value": "",
+                "type": "path",
+                "description": "The task try number."
+              },
+              {
+                "name": "full_content",
+                "value": "",
+                "type": "query",
+                "description": "A full content will be returned.\nBy default, only the first fragment will be returned.\n"
+              },
+              {
+                "name": "map_index",
+                "value": "",
+                "type": "query",
+                "description": "Filter on map index for mapped task."
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "A token that allows you to continue fetching logs.\nIf passed, it will specify the location from which the download should be continued.\n"
+              }
+            ]
+          },
+          "docs": "Get logs for a specific task instance and its try number."
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Update the TaskInstance Note.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/setNote",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the manual user note of a non-mapped Task Instance.\n\n*New in version 2.5.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get a Mapped Task Instance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/:map_index",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              },
+              {
+                "name": "map_index",
+                "value": "",
+                "type": "path",
+                "description": "The map index."
+              }
+            ]
+          },
+          "docs": "Get details of a mapped task instance.\n\n*New in version 2.3.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Updates the State of a Mapped Task Instance",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/:map_index",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              },
+              {
+                "name": "map_index",
+                "value": "",
+                "type": "path",
+                "description": "The map index."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the state for single mapped task instance.\n*New in version 2.5.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Update the TaskInstance Note.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/:map_index/setNote",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              },
+              {
+                "name": "map_index",
+                "value": "",
+                "type": "path",
+                "description": "The map index."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the manual user note of a mapped Task Instance.\n\n*New in version 2.5.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow List Task Instances (batch)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/dags/~/dagRuns/~/taskInstances/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List task instances from all DAGs and DAG runs.\nThis endpoint is a POST to allow filtering across a large number of DAG IDs, where as a GET it would run in to maximum HTTP request URL length limits.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

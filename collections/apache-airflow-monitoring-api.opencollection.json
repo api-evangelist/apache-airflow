@@ -1,0 +1,40 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config Monitoring API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Monitoring",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow Get Instance Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/health"
+          },
+          "docs": "Get the status of Airflow's metadatabase and scheduler. It includes info about\nmetadatabase and last heartbeat of scheduler.\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get Version Information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/version"
+          },
+          "docs": "Apache Airflow Get Version Information"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

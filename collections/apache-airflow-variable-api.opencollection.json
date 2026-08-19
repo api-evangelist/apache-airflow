@@ -1,0 +1,131 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config Variable API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Variable",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow List Variables",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/variables",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n"
+              }
+            ]
+          },
+          "docs": "The collection does not contain data. To get data, you must get a single entity."
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Create a Variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/variables",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Apache Airflow Create a Variable"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get a Variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/variables/:variable_key",
+            "params": [
+              {
+                "name": "variable_key",
+                "value": "",
+                "type": "path",
+                "description": "The variable Key."
+              }
+            ]
+          },
+          "docs": "Get a variable by key."
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Update a Variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/variables/:variable_key",
+            "params": [
+              {
+                "name": "variable_key",
+                "value": "",
+                "type": "path",
+                "description": "The variable Key."
+              },
+              {
+                "name": "update_mask",
+                "value": "",
+                "type": "query",
+                "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a variable by key."
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Delete a Variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/variables/:variable_key",
+            "params": [
+              {
+                "name": "variable_key",
+                "value": "",
+                "type": "path",
+                "description": "The variable Key."
+              }
+            ]
+          },
+          "docs": "Apache Airflow Delete a Variable"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

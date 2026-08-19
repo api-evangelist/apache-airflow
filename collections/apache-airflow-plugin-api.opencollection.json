@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config Plugin API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Plugin",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow Get a List of Loaded Plugins",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/plugins",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              }
+            ]
+          },
+          "docs": "Get a list of loaded plugins.\n\n*New in version 2.1.0*\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

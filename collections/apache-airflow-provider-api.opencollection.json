@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config Provider API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Provider",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow List Providers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/providers"
+          },
+          "docs": "Get a list of providers.\n\n*New in version 2.1.0*\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

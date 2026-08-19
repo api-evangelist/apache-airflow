@@ -1,0 +1,321 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config DAG API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "DAG",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow Get a Source Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dagSources/:file_token",
+            "params": [
+              {
+                "name": "file_token",
+                "value": "",
+                "type": "path",
+                "description": "The key containing the encrypted path to the file. Encryption and decryption take place only on\nthe server. This prevents the client from reading an non-DAG file. This also ensures API\nextensibility, because the format of encrypted data may change.\n"
+              }
+            ]
+          },
+          "docs": "Get a source code using file token.\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow List DAGs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n"
+              },
+              {
+                "name": "tags",
+                "value": "",
+                "type": "query",
+                "description": "List of tags to filter results.\n\n*New in version 2.2.0*\n"
+              },
+              {
+                "name": "only_active",
+                "value": "",
+                "type": "query",
+                "description": "Only filter active DAGs.\n\n*New in version 2.1.1*\n"
+              },
+              {
+                "name": "dag_id_pattern",
+                "value": "",
+                "type": "query",
+                "description": "If set, only return DAGs with dag_ids matching this pattern.\n"
+              }
+            ]
+          },
+          "docs": "List DAGs in the database.\n`dag_id_pattern` can be set to match dags of a specific pattern\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Update DAGs",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/dags",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              },
+              {
+                "name": "tags",
+                "value": "",
+                "type": "query",
+                "description": "List of tags to filter results.\n\n*New in version 2.2.0*\n"
+              },
+              {
+                "name": "update_mask",
+                "value": "",
+                "type": "query",
+                "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n"
+              },
+              {
+                "name": "only_active",
+                "value": "",
+                "type": "query",
+                "description": "Only filter active DAGs.\n\n*New in version 2.1.1*\n"
+              },
+              {
+                "name": "dag_id_pattern",
+                "value": "",
+                "type": "query",
+                "description": "If set, only update DAGs with dag_ids matching this pattern.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update DAGs of a given dag_id_pattern using UpdateMask.\nThis endpoint allows specifying `~` as the dag_id_pattern to update all DAGs.\n*New in version 2.3.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get Basic Information About a DAG",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              }
+            ]
+          },
+          "docs": "Presents only information available in database (DAGModel).\nIf you need detailed information, consider using GET /dags/{dag_id}/details.\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Update a DAG",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/dags/:dag_id",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "update_mask",
+                "value": "",
+                "type": "query",
+                "description": "The fields to update on the resource. If absent or empty, all modifiable fields are updated.\nA comma-separated list of fully qualified names of fields.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Apache Airflow Update a DAG"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Delete a DAG",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/dags/:dag_id",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              }
+            ]
+          },
+          "docs": "Deletes all metadata related to the DAG, including finished DAG Runs and Tasks.\nLogs are not deleted. This action cannot be undone.\n\n*New in version 2.2.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Clear a Set of Task Instances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/dags/:dag_id/clearTaskInstances",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Clears a set of task instances associated with the DAG for a specified date range.\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get a Simplified Representation of DAG",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/details",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              }
+            ]
+          },
+          "docs": "The response contains many DAG attributes, so the response can be large. If possible, consider using GET /dags/{dag_id}.\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get Tasks for DAG",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/tasks",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n"
+              }
+            ]
+          },
+          "docs": "Apache Airflow Get Tasks for DAG"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get Simplified Representation of a Task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/tasks/:task_id",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ]
+          },
+          "docs": "Apache Airflow Get Simplified Representation of a Task"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Set a State of Task Instances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/dags/:dag_id/updateTaskInstancesState",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the state for multiple task instances simultaneously.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

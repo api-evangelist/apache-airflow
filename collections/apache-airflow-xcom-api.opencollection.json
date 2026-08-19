@@ -1,0 +1,104 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config XCom API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "XCom",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow List XCom Entries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              }
+            ]
+          },
+          "docs": "This endpoint allows specifying `~` as the dag_id, dag_run_id, task_id to retrieve XCOM entries for for all DAGs, DAG runs and task instances. XCom values won't be returned as they can be large. Use this endpoint to get a list of XCom entries and then fetch individual entry to get value."
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get an XCom Entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/taskInstances/:task_id/xcomEntries/:xcom_key",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              },
+              {
+                "name": "xcom_key",
+                "value": "",
+                "type": "path",
+                "description": "The XCom key."
+              },
+              {
+                "name": "deserialize",
+                "value": "",
+                "type": "query",
+                "description": "Whether to deserialize an XCom value when using a custom XCom backend.\n\nThe XCom API endpoint calls `orm_deserialize_value` by default since an XCom may contain value\nthat is potentially expensive to deserialize in the web server. Setting this to true overrides\nthe consideration, and calls `deserialize_value` instead.\n\nThis parameter is not meaningful when using the default XCom backend.\n\n*New in version 2.4.0*\n"
+              }
+            ]
+          },
+          "docs": "Apache Airflow Get an XCom Entry"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

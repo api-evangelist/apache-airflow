@@ -1,0 +1,160 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config Dataset API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Dataset",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow Get Dataset Events for a DAG Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/upstreamDatasetEvents",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              }
+            ]
+          },
+          "docs": "Get datasets for a dag run.\n\n*New in version 2.4.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow List Datasets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/datasets",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n"
+              },
+              {
+                "name": "uri_pattern",
+                "value": "",
+                "type": "query",
+                "description": "If set, only return datasets with uris matching this pattern.\n"
+              }
+            ]
+          },
+          "docs": "Apache Airflow List Datasets"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get Dataset Events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/datasets/events",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n"
+              },
+              {
+                "name": "dataset_id",
+                "value": "",
+                "type": "query",
+                "description": "The Dataset ID that updated the dataset."
+              },
+              {
+                "name": "source_dag_id",
+                "value": "",
+                "type": "query",
+                "description": "The DAG ID that updated the dataset."
+              },
+              {
+                "name": "source_task_id",
+                "value": "",
+                "type": "query",
+                "description": "The task ID that updated the dataset."
+              },
+              {
+                "name": "source_run_id",
+                "value": "",
+                "type": "query",
+                "description": "The DAG run ID that updated the dataset."
+              },
+              {
+                "name": "source_map_index",
+                "value": "",
+                "type": "query",
+                "description": "The map index that updated the dataset."
+              }
+            ]
+          },
+          "docs": "Get dataset events"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get a Dataset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/datasets/:uri",
+            "params": [
+              {
+                "name": "uri",
+                "value": "",
+                "type": "path",
+                "description": "The encoded Dataset URI"
+              }
+            ]
+          },
+          "docs": "Get a dataset by uri."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

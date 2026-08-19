@@ -1,0 +1,297 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config DAGRun API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "DAGRun",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow List DAG Runs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              },
+              {
+                "name": "execution_date_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater or equal to the specified date.\n\nThis can be combined with execution_date_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "execution_date_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with execution_date_gte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "start_date_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "start_date_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less or equal the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "end_date_gte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects greater or equal the specified date.\n\nThis can be combined with start_date_lte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "end_date_lte",
+                "value": "",
+                "type": "query",
+                "description": "Returns objects less than or equal to the specified date.\n\nThis can be combined with start_date_gte parameter to receive only the selected period.\n"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "The value can be repeated to retrieve multiple matching values (OR condition)."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n"
+              }
+            ]
+          },
+          "docs": "This endpoint allows specifying `~` as the dag_id to retrieve DAG runs for all DAGs.\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Trigger a New DAG Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/dags/:dag_id/dagRuns",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Apache Airflow Trigger a New DAG Run"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get a DAG Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              }
+            ]
+          },
+          "docs": "Apache Airflow Get a DAG Run"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Modify a DAG Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modify a DAG run.\n\n*New in version 2.2.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Delete a DAG Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              }
+            ]
+          },
+          "docs": "Apache Airflow Delete a DAG Run"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Clear a DAG Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/clear",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Clear a DAG run.\n\n*New in version 2.4.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Update the DagRun Note.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/setNote",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the manual user note of a DagRun.\n\n*New in version 2.5.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get Dataset Events for a DAG Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/dags/:dag_id/dagRuns/:dag_run_id/upstreamDatasetEvents",
+            "params": [
+              {
+                "name": "dag_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG ID."
+              },
+              {
+                "name": "dag_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The DAG run ID."
+              }
+            ]
+          },
+          "docs": "Get datasets for a dag run.\n\n*New in version 2.4.0*\n"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow List DAG Runs (batch)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/dags/~/dagRuns/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint is a POST to allow filtering across a large number of DAG IDs, where as a GET it would run in to maximum HTTP request URL length limit.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

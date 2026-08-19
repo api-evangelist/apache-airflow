@@ -309,3 +309,9 @@ tools:
   description: Apache Airflow Get Version Information
   read_only: true
   source_operation: openapi/apache-airflow-openapi.yaml#get_version
+deployment:
+  mode: none
+  verified: derived
+  tools: 73
+  checked: '2026-08-12'
+  source: catalog MCP census

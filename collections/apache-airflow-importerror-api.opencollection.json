@@ -1,0 +1,68 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Airflow API (Stable) Config ImportError API",
+    "version": "3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "ImportError",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Apache Airflow List Import Errors",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/importErrors",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The numbers of items to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of items to skip before starting to collect the result set."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "The name of the field to order the results by.\nPrefix a field name with `-` to reverse the sort order.\n\n*New in version 2.1.0*\n"
+              }
+            ]
+          },
+          "docs": "Apache Airflow List Import Errors"
+        },
+        {
+          "info": {
+            "name": "Apache Airflow Get an Import Error",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/importErrors/:import_error_id",
+            "params": [
+              {
+                "name": "import_error_id",
+                "value": "",
+                "type": "path",
+                "description": "The import error ID."
+              }
+            ]
+          },
+          "docs": "Apache Airflow Get an Import Error"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

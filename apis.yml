@@ -26,6 +26,16 @@ tags:
 - DAG
 - Data Pipeline
 - ETL
+- Open-Source
+- Orchestration
+- Python
+- Scheduling
+- Workflows
+tags_raw:
+- Apache
+- DAG
+- Data Pipeline
+- ETL
 - Open Source
 - Orchestration
 - Python
@@ -164,6 +174,8 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   baseURL: http://localhost:8080/api/v1
   tags:
+  - Event Log
+  tags_raw:
   - EventLog
   properties:
   - type: OpenAPI
@@ -182,6 +194,8 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   baseURL: http://localhost:8080/api/v1
   tags:
+  - Import Error
+  tags_raw:
   - ImportError
   properties:
   - type: OpenAPI
@@ -308,6 +322,8 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   baseURL: http://localhost:8080/api/v1
   tags:
+  - Task Instance
+  tags_raw:
   - TaskInstance
   properties:
   - type: OpenAPI

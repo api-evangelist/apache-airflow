@@ -15,8 +15,14 @@ info:
     without opening the underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: airflowApi
-  url: ../openapi/apache-airflow-openapi.yaml
+- name: permissionApi
+  url: ../openapi/apache-airflow-permission-api-openapi.yml
+  type: openapi
+- name: roleApi
+  url: ../openapi/apache-airflow-role-api-openapi.yml
+  type: openapi
+- name: userApi
+  url: ../openapi/apache-airflow-user-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: provision-user

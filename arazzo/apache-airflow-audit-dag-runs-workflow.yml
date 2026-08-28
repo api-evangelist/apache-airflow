@@ -14,8 +14,17 @@ info:
     without opening the underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: airflowApi
-  url: ../openapi/apache-airflow-openapi.yaml
+- name: dagApi
+  url: ../openapi/apache-airflow-dag-api-openapi.yml
+  type: openapi
+- name: dagrunApi
+  url: ../openapi/apache-airflow-dagrun-api-openapi.yml
+  type: openapi
+- name: eventlogApi
+  url: ../openapi/apache-airflow-eventlog-api-openapi.yml
+  type: openapi
+- name: taskinstanceApi
+  url: ../openapi/apache-airflow-taskinstance-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: audit-dag-runs

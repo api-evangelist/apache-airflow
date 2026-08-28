@@ -14,8 +14,8 @@ info:
     without opening the underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: airflowApi
-  url: ../openapi/apache-airflow-openapi.yaml
+- name: poolApi
+  url: ../openapi/apache-airflow-pool-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: upsert-pool

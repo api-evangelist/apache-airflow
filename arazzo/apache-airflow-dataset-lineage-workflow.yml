@@ -15,8 +15,11 @@ info:
     the underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: airflowApi
-  url: ../openapi/apache-airflow-openapi.yaml
+- name: dagrunApi
+  url: ../openapi/apache-airflow-dagrun-api-openapi.yml
+  type: openapi
+- name: datasetApi
+  url: ../openapi/apache-airflow-dataset-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: dataset-lineage

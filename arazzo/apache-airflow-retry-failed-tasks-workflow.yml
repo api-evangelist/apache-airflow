@@ -13,8 +13,11 @@ info:
     opening the underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: airflowApi
-  url: ../openapi/apache-airflow-openapi.yaml
+- name: dagApi
+  url: ../openapi/apache-airflow-dag-api-openapi.yml
+  type: openapi
+- name: dagrunApi
+  url: ../openapi/apache-airflow-dagrun-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: retry-failed-tasks

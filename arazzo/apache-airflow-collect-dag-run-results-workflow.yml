@@ -13,8 +13,14 @@ info:
     OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: airflowApi
-  url: ../openapi/apache-airflow-openapi.yaml
+- name: dagrunApi
+  url: ../openapi/apache-airflow-dagrun-api-openapi.yml
+  type: openapi
+- name: taskinstanceApi
+  url: ../openapi/apache-airflow-taskinstance-api-openapi.yml
+  type: openapi
+- name: xcomApi
+  url: ../openapi/apache-airflow-xcom-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: collect-dag-run-results

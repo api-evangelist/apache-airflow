@@ -14,8 +14,8 @@ info:
     description.
   version: 1.0.0
 sourceDescriptions:
-- name: airflowApi
-  url: ../openapi/apache-airflow-openapi.yaml
+- name: connectionApi
+  url: ../openapi/apache-airflow-connection-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: register-connection

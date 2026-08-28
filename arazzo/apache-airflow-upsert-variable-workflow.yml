@@ -13,8 +13,8 @@ info:
     without opening the underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: airflowApi
-  url: ../openapi/apache-airflow-openapi.yaml
+- name: variableApi
+  url: ../openapi/apache-airflow-variable-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: upsert-variable

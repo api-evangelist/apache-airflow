@@ -14,8 +14,17 @@ info:
     underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: airflowApi
-  url: ../openapi/apache-airflow-openapi.yaml
+- name: dagApi
+  url: ../openapi/apache-airflow-dag-api-openapi.yml
+  type: openapi
+- name: dagwarningApi
+  url: ../openapi/apache-airflow-dagwarning-api-openapi.yml
+  type: openapi
+- name: importerrorApi
+  url: ../openapi/apache-airflow-importerror-api-openapi.yml
+  type: openapi
+- name: monitoringApi
+  url: ../openapi/apache-airflow-monitoring-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: deployment-preflight

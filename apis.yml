@@ -189,7 +189,7 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   baseURL: http://localhost:8080/api/v1
   tags:
-  - EventLog
+  - Event Log
   tags_raw:
   - EventLog
   properties:
@@ -209,7 +209,7 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   baseURL: http://localhost:8080/api/v1
   tags:
-  - ImportError
+  - Import Error
   tags_raw:
   - ImportError
   properties:
@@ -337,7 +337,7 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   baseURL: http://localhost:8080/api/v1
   tags:
-  - TaskInstance
+  - Task Instance
   tags_raw:
   - TaskInstance
   properties:

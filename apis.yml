@@ -31,9 +31,9 @@ accessModel:
   - plans
   - authentication
   - security
-  generated: '2026-08-26'
+  generated: '2026-09-03'
   method: derived
-position: Consumer
+position: Consuming
 access: 3rd-Party
 image: https://airflow.apache.org/images/feature-image.png
 tags:
@@ -431,8 +431,9 @@ common:
   url: well-known/apache-airflow-well-known.yml
 - type: SecurityTxt
   url: well-known/apache-airflow-security.txt
-- type: MCPServer
+- type: X-MCPServerCandidate
   url: mcp/apache-airflow-mcp.yml
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
 - type: LLMsTxt
   url: llms/apache-airflow-llms.txt
 - type: Conformance

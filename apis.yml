@@ -406,6 +406,8 @@ apis:
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
 common:
+- type: Website
+  url: https://www.apache.org/
 - type: Overlay
   url: overlays/apache-airflow-openapi-overlay.yaml
 - type: IssueTracker

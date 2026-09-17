@@ -129,24 +129,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-- aid: apache-airflow:apache-airflow-dagrun-api
-  name: Apache Airflow DAGRun API
-  description: The DAGRun API from Apache Airflow — 6 operation(s) for dagrun.
-  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  baseURL: http://localhost:8080/api/v1
-  tags:
-  - DAGRun
-  properties:
-  - type: OpenAPI
-    url: openapi/apache-airflow-dagrun-api-openapi.yml
-  - type: Documentation
-    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  - type: ErrorCatalog
-    url: errors/apache-airflow-problem-types.yml
-  - type: Authentication
-    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
-  - type: ChangeLog
-    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
 - aid: apache-airflow:apache-airflow-dagwarning-api
   name: Apache Airflow DagWarning API
   description: The DagWarning API from Apache Airflow — 1 operation(s) for dagwarning.
@@ -175,46 +157,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/apache-airflow-dataset-api-openapi.yml
-  - type: Documentation
-    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  - type: ErrorCatalog
-    url: errors/apache-airflow-problem-types.yml
-  - type: Authentication
-    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
-  - type: ChangeLog
-    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-- aid: apache-airflow:apache-airflow-eventlog-api
-  name: Apache Airflow EventLog API
-  description: The EventLog API from Apache Airflow — 2 operation(s) for eventlog.
-  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  baseURL: http://localhost:8080/api/v1
-  tags:
-  - Event Log
-  tags_raw:
-  - EventLog
-  properties:
-  - type: OpenAPI
-    url: openapi/apache-airflow-eventlog-api-openapi.yml
-  - type: Documentation
-    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  - type: ErrorCatalog
-    url: errors/apache-airflow-problem-types.yml
-  - type: Authentication
-    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
-  - type: ChangeLog
-    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-- aid: apache-airflow:apache-airflow-importerror-api
-  name: Apache Airflow ImportError API
-  description: The ImportError API from Apache Airflow — 2 operation(s) for importerror.
-  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  baseURL: http://localhost:8080/api/v1
-  tags:
-  - Import Error
-  tags_raw:
-  - ImportError
-  properties:
-  - type: OpenAPI
-    url: openapi/apache-airflow-importerror-api-openapi.yml
   - type: Documentation
     url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   - type: ErrorCatalog
@@ -331,26 +273,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-- aid: apache-airflow:apache-airflow-taskinstance-api
-  name: Apache Airflow TaskInstance API
-  description: The TaskInstance API from Apache Airflow — 9 operation(s) for taskinstance.
-  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  baseURL: http://localhost:8080/api/v1
-  tags:
-  - Task Instance
-  tags_raw:
-  - TaskInstance
-  properties:
-  - type: OpenAPI
-    url: openapi/apache-airflow-taskinstance-api-openapi.yml
-  - type: Documentation
-    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  - type: ErrorCatalog
-    url: errors/apache-airflow-problem-types.yml
-  - type: Authentication
-    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
-  - type: ChangeLog
-    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
 - aid: apache-airflow:apache-airflow-user-api
   name: Apache Airflow User API
   description: The User API from Apache Airflow — 2 operation(s) for user.
@@ -397,6 +319,78 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/apache-airflow-xcom-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: ChangeLog
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+- aid: apache-airflow:apache-airflow-dag-run-api
+  name: Apache Airflow DAG Run API
+  description: The DAG Run API from Apache Airflow — 6 operation(s) for dag run.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - DAG Run
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-dag-run-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: ChangeLog
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+- aid: apache-airflow:apache-airflow-event-log-api
+  name: Apache Airflow Event Log API
+  description: The Event Log API from Apache Airflow — 2 operation(s) for event log.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Event Log
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-event-log-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: ChangeLog
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+- aid: apache-airflow:apache-airflow-import-error-api
+  name: Apache Airflow Import Error API
+  description: The Import Error API from Apache Airflow — 2 operation(s) for import error.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Import Error
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-import-error-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: ChangeLog
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+- aid: apache-airflow:apache-airflow-task-instance-api
+  name: Apache Airflow Task Instance API
+  description: The Task Instance API from Apache Airflow — 9 operation(s) for task instance.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Task Instance
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-task-instance-api-openapi.yml
   - type: Documentation
     url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   - type: ErrorCatalog

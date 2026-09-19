@@ -153,6 +153,8 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   baseURL: http://localhost:8080/api/v1
   tags:
+  - Datasets
+  tags_raw:
   - Dataset
   properties:
   - type: OpenAPI
@@ -207,6 +209,8 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   baseURL: http://localhost:8080/api/v1
   tags:
+  - Plugins
+  tags_raw:
   - Plugin
   properties:
   - type: OpenAPI
@@ -243,6 +247,8 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
   baseURL: http://localhost:8080/api/v1
   tags:
+  - Providers
+  tags_raw:
   - Provider
   properties:
   - type: OpenAPI

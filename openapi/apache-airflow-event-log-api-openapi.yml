@@ -14,7 +14,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Airflow API (Stable) Dag Warning API
+  title: Airflow API (Stable) Event Log API
   version: 2.5.3
   x-apisguru-categories:
   - messaging
@@ -32,24 +32,13 @@ servers:
 - url: https://apache.local
 security: []
 tags:
-- name: DagWarning
+- name: Event Log
 paths:
-  /dagWarnings:
+  /eventLogs:
     get:
-      operationId: get_dag_warnings
+      description: List log entries from event log.
+      operationId: get_event_logs
       parameters:
-      - description: If set, only return DAG warnings with this dag_id.
-        in: query
-        name: dag_id
-        required: false
-        schema:
-          type: string
-      - description: If set, only return DAG warnings with this type.
-        in: query
-        name: warning_type
-        required: false
-        schema:
-          type: string
       - $ref: '#/components/parameters/PageLimit'
       - $ref: '#/components/parameters/PageOffset'
       - $ref: '#/components/parameters/OrderBy'
@@ -58,16 +47,38 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DagWarningCollection'
+                $ref: '#/components/schemas/EventLogCollection'
           description: Success.
         '401':
           $ref: '#/components/responses/Unauthenticated'
         '403':
           $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow List Dag Warnings
+      summary: Apache Airflow List Log Entries
       tags:
-      - DagWarning
-      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_warning_endpoint
+      - Event Log
+      x-openapi-router-controller: airflow.api_connexion.endpoints.event_log_endpoint
+  /eventLogs/{event_log_id}:
+    parameters:
+    - $ref: '#/components/parameters/EventLogID'
+    get:
+      operationId: get_event_log
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventLog'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Get a Log Entry
+      tags:
+      - Event Log
+      x-openapi-router-controller: airflow.api_connexion.endpoints.event_log_endpoint
 components:
   schemas:
     CollectionInfo:
@@ -80,39 +91,6 @@ components:
 
             '
           type: integer
-      type: object
-    DagWarningCollection:
-      allOf:
-      - properties:
-          import_errors:
-            items:
-              $ref: '#/components/schemas/DagWarning'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of DAG warnings.
-
-        '
-      type: object
-    DagWarning:
-      properties:
-        dag_id:
-          description: The dag_id.
-          readOnly: true
-          type: string
-        message:
-          description: The message for the dag warning.
-          readOnly: true
-          type: string
-        timestamp:
-          description: The time when this warning was logged.
-          format: datetime
-          readOnly: true
-          type: string
-        warning_type:
-          description: The warning type for the dag warning.
-          readOnly: true
-          type: string
       type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
@@ -149,7 +127,80 @@ components:
       - title
       - status
       type: object
+    EventLog:
+      description: Log of user operations via CLI or Web UI.
+      properties:
+        dag_id:
+          description: The DAG ID
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        event:
+          description: A key describing the type of event.
+          readOnly: true
+          type: string
+        event_log_id:
+          description: The event log ID
+          readOnly: true
+          type: integer
+        execution_date:
+          description: 'When the event was dispatched for an object having execution_date, the value of this field.
+
+            '
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        extra:
+          description: 'Other information that was not included in the other fields, e.g. the complete CLI command.
+
+            '
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        owner:
+          description: Name of the user who triggered these events a.
+          readOnly: true
+          type: string
+        task_id:
+          description: The DAG ID
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        when:
+          description: The time when these events happened.
+          format: date-time
+          readOnly: true
+          type: string
+      type: object
+    EventLogCollection:
+      allOf:
+      - properties:
+          event_logs:
+            items:
+              $ref: '#/components/schemas/EventLog'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of event logs.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
   parameters:
+    EventLogID:
+      description: The event log ID.
+      in: path
+      name: event_log_id
+      required: true
+      schema:
+        type: integer
     OrderBy:
       description: 'The name of the field to order the results by.
 
@@ -193,6 +244,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
   securitySchemes:
     Basic:
       scheme: basic

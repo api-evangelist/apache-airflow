@@ -14,7 +14,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Airflow API (Stable) Dag Warning API
+  title: Airflow API (Stable) Import Error API
   version: 2.5.3
   x-apisguru-categories:
   - messaging
@@ -32,24 +32,12 @@ servers:
 - url: https://apache.local
 security: []
 tags:
-- name: DagWarning
+- name: Import Error
 paths:
-  /dagWarnings:
+  /importErrors:
     get:
-      operationId: get_dag_warnings
+      operationId: get_import_errors
       parameters:
-      - description: If set, only return DAG warnings with this dag_id.
-        in: query
-        name: dag_id
-        required: false
-        schema:
-          type: string
-      - description: If set, only return DAG warnings with this type.
-        in: query
-        name: warning_type
-        required: false
-        schema:
-          type: string
       - $ref: '#/components/parameters/PageLimit'
       - $ref: '#/components/parameters/PageOffset'
       - $ref: '#/components/parameters/OrderBy'
@@ -58,16 +46,38 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DagWarningCollection'
+                $ref: '#/components/schemas/ImportErrorCollection'
           description: Success.
         '401':
           $ref: '#/components/responses/Unauthenticated'
         '403':
           $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow List Dag Warnings
+      summary: Apache Airflow List Import Errors
       tags:
-      - DagWarning
-      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_warning_endpoint
+      - Import Error
+      x-openapi-router-controller: airflow.api_connexion.endpoints.import_error_endpoint
+  /importErrors/{import_error_id}:
+    parameters:
+    - $ref: '#/components/parameters/ImportErrorID'
+    get:
+      operationId: get_import_error
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportError'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Get an Import Error
+      tags:
+      - Import Error
+      x-openapi-router-controller: airflow.api_connexion.endpoints.import_error_endpoint
 components:
   schemas:
     CollectionInfo:
@@ -80,39 +90,6 @@ components:
 
             '
           type: integer
-      type: object
-    DagWarningCollection:
-      allOf:
-      - properties:
-          import_errors:
-            items:
-              $ref: '#/components/schemas/DagWarning'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of DAG warnings.
-
-        '
-      type: object
-    DagWarning:
-      properties:
-        dag_id:
-          description: The dag_id.
-          readOnly: true
-          type: string
-        message:
-          description: The message for the dag warning.
-          readOnly: true
-          type: string
-        timestamp:
-          description: The time when this warning was logged.
-          format: datetime
-          readOnly: true
-          type: string
-        warning_type:
-          description: The warning type for the dag warning.
-          readOnly: true
-          type: string
       type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
@@ -149,6 +126,42 @@ components:
       - title
       - status
       type: object
+    ImportError:
+      properties:
+        filename:
+          description: The filename
+          readOnly: true
+          type: string
+        import_error_id:
+          description: The import error ID.
+          readOnly: true
+          type: integer
+        stack_trace:
+          description: The full stackstrace..
+          readOnly: true
+          type: string
+        timestamp:
+          description: The time when this error was created.
+          format: datetime
+          readOnly: true
+          type: string
+      type: object
+    ImportErrorCollection:
+      allOf:
+      - properties:
+          import_errors:
+            items:
+              $ref: '#/components/schemas/ImportError'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of import errors.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
   parameters:
     OrderBy:
       description: 'The name of the field to order the results by.
@@ -164,6 +177,13 @@ components:
       required: false
       schema:
         type: string
+    ImportErrorID:
+      description: The import error ID.
+      in: path
+      name: import_error_id
+      required: true
+      schema:
+        type: integer
     PageOffset:
       description: The number of items to skip before starting to collect the result set.
       in: query
@@ -193,6 +213,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
   securitySchemes:
     Basic:
       scheme: basic

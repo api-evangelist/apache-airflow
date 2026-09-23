@@ -1,0 +1,1160 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: dev@airflow.apache.org
+    name: Apache Software Foundation
+    url: https://airflow.apache.org
+    x-twitter: TheASF
+  description: '# Overview
+
+
+    To facilitate management, Apache Airflow supports a range of REST API endpoints across its
+
+    objects.'
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Airflow API (Stable) DAG Run API
+  version: 2.5.3
+  x-apisguru-categories:
+  - messaging
+  x-logo:
+    url: https://twitter.com/TheASF/profile_image?size=original
+  x-origin:
+  - format: openapi
+    url: https://airflow.apache.org/docs/apache-airflow/stable/_specs/v1.yaml
+    version: '3.0'
+  x-providerName: apache.org
+  x-serviceName: airflow
+servers:
+- description: Apache Airflow Stable API.
+  url: /api/v1
+- url: https://apache.local
+security: []
+tags:
+- name: DAG Run
+paths:
+  /dags/{dag_id}/dagRuns:
+    parameters:
+    - $ref: '#/components/parameters/DAGID'
+    get:
+      description: This endpoint allows specifying `~` as the dag_id to retrieve DAG runs for all DAGs.
+      operationId: get_dag_runs
+      parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/PageOffset'
+      - $ref: '#/components/parameters/FilterExecutionDateGTE'
+      - $ref: '#/components/parameters/FilterExecutionDateLTE'
+      - $ref: '#/components/parameters/FilterStartDateGTE'
+      - $ref: '#/components/parameters/FilterStartDateLTE'
+      - $ref: '#/components/parameters/FilterEndDateGTE'
+      - $ref: '#/components/parameters/FilterEndDateLTE'
+      - $ref: '#/components/parameters/FilterState'
+      - $ref: '#/components/parameters/OrderBy'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRunCollection'
+          description: List of DAG runs.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+      summary: Apache Airflow List DAG Runs
+      tags:
+      - DAG Run
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+    post:
+      operationId: post_dag_run
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DAGRun'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRun'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/AlreadyExists'
+      summary: Apache Airflow Trigger a New DAG Run
+      tags:
+      - DAG Run
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+  /dags/{dag_id}/dagRuns/{dag_run_id}:
+    parameters:
+    - $ref: '#/components/parameters/DAGID'
+    - $ref: '#/components/parameters/DAGRunID'
+    delete:
+      operationId: delete_dag_run
+      responses:
+        '204':
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Delete a DAG Run
+      tags:
+      - DAG Run
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+    get:
+      operationId: get_dag_run
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRun'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Get a DAG Run
+      tags:
+      - DAG Run
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+    patch:
+      description: 'Modify a DAG run.
+
+
+        *New in version 2.2.0*'
+      operationId: update_dag_run_state
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDagRunState'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRun'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Modify a DAG Run
+      tags:
+      - DAG Run
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+  /dags/{dag_id}/dagRuns/{dag_run_id}/clear:
+    parameters:
+    - $ref: '#/components/parameters/DAGID'
+    - $ref: '#/components/parameters/DAGRunID'
+    post:
+      description: 'Clear a DAG run.
+
+
+        *New in version 2.4.0*'
+      operationId: clear_dag_run
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClearDagRun'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/DAGRun'
+                - $ref: '#/components/schemas/TaskInstanceCollection'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Clear a DAG Run
+      tags:
+      - DAG Run
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+  /dags/{dag_id}/dagRuns/{dag_run_id}/setNote:
+    parameters:
+    - $ref: '#/components/parameters/DAGID'
+    - $ref: '#/components/parameters/DAGRunID'
+    patch:
+      description: 'Update the manual user note of a DagRun.
+
+
+        *New in version 2.5.0*'
+      operationId: set_dag_run_note
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetDagRunNote'
+        description: Parameters of set DagRun note.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRun'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Update the DagRun Note
+      tags:
+      - DAG Run
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+  /dags/{dag_id}/dagRuns/{dag_run_id}/upstreamDatasetEvents:
+    parameters:
+    - $ref: '#/components/parameters/DAGID'
+    - $ref: '#/components/parameters/DAGRunID'
+    get:
+      description: 'Get datasets for a dag run.
+
+
+        *New in version 2.4.0*'
+      operationId: get_upstream_dataset_events
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetEventCollection'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Get Dataset Events for a DAG Run
+      tags:
+      - DAG Run
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+  /dags/~/dagRuns/list:
+    post:
+      description: This endpoint is a POST to allow filtering across a large number of DAG IDs, where as a GET it would run in to maximum HTTP request URL length limit.
+      operationId: get_dag_runs_batch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListDagRunsForm'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRunCollection'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+      summary: Apache Airflow List DAG Runs (batch)
+      tags:
+      - DAG Run
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
+components:
+  schemas:
+    BasicDAGRun:
+      properties:
+        dag_id:
+          readOnly: true
+          type: string
+        data_interval_end:
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        data_interval_start:
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        end_date:
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        logical_date:
+          description: 'The logical date (previously called execution date). This is the time or interval covered by
+
+            this DAG run, according to the DAG definition.
+
+
+            The value of this field can be set only when creating the object. If you try to modify the
+
+            field of an existing object, the request fails with an BAD_REQUEST error.
+
+
+            This together with DAG_ID are a unique key.
+
+
+            *New in version 2.2.0*
+
+            '
+          format: date-time
+          type: string
+        run_id:
+          description: 'Run ID.
+
+            '
+          type: string
+        start_date:
+          description: 'The start time. The time when DAG run was actually created.
+
+
+            *Changed in version 2.1.3*&#58; Field becomes nullable.
+
+            '
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        state:
+          $ref: '#/components/schemas/DagState'
+      type: object
+    Trigger:
+      properties:
+        classpath:
+          type: string
+        created_date:
+          format: datetime
+          type: string
+        id:
+          type: integer
+        kwargs:
+          type: string
+        triggerer_id:
+          type:
+          - integer
+          - 'null'
+      type: object
+    DatasetEventCollection:
+      allOf:
+      - properties:
+          dataset_events:
+            items:
+              $ref: '#/components/schemas/DatasetEvent'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'A collection of dataset events.
+
+
+        *New in version 2.4.0*
+
+        '
+      type: object
+    DAGRun:
+      properties:
+        conf:
+          description: 'JSON object describing additional configuration parameters.
+
+
+            The value of this field can be set only when creating the object. If you try to modify the
+
+            field of an existing object, the request fails with an BAD_REQUEST error.
+
+            '
+          type: object
+        dag_id:
+          readOnly: true
+          type: string
+        dag_run_id:
+          description: 'Run ID.
+
+
+            The value of this field can be set only when creating the object. If you try to modify the
+
+            field of an existing object, the request fails with an BAD_REQUEST error.
+
+
+            If not provided, a value will be generated based on execution_date.
+
+
+            If the specified dag_run_id is in use, the creation request fails with an ALREADY_EXISTS error.
+
+
+            This together with DAG_ID are a unique key.
+
+            '
+          type:
+          - string
+          - 'null'
+        data_interval_end:
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        data_interval_start:
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        end_date:
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        execution_date:
+          deprecated: true
+          description: 'The execution date. This is the same as logical_date, kept for backwards compatibility.
+
+            If both this field and logical_date are provided but with different values, the request
+
+            will fail with an BAD_REQUEST error.
+
+
+            *Changed in version 2.2.0*&#58; Field becomes nullable.
+
+
+            *Deprecated since version 2.2.0*&#58; Use ''logical_date'' instead.
+
+            '
+          format: date-time
+          type:
+          - string
+          - 'null'
+        external_trigger:
+          default: true
+          readOnly: true
+          type: boolean
+        last_scheduling_decision:
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        logical_date:
+          description: 'The logical date (previously called execution date). This is the time or interval covered by
+
+            this DAG run, according to the DAG definition.
+
+
+            The value of this field can be set only when creating the object. If you try to modify the
+
+            field of an existing object, the request fails with an BAD_REQUEST error.
+
+
+            This together with DAG_ID are a unique key.
+
+
+            *New in version 2.2.0*
+
+            '
+          format: date-time
+          type:
+          - string
+          - 'null'
+        note:
+          description: 'Contains manually entered notes by the user about the DagRun.
+
+
+            *New in version 2.5.0*
+
+            '
+          type:
+          - string
+          - 'null'
+        run_type:
+          enum:
+          - backfill
+          - manual
+          - scheduled
+          - dataset_triggered
+          readOnly: true
+          type: string
+        start_date:
+          description: 'The start time. The time when DAG run was actually created.
+
+
+            *Changed in version 2.1.3*&#58; Field becomes nullable.
+
+            '
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        state:
+          $ref: '#/components/schemas/DagState'
+      type: object
+    ClearDagRun:
+      properties:
+        dry_run:
+          default: true
+          description: 'If set, don''t actually run this operation. The response will contain a list of task instances
+
+            planned to be cleaned, but not modified in any way.
+
+            '
+          type: boolean
+      type: object
+    DAGRunCollection:
+      allOf:
+      - properties:
+          dag_runs:
+            items:
+              $ref: '#/components/schemas/DAGRun'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of DAG runs.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    Error:
+      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
+
+        '
+      properties:
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        instance:
+          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
+
+            not yield further information if dereferenced.
+
+            '
+          type: string
+        status:
+          description: The HTTP status code generated by the API server for this occurrence of the problem.
+          type: number
+        title:
+          description: A short, human-readable summary of the problem type.
+          type: string
+        type:
+          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
+
+            encourages that, when dereferenced, it provide human-readable documentation for
+
+            the problem type.
+
+            '
+          type: string
+      required:
+      - type
+      - title
+      - status
+      type: object
+    Job:
+      properties:
+        dag_id:
+          type:
+          - string
+          - 'null'
+        end_date:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        executor_class:
+          type:
+          - string
+          - 'null'
+        hostname:
+          type:
+          - string
+          - 'null'
+        id:
+          type: integer
+        job_type:
+          type:
+          - string
+          - 'null'
+        latest_heartbeat:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        start_date:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        unixname:
+          type:
+          - string
+          - 'null'
+      type: object
+    ListDagRunsForm:
+      properties:
+        dag_ids:
+          description: 'Return objects with specific DAG IDs.
+
+            The value can be repeated to retrieve multiple matching values (OR condition).'
+          items:
+            type: string
+          type: array
+        end_date_gte:
+          description: 'Returns objects greater or equal the specified date.
+
+
+            This can be combined with end_date_lte parameter to receive only the selected period.
+
+            '
+          format: date-time
+          type: string
+        end_date_lte:
+          description: 'Returns objects less than or equal to the specified date.
+
+
+            This can be combined with end_date_gte parameter to receive only the selected period.
+
+            '
+          format: date-time
+          type: string
+        execution_date_gte:
+          description: 'Returns objects greater or equal to the specified date.
+
+
+            This can be combined with execution_date_lte key to receive only the selected period.
+
+            '
+          format: date-time
+          type: string
+        execution_date_lte:
+          description: 'Returns objects less than or equal to the specified date.
+
+
+            This can be combined with execution_date_gte key to receive only the selected period.
+
+            '
+          format: date-time
+          type: string
+        order_by:
+          description: 'The name of the field to order the results by. Prefix a field name
+
+            with `-` to reverse the sort order.
+
+
+            *New in version 2.1.0*
+
+            '
+          type: string
+        page_limit:
+          default: 100
+          description: The numbers of items to return.
+          minimum: 1
+          type: integer
+        page_offset:
+          description: The number of items to skip before starting to collect the result set.
+          minimum: 0
+          type: integer
+        start_date_gte:
+          description: 'Returns objects greater or equal the specified date.
+
+
+            This can be combined with start_date_lte key to receive only the selected period.
+
+            '
+          format: date-time
+          type: string
+        start_date_lte:
+          description: 'Returns objects less or equal the specified date.
+
+
+            This can be combined with start_date_gte parameter to receive only the selected period
+
+            '
+          format: date-time
+          type: string
+        states:
+          description: 'Return objects with specific states.
+
+            The value can be repeated to retrieve multiple matching values (OR condition).'
+          items:
+            type: string
+          type: array
+      type: object
+    TaskInstance:
+      properties:
+        dag_id:
+          type: string
+        dag_run_id:
+          description: 'The DagRun ID for this task instance
+
+
+            *New in version 2.3.0*
+
+            '
+          type: string
+        duration:
+          type:
+          - number
+          - 'null'
+        end_date:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        execution_date:
+          format: datetime
+          type: string
+        executor_config:
+          type: string
+        hostname:
+          type: string
+        map_index:
+          type: integer
+        max_tries:
+          type: integer
+        note:
+          description: 'Contains manually entered notes by the user about the TaskInstance.
+
+
+            *New in version 2.5.0*
+
+            '
+          type:
+          - string
+          - 'null'
+        operator:
+          description: '*Changed in version 2.1.1*&#58; Field becomes nullable.
+
+            '
+          type:
+          - string
+          - 'null'
+        pid:
+          type:
+          - integer
+          - 'null'
+        pool:
+          type: string
+        pool_slots:
+          type: integer
+        priority_weight:
+          type:
+          - integer
+          - 'null'
+        queue:
+          type:
+          - string
+          - 'null'
+        queued_when:
+          type:
+          - string
+          - 'null'
+        rendered_fields:
+          description: 'JSON object describing rendered fields.
+
+
+            *New in version 2.3.0*
+
+            '
+          type: object
+        sla_miss:
+          $ref: '#/components/schemas/SLAMiss'
+        start_date:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        state:
+          $ref: '#/components/schemas/TaskState'
+        task_id:
+          type: string
+        trigger:
+          $ref: '#/components/schemas/Trigger'
+        triggerer_job:
+          $ref: '#/components/schemas/Job'
+        try_number:
+          type: integer
+        unixname:
+          type: string
+      type: object
+    SLAMiss:
+      properties:
+        dag_id:
+          description: The DAG ID.
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        email_sent:
+          type: boolean
+        execution_date:
+          format: datetime
+          type: string
+        notification_sent:
+          type: boolean
+        task_id:
+          description: The task ID.
+          readOnly: true
+          type: string
+        timestamp:
+          format: datetime
+          type: string
+      type:
+      - object
+      - 'null'
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    TaskInstanceCollection:
+      allOf:
+      - properties:
+          task_instances:
+            items:
+              $ref: '#/components/schemas/TaskInstance'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of task instances.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    UpdateDagRunState:
+      description: 'Modify the state of a DAG run.
+
+
+        *New in version 2.2.0*
+
+        '
+      properties:
+        state:
+          description: The state to set this DagRun
+          enum:
+          - success
+          - failed
+          - queued
+          type: string
+      type: object
+    SetDagRunNote:
+      properties:
+        note:
+          description: Custom notes left by users for this Dag Run.
+          type: string
+      type: object
+    DatasetEvent:
+      description: 'A dataset event.
+
+
+        *New in version 2.4.0*
+
+        '
+      properties:
+        created_dagruns:
+          items:
+            $ref: '#/components/schemas/BasicDAGRun'
+          type: array
+        dataset_id:
+          description: The dataset id
+          type: integer
+        dataset_uri:
+          description: The URI of the dataset
+          type: string
+        extra:
+          description: The dataset event extra
+          type:
+          - object
+          - 'null'
+        source_dag_id:
+          description: The DAG ID that updated the dataset.
+          type:
+          - string
+          - 'null'
+        source_map_index:
+          description: The task map index that updated the dataset.
+          type:
+          - integer
+          - 'null'
+        source_run_id:
+          description: The DAG run ID that updated the dataset.
+          type:
+          - string
+          - 'null'
+        source_task_id:
+          description: The task ID that updated the dataset.
+          type:
+          - string
+          - 'null'
+        timestamp:
+          description: The dataset event creation time
+          type: string
+      type: object
+    TaskState:
+      description: 'Task state.
+
+
+        *Changed in version 2.0.2*&#58; ''removed'' is added as a possible value.
+
+
+        *Changed in version 2.2.0*&#58; ''deferred'' is added as a possible value.
+
+
+        *Changed in version 2.4.0*&#58; ''sensing'' state has been removed.
+
+        *Changed in version 2.4.2*&#58; ''restarting'' is added as a possible value
+
+        '
+      enum:
+      - success
+      - running
+      - failed
+      - upstream_failed
+      - skipped
+      - up_for_retry
+      - up_for_reschedule
+      - queued
+      - none
+      - scheduled
+      - deferred
+      - removed
+      - restarting
+      type: string
+    DagState:
+      description: 'DAG State.
+
+
+        *Changed in version 2.1.3*&#58; ''queued'' is added as a possible value.
+
+        '
+      enum:
+      - queued
+      - running
+      - success
+      - failed
+      readOnly: true
+      type: string
+  parameters:
+    DAGID:
+      description: The DAG ID.
+      in: path
+      name: dag_id
+      required: true
+      schema:
+        type: string
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
+    FilterExecutionDateLTE:
+      description: 'Returns objects less than or equal to the specified date.
+
+
+        This can be combined with execution_date_gte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: execution_date_lte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    FilterEndDateGTE:
+      description: 'Returns objects greater or equal the specified date.
+
+
+        This can be combined with start_date_lte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: end_date_gte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    FilterStartDateGTE:
+      description: 'Returns objects greater or equal the specified date.
+
+
+        This can be combined with start_date_lte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: start_date_gte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    OrderBy:
+      description: 'The name of the field to order the results by.
+
+        Prefix a field name with `-` to reverse the sort order.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: string
+    FilterExecutionDateGTE:
+      description: 'Returns objects greater or equal to the specified date.
+
+
+        This can be combined with execution_date_lte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: execution_date_gte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    FilterStartDateLTE:
+      description: 'Returns objects less or equal the specified date.
+
+
+        This can be combined with start_date_gte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: start_date_lte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    FilterState:
+      description: The value can be repeated to retrieve multiple matching values (OR condition).
+      in: query
+      name: state
+      required: false
+      schema:
+        items:
+          type: string
+        type: array
+    DAGRunID:
+      description: The DAG run ID.
+      in: path
+      name: dag_run_id
+      required: true
+      schema:
+        type: string
+    FilterEndDateLTE:
+      description: 'Returns objects less than or equal to the specified date.
+
+
+        This can be combined with start_date_gte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: end_date_lte
+      required: false
+      schema:
+        format: date-time
+        type: string
+  responses:
+    AlreadyExists:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: An existing resource conflicts with the request.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client specified an invalid argument.
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
+  securitySchemes:
+    Basic:
+      scheme: basic
+      type: http
+    GoogleOpenId:
+      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+      type: openIdConnect
+    Kerberos:
+      scheme: negotiate
+      type: http
+externalDocs:
+  url: https://airflow.apache.org/docs/apache-airflow/stable/

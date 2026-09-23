@@ -1,24 +1,7 @@
 {
   "provider": "apache-airflow",
   "sources": [
-    "apache-airflow-config-api-openapi.yml",
-    "apache-airflow-connection-api-openapi.yml",
-    "apache-airflow-dag-api-openapi.yml",
-    "apache-airflow-dagrun-api-openapi.yml",
-    "apache-airflow-dagwarning-api-openapi.yml",
-    "apache-airflow-dataset-api-openapi.yml",
-    "apache-airflow-eventlog-api-openapi.yml",
-    "apache-airflow-importerror-api-openapi.yml",
-    "apache-airflow-monitoring-api-openapi.yml",
-    "apache-airflow-permission-api-openapi.yml",
-    "apache-airflow-plugin-api-openapi.yml",
-    "apache-airflow-pool-api-openapi.yml",
-    "apache-airflow-provider-api-openapi.yml",
-    "apache-airflow-role-api-openapi.yml",
-    "apache-airflow-taskinstance-api-openapi.yml",
-    "apache-airflow-user-api-openapi.yml",
-    "apache-airflow-variable-api-openapi.yml",
-    "apache-airflow-xcom-api-openapi.yml"
+    "_original/apache-airflow-openapi.yaml"
   ],
   "outputs": [
     "apache-airflow-config-api-openapi.yml",
@@ -40,9 +23,35 @@
     "apache-airflow-variable-api-openapi.yml",
     "apache-airflow-xcom-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "deleted 4 superseded output(s) from the previous generation"
+  ],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "apache-airflow-openapi.yaml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "superseded outputs removed: apache-airflow-dag-run-api-openapi.yml, apache-airflow-event-log-api-openapi.yml, apache-airflow-import-error-api-openapi.yml, apache-airflow-task-instance-api-openapi.yml",
+    "apis.yml register: written (+4 apis, 19 total)"
+  ],
+  "skipped": [
+    "apache-airflow-config-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-connection-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-dag-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-dag-run-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-dagwarning-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-dataset-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-event-log-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-import-error-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-monitoring-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-permission-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-plugin-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-pool-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-provider-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-role-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-task-instance-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-user-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-variable-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "apache-airflow-xcom-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

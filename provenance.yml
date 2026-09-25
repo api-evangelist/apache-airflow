@@ -73,11 +73,11 @@ artifacts:
     method: derived
     evidence: openapi/apache-airflow-dag-api
   collections/apache-airflow-dagrun-api.opencollection.json:
-    method: derived
-    evidence: openapi/apache-airflow-dagrun-api
+    method: unknown
+    evidence: no authorship recorded
   collections/apache-airflow-dagrun-api.postman_collection.json:
-    method: derived
-    evidence: openapi/apache-airflow-dagrun-api
+    method: unknown
+    evidence: no authorship recorded
   collections/apache-airflow-dagwarning-api.opencollection.json:
     method: derived
     evidence: openapi/apache-airflow-dagwarning-api
@@ -91,17 +91,17 @@ artifacts:
     method: derived
     evidence: openapi/apache-airflow-dataset-api
   collections/apache-airflow-eventlog-api.opencollection.json:
-    method: derived
-    evidence: openapi/apache-airflow-eventlog-api
+    method: unknown
+    evidence: no authorship recorded
   collections/apache-airflow-eventlog-api.postman_collection.json:
-    method: derived
-    evidence: openapi/apache-airflow-eventlog-api
+    method: unknown
+    evidence: no authorship recorded
   collections/apache-airflow-importerror-api.opencollection.json:
-    method: derived
-    evidence: openapi/apache-airflow-importerror-api
+    method: unknown
+    evidence: no authorship recorded
   collections/apache-airflow-importerror-api.postman_collection.json:
-    method: derived
-    evidence: openapi/apache-airflow-importerror-api
+    method: unknown
+    evidence: no authorship recorded
   collections/apache-airflow-monitoring-api.opencollection.json:
     method: derived
     evidence: openapi/apache-airflow-monitoring-api
@@ -139,11 +139,11 @@ artifacts:
     method: derived
     evidence: openapi/apache-airflow-role-api
   collections/apache-airflow-taskinstance-api.opencollection.json:
-    method: derived
-    evidence: openapi/apache-airflow-taskinstance-api
+    method: unknown
+    evidence: no authorship recorded
   collections/apache-airflow-taskinstance-api.postman_collection.json:
-    method: derived
-    evidence: openapi/apache-airflow-taskinstance-api
+    method: unknown
+    evidence: no authorship recorded
   collections/apache-airflow-user-api.opencollection.json:
     method: derived
     evidence: openapi/apache-airflow-user-api
@@ -267,6 +267,9 @@ artifacts:
   finops/apache-airflow-finops.yml:
     method: generated
     evidence: declared in the artifact
+  front-door-ai/2026-09-17.yml:
+    method: unknown
+    evidence: no authorship recorded
   json-ld/apache-airflow-context.jsonld:
     method: unknown
     evidence: no authorship recorded
@@ -774,55 +777,7 @@ artifacts:
   json-structure/openapi.yaml-x-com-structure.json:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-09-05T072335.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-06T210741.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-07T135032.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-10T093022.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-10T111628.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-11T211707.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-12T193225.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-17T064519.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-19T080027.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-19T082702.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-19T114122.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-20T165047.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-20T191845.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-20T205517.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-21T110057.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-24T064859.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-24T171257.yml:
+  kin/checks-2026-09-24T161608.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-08-25T125852.yml:
@@ -909,6 +864,123 @@ artifacts:
   kin/score-2026-09-05T072335.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-05T144739.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-05T195450.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-05T211839.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-06T011047.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-06T211804.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-06T224210.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-07T200636.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-07T213054.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-08T214843.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-08T232836.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-10T204815.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-10T222408.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-12T062655.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-12T080032.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-12T204651.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-12T221936.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-13T214537.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-14T064754.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-14T210656.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-14T225847.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-15T211329.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-15T230249.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-16T210549.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-16T225339.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-17T211151.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-17T233623.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-18T205255.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-18T231945.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-19T165737.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-19T193153.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-20T205903.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-20T232958.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-21T211425.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-21T233935.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-22T213221.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-23T000603.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-24T064009.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-24T090406.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-24T161608.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/apache-airflow-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
@@ -920,7 +992,86 @@ artifacts:
     evidence: declared in the artifact
   openapi/_original/apache-airflow-openapi.yaml:
     method: harvested
-    evidence: fetched from the provider as-is; byte-identical to the source
+    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
+      to the provider's source is unverified
+  openapi/airflow-asset-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-backfill-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-config-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-connection-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-dag-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-dag-parsing-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-dag-run-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-dagsource-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-dagstats-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-dagversion-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-dagwarning-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-event-log-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-experimental-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-extra-links-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-import-error-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-job-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-login-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-monitor-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-plugin-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-pool-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-provider-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-task-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-task-instance-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-variable-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-version-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
+  openapi/airflow-xcom-api-openapi.yml:
+    method: unknown
+    evidence: no authorship recorded
   openapi/apache-airflow-config-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
@@ -930,7 +1081,7 @@ artifacts:
   openapi/apache-airflow-dag-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/apache-airflow-dagrun-api-openapi.yml:
+  openapi/apache-airflow-dag-run-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-dagwarning-api-openapi.yml:
@@ -939,10 +1090,10 @@ artifacts:
   openapi/apache-airflow-dataset-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/apache-airflow-eventlog-api-openapi.yml:
+  openapi/apache-airflow-event-log-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/apache-airflow-importerror-api-openapi.yml:
+  openapi/apache-airflow-import-error-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-monitoring-api-openapi.yml:
@@ -963,7 +1114,7 @@ artifacts:
   openapi/apache-airflow-role-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  openapi/apache-airflow-taskinstance-api-openapi.yml:
+  openapi/apache-airflow-task-instance-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-user-api-openapi.yml:
@@ -994,8 +1145,8 @@ artifacts:
     method: derived
     evidence: openapi/apache-airflow-dag-api
   postman/apache-airflow-dagrun-api.postman_collection.json:
-    method: derived
-    evidence: openapi/apache-airflow-dagrun-api
+    method: unknown
+    evidence: no authorship recorded
   postman/apache-airflow-dagwarning-api.postman_collection.json:
     method: derived
     evidence: openapi/apache-airflow-dagwarning-api
@@ -1003,11 +1154,11 @@ artifacts:
     method: derived
     evidence: openapi/apache-airflow-dataset-api
   postman/apache-airflow-eventlog-api.postman_collection.json:
-    method: derived
-    evidence: openapi/apache-airflow-eventlog-api
+    method: unknown
+    evidence: no authorship recorded
   postman/apache-airflow-importerror-api.postman_collection.json:
-    method: derived
-    evidence: openapi/apache-airflow-importerror-api
+    method: unknown
+    evidence: no authorship recorded
   postman/apache-airflow-monitoring-api.postman_collection.json:
     method: derived
     evidence: openapi/apache-airflow-monitoring-api
@@ -1027,8 +1178,8 @@ artifacts:
     method: derived
     evidence: openapi/apache-airflow-role-api
   postman/apache-airflow-taskinstance-api.postman_collection.json:
-    method: derived
-    evidence: openapi/apache-airflow-taskinstance-api
+    method: unknown
+    evidence: no authorship recorded
   postman/apache-airflow-user-api.postman_collection.json:
     method: derived
     evidence: openapi/apache-airflow-user-api

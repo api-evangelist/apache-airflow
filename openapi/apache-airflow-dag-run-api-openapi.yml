@@ -1,39 +1,917 @@
 openapi: 3.2.0
 info:
-  contact:
-    email: dev@airflow.apache.org
-    name: Apache Software Foundation
-    url: https://airflow.apache.org
-    x-twitter: TheASF
-  description: '# Overview
-
-
-    To facilitate management, Apache Airflow supports a range of REST API endpoints across its
-
-    objects.'
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Airflow API (Stable) DAG Run API
-  version: 2.5.3
-  x-apisguru-categories:
-  - messaging
-  x-logo:
-    url: https://twitter.com/TheASF/profile_image?size=original
-  x-origin:
-  - format: openapi
-    url: https://airflow.apache.org/docs/apache-airflow/stable/_specs/v1.yaml
-    version: '3.0'
-  x-providerName: apache.org
-  x-serviceName: airflow
-servers:
-- description: Apache Airflow Stable API.
-  url: /api/v1
-- url: https://apache.local
-security: []
+  title: Airflow DAG Run API
+  description: Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+  version: '2'
 tags:
 - name: DAG Run
 paths:
+  /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}:
+    get:
+      tags:
+      - DAG Run
+      summary: Airflow Get Dag Run
+      operationId: get_dag_run
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Id
+      - name: dag_run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRunResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    delete:
+      tags:
+      - DAG Run
+      summary: Airflow Delete Dag Run
+      description: Delete a DAG Run entry.
+      operationId: delete_dag_run
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Id
+      - name: dag_run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Run Id
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    patch:
+      tags:
+      - DAG Run
+      summary: Airflow Patch Dag Run
+      description: Modify a DAG Run.
+      operationId: patch_dag_run
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Id
+      - name: dag_run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Run Id
+      - name: update_mask
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: 'null'
+          title: Update Mask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DAGRunPatchBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRunResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/upstreamAssetEvents:
+    get:
+      tags:
+      - DAG Run
+      summary: Airflow Get Upstream Asset Events
+      description: If dag run is asset-triggered, return the asset events that triggered it.
+      operationId: get_upstream_asset_events
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Id
+      - name: dag_run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetEventCollectionResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/clear:
+    post:
+      tags:
+      - DAG Run
+      summary: Airflow Clear Dag Run
+      operationId: clear_dag_run
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Id
+      - name: dag_run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Run Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DAGRunClearBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/TaskInstanceCollectionResponse'
+                - $ref: '#/components/schemas/DAGRunResponse'
+                title: Response Clear Dag Run
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /api/v2/dags/{dag_id}/dagRuns:
+    get:
+      tags:
+      - DAG Run
+      summary: Airflow Get Dag Runs
+      description: 'Get all DAG Runs.
+
+
+        This endpoint allows specifying `~` as the dag_id to retrieve Dag Runs for all DAGs.'
+      operationId: get_dag_runs
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: run_after_gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After Gte
+      - name: run_after_gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After Gt
+      - name: run_after_lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After Lte
+      - name: run_after_lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After Lt
+      - name: logical_date_gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date Gte
+      - name: logical_date_gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date Gt
+      - name: logical_date_lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date Lte
+      - name: logical_date_lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date Lt
+      - name: start_date_gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date Gte
+      - name: start_date_gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date Gt
+      - name: start_date_lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date Lte
+      - name: start_date_lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date Lt
+      - name: end_date_gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date Gte
+      - name: end_date_gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date Gt
+      - name: end_date_lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date Lte
+      - name: end_date_lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date Lt
+      - name: duration_gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration Gte
+      - name: duration_gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration Gt
+      - name: duration_lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration Lte
+      - name: duration_lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration Lt
+      - name: updated_at_gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At Gte
+      - name: updated_at_gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At Gt
+      - name: updated_at_lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At Lte
+      - name: updated_at_lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At Lt
+      - name: conf_contains
+        in: query
+        required: false
+        schema:
+          type: string
+          title: Conf Contains
+      - name: run_type
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          title: Run Type
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          title: State
+      - name: dag_version
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+          title: Dag Version
+      - name: bundle_version
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bundle Version
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, dag_id, run_id, logical_date, run_after, start_date, end_date, updated_at, conf, duration, dag_run_id`'
+          default:
+          - id
+          title: Order By
+        description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, dag_id, run_id, logical_date, run_after, start_date, end_date, updated_at, conf, duration, dag_run_id`'
+      - name: run_id_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          title: Run Id Pattern
+        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+      - name: triggering_user_name_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          title: Triggering User Name Pattern
+        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+      - name: dag_id_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          title: Dag Id Pattern
+        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+      - name: partition_key_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          title: Partition Key Pattern
+        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+      - name: consuming_asset_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by consuming asset name or URI using pattern matching
+          title: Consuming Asset Pattern
+        description: Filter by consuming asset name or URI using pattern matching
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRunCollectionResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    post:
+      tags:
+      - DAG Run
+      summary: Airflow Trigger Dag Run
+      description: Trigger a DAG.
+      operationId: trigger_dag_run
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          title: Dag Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TriggerDAGRunPostBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRunResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Conflict
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/wait:
+    get:
+      tags:
+      - DAG Run
+      summary: 'Airflow Experimental: Wait for a Dag Run to Complete, and Return Task Results…'
+      description: 🚧 This is an experimental endpoint and may change or be removed without notice.Successful response are streamed as newline-delimited JSON (NDJSON). Each line is a JSON object representing the DAG run state.
+      operationId: wait_dag_run_until_finished
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Id
+      - name: dag_run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Run Id
+      - name: interval
+        in: query
+        required: true
+        schema:
+          type: number
+          exclusiveMinimum: 0.0
+          description: Seconds to wait between dag run state checks
+          title: Interval
+        description: Seconds to wait between dag run state checks
+      - name: result
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: 'null'
+          description: Collect result XCom from task. Can be set multiple times.
+          title: Result
+        description: Collect result XCom from task. Can be set multiple times.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+            application/x-ndjson:
+              schema:
+                type: string
+                example: '{"state": "running"}
+
+                  {"state": "success", "results": {"op": 42}}
+
+                  '
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /api/v2/dags/{dag_id}/dagRuns/list:
+    post:
+      tags:
+      - DAG Run
+      summary: Airflow Get List Dag Runs Batch
+      description: Get a list of DAG Runs.
+      operationId: get_list_dag_runs_batch
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          const: '~'
+          type: string
+          title: Dag Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DAGRunsBatchBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DAGRunCollectionResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /dags/{dag_id}/dagRuns:
     parameters:
     - $ref: '#/components/parameters/DAGID'
@@ -293,99 +1171,1133 @@ paths:
       x-openapi-router-controller: airflow.api_connexion.endpoints.dag_run_endpoint
 components:
   schemas:
-    BasicDAGRun:
+    DAGRunsBatchBody:
+      properties:
+        order_by:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Order By
+        page_offset:
+          type: integer
+          minimum: 0.0
+          title: Page Offset
+          default: 0
+        page_limit:
+          type: integer
+          minimum: 0.0
+          title: Page Limit
+          default: 100
+        dag_ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Dag Ids
+        states:
+          anyOf:
+          - items:
+              anyOf:
+              - $ref: '#/components/schemas/DagRunState'
+              - type: 'null'
+            type: array
+          - type: 'null'
+          title: States
+        run_after_gte:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After Gte
+        run_after_gt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After Gt
+        run_after_lte:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After Lte
+        run_after_lt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After Lt
+        logical_date_gte:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date Gte
+        logical_date_gt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date Gt
+        logical_date_lte:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date Lte
+        logical_date_lt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date Lt
+        start_date_gte:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date Gte
+        start_date_gt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date Gt
+        start_date_lte:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date Lte
+        start_date_lt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date Lt
+        end_date_gte:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date Gte
+        end_date_gt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date Gt
+        end_date_lte:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date Lte
+        end_date_lt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date Lt
+        duration_gte:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration Gte
+        duration_gt:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration Gt
+        duration_lte:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration Lte
+        duration_lt:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration Lt
+        conf_contains:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Conf Contains
+      additionalProperties: false
+      type: object
+      title: DAGRunsBatchBody
+      description: List DAG Runs body for batch endpoint.
+    TriggerResponse:
+      properties:
+        id:
+          type: integer
+          title: Id
+        classpath:
+          type: string
+          title: Classpath
+        kwargs:
+          type: string
+          title: Kwargs
+        created_date:
+          type: string
+          format: date-time
+          title: Created Date
+        queue:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Queue
+        triggerer_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Triggerer Id
+      type: object
+      required:
+      - id
+      - classpath
+      - kwargs
+      - created_date
+      - queue
+      - triggerer_id
+      title: TriggerResponse
+      description: Trigger serializer for responses.
+    DagRunAssetReference:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+        dag_id:
+          type: string
+          title: Dag Id
+        logical_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date
+        start_date:
+          type: string
+          format: date-time
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+        state:
+          type: string
+          title: State
+        data_interval_start:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Data Interval Start
+        data_interval_end:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Data Interval End
+        partition_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Partition Key
+      additionalProperties: false
+      type: object
+      required:
+      - run_id
+      - dag_id
+      - logical_date
+      - start_date
+      - end_date
+      - state
+      - data_interval_start
+      - data_interval_end
+      - partition_key
+      title: DagRunAssetReference
+      description: DagRun serializer for asset responses.
+    DAGRunResponse:
+      properties:
+        dag_run_id:
+          type: string
+          title: Dag Run Id
+        dag_id:
+          type: string
+          title: Dag Id
+        logical_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date
+        queued_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Queued At
+        start_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+        duration:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration
+        data_interval_start:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Data Interval Start
+        data_interval_end:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Data Interval End
+        run_after:
+          type: string
+          format: date-time
+          title: Run After
+        last_scheduling_decision:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Scheduling Decision
+        run_type:
+          $ref: '#/components/schemas/DagRunType'
+        state:
+          $ref: '#/components/schemas/DagRunState'
+        triggered_by:
+          anyOf:
+          - $ref: '#/components/schemas/DagRunTriggeredByType'
+          - type: 'null'
+        triggering_user_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Triggering User Name
+        conf:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Conf
+        note:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Note
+        dag_versions:
+          items:
+            $ref: '#/components/schemas/DagVersionResponse'
+          type: array
+          title: Dag Versions
+        bundle_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bundle Version
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+        partition_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Partition Key
+      type: object
+      required:
+      - dag_run_id
+      - dag_id
+      - logical_date
+      - queued_at
+      - start_date
+      - end_date
+      - duration
+      - data_interval_start
+      - data_interval_end
+      - run_after
+      - last_scheduling_decision
+      - run_type
+      - state
+      - triggered_by
+      - triggering_user_name
+      - conf
+      - note
+      - dag_versions
+      - bundle_version
+      - dag_display_name
+      - partition_key
+      title: DAGRunResponse
+      description: DAG Run serializer for responses.
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    TaskInstanceCollectionResponse:
+      properties:
+        task_instances:
+          items:
+            $ref: '#/components/schemas/TaskInstanceResponse'
+          type: array
+          title: Task Instances
+        total_entries:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Entries
+          description: Total number of matching items. Populated for offset pagination, ``null`` when using cursor pagination.
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Token pointing to the next page. Populated for cursor pagination, ``null`` when using offset pagination or when there is no next page.
+        previous_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Previous Cursor
+          description: Token pointing to the previous page. Populated for cursor pagination, ``null`` when using offset pagination or when on the first page.
+      type: object
+      required:
+      - task_instances
+      title: TaskInstanceCollectionResponse
+      description: 'Task instance collection response supporting both offset and cursor pagination.
+
+
+        A single flat model is used instead of a discriminated union
+
+        (``Annotated[Offset | Cursor, Field(discriminator=...)]``) because
+
+        the OpenAPI ``oneOf`` + ``discriminator`` construct is not handled
+
+        correctly by ``@hey-api/openapi-ts`` / ``@7nohe/openapi-react-query-codegen``:
+
+        return types degrade to ``unknown`` in JSDoc and can produce
+
+        incorrect TypeScript types (see hey-api/openapi-ts#1613, #3270).'
+    DagRunState:
+      type: string
+      enum:
+      - queued
+      - running
+      - success
+      - failed
+      title: DagRunState
+      description: 'All possible states that a DagRun can be in.
+
+
+        These are "shared" with TaskInstanceState in some parts of the code,
+
+        so please ensure that their values always match the ones with the
+
+        same name in TaskInstanceState.'
+    JobResponse:
+      properties:
+        id:
+          type: integer
+          title: Id
+        dag_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Dag Id
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        job_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Job Type
+        start_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+        latest_heartbeat:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Latest Heartbeat
+        executor_class:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Executor Class
+        hostname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hostname
+        unixname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unixname
+        dag_display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Dag Display Name
+      type: object
+      required:
+      - id
+      - dag_id
+      - state
+      - job_type
+      - start_date
+      - end_date
+      - latest_heartbeat
+      - executor_class
+      - hostname
+      - unixname
+      title: JobResponse
+      description: Job serializer for responses.
+    DAGRunPatchBody:
+      properties:
+        state:
+          anyOf:
+          - $ref: '#/components/schemas/DAGRunPatchStates'
+          - type: 'null'
+        note:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Note
+      additionalProperties: false
+      type: object
+      title: DAGRunPatchBody
+      description: DAG Run Serializer for PATCH requests.
+    AssetEventCollectionResponse:
+      properties:
+        asset_events:
+          items:
+            $ref: '#/components/schemas/AssetEventResponse'
+          type: array
+          title: Asset Events
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - asset_events
+      - total_entries
+      title: AssetEventCollectionResponse
+      description: Asset event collection response.
+    TaskInstanceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        task_id:
+          type: string
+          title: Task Id
+        dag_id:
+          type: string
+          title: Dag Id
+        dag_run_id:
+          type: string
+          title: Dag Run Id
+        map_index:
+          type: integer
+          title: Map Index
+        logical_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date
+        run_after:
+          type: string
+          format: date-time
+          title: Run After
+        start_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+        duration:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration
+        state:
+          anyOf:
+          - $ref: '#/components/schemas/TaskInstanceState'
+          - type: 'null'
+        try_number:
+          type: integer
+          title: Try Number
+        max_tries:
+          type: integer
+          title: Max Tries
+        task_display_name:
+          type: string
+          title: Task Display Name
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+        hostname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hostname
+        unixname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unixname
+        pool:
+          type: string
+          title: Pool
+        pool_slots:
+          type: integer
+          title: Pool Slots
+        queue:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Queue
+        priority_weight:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Priority Weight
+        operator:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator
+        operator_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator Name
+        queued_when:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Queued When
+        scheduled_when:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Scheduled When
+        pid:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Pid
+        executor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Executor
+        executor_config:
+          type: string
+          title: Executor Config
+        note:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Note
+        rendered_map_index:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rendered Map Index
+        rendered_fields:
+          additionalProperties: true
+          type: object
+          title: Rendered Fields
+        trigger:
+          anyOf:
+          - $ref: '#/components/schemas/TriggerResponse'
+          - type: 'null'
+        triggerer_job:
+          anyOf:
+          - $ref: '#/components/schemas/JobResponse'
+          - type: 'null'
+        dag_version:
+          anyOf:
+          - $ref: '#/components/schemas/DagVersionResponse'
+          - type: 'null'
+      type: object
+      required:
+      - id
+      - task_id
+      - dag_id
+      - dag_run_id
+      - map_index
+      - logical_date
+      - run_after
+      - start_date
+      - end_date
+      - duration
+      - state
+      - try_number
+      - max_tries
+      - task_display_name
+      - dag_display_name
+      - hostname
+      - unixname
+      - pool
+      - pool_slots
+      - queue
+      - priority_weight
+      - operator
+      - operator_name
+      - queued_when
+      - scheduled_when
+      - pid
+      - executor
+      - executor_config
+      - note
+      - rendered_map_index
+      - trigger
+      - triggerer_job
+      - dag_version
+      title: TaskInstanceResponse
+      description: TaskInstance serializer for responses.
+    JsonValue: {}
+    TriggerDAGRunPostBody:
+      properties:
+        dag_run_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Dag Run Id
+        data_interval_start:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Data Interval Start
+        data_interval_end:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Data Interval End
+        logical_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date
+        run_after:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After
+        conf:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Conf
+        note:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Note
+        partition_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Partition Key
+      additionalProperties: false
+      type: object
+      required:
+      - logical_date
+      title: TriggerDAGRunPostBody
+      description: Trigger DAG Run Serializer for POST body.
+    DAGRunClearBody:
+      properties:
+        dry_run:
+          type: boolean
+          title: Dry Run
+          default: true
+        only_failed:
+          type: boolean
+          title: Only Failed
+          default: false
+        run_on_latest_version:
+          type: boolean
+          title: Run On Latest Version
+          description: (Experimental) Run on the latest bundle version of the Dag after clearing the Dag Run.
+          default: false
+      additionalProperties: false
+      type: object
+      title: DAGRunClearBody
+      description: DAG Run serializer for clear endpoint body.
+    DagVersionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        version_number:
+          type: integer
+          title: Version Number
+        dag_id:
+          type: string
+          title: Dag Id
+        bundle_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bundle Name
+        bundle_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bundle Version
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+        bundle_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bundle Url
+      type: object
+      required:
+      - id
+      - version_number
+      - dag_id
+      - bundle_name
+      - bundle_version
+      - created_at
+      - dag_display_name
+      - bundle_url
+      title: DagVersionResponse
+      description: Dag Version serializer for responses.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DagRunType:
+      type: string
+      enum:
+      - backfill
+      - scheduled
+      - manual
+      - operator_triggered
+      - asset_triggered
+      - asset_materialization
+      title: DagRunType
+      description: Class with DagRun types.
+    DAGRunPatchStates:
+      type: string
+      enum:
+      - queued
+      - success
+      - failed
+      title: DAGRunPatchStates
+      description: Enum for DAG Run states when updating a DAG Run.
+    DAGRunCollectionResponse:
+      properties:
+        dag_runs:
+          items:
+            $ref: '#/components/schemas/DAGRunResponse'
+          type: array
+          title: Dag Runs
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - dag_runs
+      - total_entries
+      title: DAGRunCollectionResponse
+      description: DAG Run Collection serializer for responses.
+    AssetEventResponse:
+      properties:
+        id:
+          type: integer
+          title: Id
+        asset_id:
+          type: integer
+          title: Asset Id
+        uri:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Uri
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        group:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Group
+        extra:
+          anyOf:
+          - additionalProperties:
+              $ref: '#/components/schemas/JsonValue'
+            type: object
+          - type: 'null'
+          title: Extra
+        source_task_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Task Id
+        source_dag_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Dag Id
+        source_run_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Run Id
+        source_map_index:
+          type: integer
+          title: Source Map Index
+        created_dagruns:
+          items:
+            $ref: '#/components/schemas/DagRunAssetReference'
+          type: array
+          title: Created Dagruns
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+        partition_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Partition Key
+      type: object
+      required:
+      - id
+      - asset_id
+      - source_map_index
+      - created_dagruns
+      - timestamp
+      title: AssetEventResponse
+      description: Asset event serializer for responses.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DagRunTriggeredByType:
+      type: string
+      enum:
+      - cli
+      - operator
+      - rest_api
+      - ui
+      - test
+      - timetable
+      - asset
+      - backfill
+      title: DagRunTriggeredByType
+      description: Class with TriggeredBy types for DagRun.
+    TaskInstanceState:
+      type: string
+      enum:
+      - removed
+      - scheduled
+      - queued
+      - running
+      - success
+      - restarting
+      - failed
+      - up_for_retry
+      - up_for_reschedule
+      - upstream_failed
+      - skipped
+      - deferred
+      title: TaskInstanceState
+      description: 'All possible states that a Task Instance can be in.
+
+
+        Note that None is also allowed, so always use this in a type hint with Optional.'
+    TaskInstance:
       properties:
         dag_id:
-          readOnly: true
           type: string
-        data_interval_end:
-          format: date-time
-          readOnly: true
+        dag_run_id:
+          description: 'The DagRun ID for this task instance
+
+
+            *New in version 2.3.0*
+
+            '
+          type: string
+        duration:
           type:
-          - string
-          - 'null'
-        data_interval_start:
-          format: date-time
-          readOnly: true
-          type:
-          - string
+          - number
           - 'null'
         end_date:
-          format: date-time
-          readOnly: true
+          format: datetime
           type:
           - string
           - 'null'
-        logical_date:
-          description: 'The logical date (previously called execution date). This is the time or interval covered by
+        execution_date:
+          format: datetime
+          type: string
+        executor_config:
+          type: string
+        hostname:
+          type: string
+        map_index:
+          type: integer
+        max_tries:
+          type: integer
+        note:
+          description: 'Contains manually entered notes by the user about the TaskInstance.
 
-            this DAG run, according to the DAG definition.
 
-
-            The value of this field can be set only when creating the object. If you try to modify the
-
-            field of an existing object, the request fails with an BAD_REQUEST error.
-
-
-            This together with DAG_ID are a unique key.
-
-
-            *New in version 2.2.0*
+            *New in version 2.5.0*
 
             '
-          format: date-time
-          type: string
-        run_id:
-          description: 'Run ID.
+          type:
+          - string
+          - 'null'
+        operator:
+          description: '*Changed in version 2.1.1*&#58; Field becomes nullable.
 
             '
+          type:
+          - string
+          - 'null'
+        pid:
+          type:
+          - integer
+          - 'null'
+        pool:
           type: string
+        pool_slots:
+          type: integer
+        priority_weight:
+          type:
+          - integer
+          - 'null'
+        queue:
+          type:
+          - string
+          - 'null'
+        queued_when:
+          type:
+          - string
+          - 'null'
+        rendered_fields:
+          description: 'JSON object describing rendered fields.
+
+
+            *New in version 2.3.0*
+
+            '
+          type: object
+        sla_miss:
+          $ref: '#/components/schemas/SLAMiss'
         start_date:
-          description: 'The start time. The time when DAG run was actually created.
-
-
-            *Changed in version 2.1.3*&#58; Field becomes nullable.
-
-            '
-          format: date-time
-          readOnly: true
+          format: datetime
           type:
           - string
           - 'null'
         state:
-          $ref: '#/components/schemas/DagState'
-      type: object
-    Trigger:
-      properties:
-        classpath:
+          $ref: '#/components/schemas/TaskState'
+        task_id:
           type: string
-        created_date:
-          format: datetime
-          type: string
-        id:
+        trigger:
+          $ref: '#/components/schemas/Trigger'
+        triggerer_job:
+          $ref: '#/components/schemas/Job'
+        try_number:
           type: integer
-        kwargs:
+        unixname:
           type: string
-        triggerer_id:
-          type:
-          - integer
-          - 'null'
-      type: object
-    DatasetEventCollection:
-      allOf:
-      - properties:
-          dataset_events:
-            items:
-              $ref: '#/components/schemas/DatasetEvent'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'A collection of dataset events.
-
-
-        *New in version 2.4.0*
-
-        '
       type: object
     DAGRun:
       properties:
@@ -524,111 +2436,67 @@ components:
         state:
           $ref: '#/components/schemas/DagState'
       type: object
-    ClearDagRun:
-      properties:
-        dry_run:
-          default: true
-          description: 'If set, don''t actually run this operation. The response will contain a list of task instances
-
-            planned to be cleaned, but not modified in any way.
-
-            '
-          type: boolean
-      type: object
-    DAGRunCollection:
-      allOf:
-      - properties:
-          dag_runs:
-            items:
-              $ref: '#/components/schemas/DAGRun'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of DAG runs.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    Error:
-      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
-
-        '
-      properties:
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        instance:
-          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
-
-            not yield further information if dereferenced.
-
-            '
-          type: string
-        status:
-          description: The HTTP status code generated by the API server for this occurrence of the problem.
-          type: number
-        title:
-          description: A short, human-readable summary of the problem type.
-          type: string
-        type:
-          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
-
-            encourages that, when dereferenced, it provide human-readable documentation for
-
-            the problem type.
-
-            '
-          type: string
-      required:
-      - type
-      - title
-      - status
-      type: object
-    Job:
+    BasicDAGRun:
       properties:
         dag_id:
+          readOnly: true
+          type: string
+        data_interval_end:
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        data_interval_start:
+          format: date-time
+          readOnly: true
           type:
           - string
           - 'null'
         end_date:
-          format: datetime
+          format: date-time
+          readOnly: true
           type:
           - string
           - 'null'
-        executor_class:
-          type:
-          - string
-          - 'null'
-        hostname:
-          type:
-          - string
-          - 'null'
-        id:
-          type: integer
-        job_type:
-          type:
-          - string
-          - 'null'
-        latest_heartbeat:
-          format: datetime
-          type:
-          - string
-          - 'null'
+        logical_date:
+          description: 'The logical date (previously called execution date). This is the time or interval covered by
+
+            this DAG run, according to the DAG definition.
+
+
+            The value of this field can be set only when creating the object. If you try to modify the
+
+            field of an existing object, the request fails with an BAD_REQUEST error.
+
+
+            This together with DAG_ID are a unique key.
+
+
+            *New in version 2.2.0*
+
+            '
+          format: date-time
+          type: string
+        run_id:
+          description: 'Run ID.
+
+            '
+          type: string
         start_date:
-          format: datetime
+          description: 'The start time. The time when DAG run was actually created.
+
+
+            *Changed in version 2.1.3*&#58; Field becomes nullable.
+
+            '
+          format: date-time
+          readOnly: true
           type:
           - string
           - 'null'
         state:
-          type:
-          - string
-          - 'null'
-        unixname:
-          type:
-          - string
-          - 'null'
+          $ref: '#/components/schemas/DagState'
       type: object
     ListDagRunsForm:
       properties:
@@ -720,103 +2588,20 @@ components:
             type: string
           type: array
       type: object
-    TaskInstance:
-      properties:
-        dag_id:
-          type: string
-        dag_run_id:
-          description: 'The DagRun ID for this task instance
+    DagState:
+      description: 'DAG State.
 
 
-            *New in version 2.3.0*
+        *Changed in version 2.1.3*&#58; ''queued'' is added as a possible value.
 
-            '
-          type: string
-        duration:
-          type:
-          - number
-          - 'null'
-        end_date:
-          format: datetime
-          type:
-          - string
-          - 'null'
-        execution_date:
-          format: datetime
-          type: string
-        executor_config:
-          type: string
-        hostname:
-          type: string
-        map_index:
-          type: integer
-        max_tries:
-          type: integer
-        note:
-          description: 'Contains manually entered notes by the user about the TaskInstance.
-
-
-            *New in version 2.5.0*
-
-            '
-          type:
-          - string
-          - 'null'
-        operator:
-          description: '*Changed in version 2.1.1*&#58; Field becomes nullable.
-
-            '
-          type:
-          - string
-          - 'null'
-        pid:
-          type:
-          - integer
-          - 'null'
-        pool:
-          type: string
-        pool_slots:
-          type: integer
-        priority_weight:
-          type:
-          - integer
-          - 'null'
-        queue:
-          type:
-          - string
-          - 'null'
-        queued_when:
-          type:
-          - string
-          - 'null'
-        rendered_fields:
-          description: 'JSON object describing rendered fields.
-
-
-            *New in version 2.3.0*
-
-            '
-          type: object
-        sla_miss:
-          $ref: '#/components/schemas/SLAMiss'
-        start_date:
-          format: datetime
-          type:
-          - string
-          - 'null'
-        state:
-          $ref: '#/components/schemas/TaskState'
-        task_id:
-          type: string
-        trigger:
-          $ref: '#/components/schemas/Trigger'
-        triggerer_job:
-          $ref: '#/components/schemas/Job'
-        try_number:
-          type: integer
-        unixname:
-          type: string
-      type: object
+        '
+      enum:
+      - queued
+      - running
+      - success
+      - failed
+      readOnly: true
+      type: string
     SLAMiss:
       properties:
         dag_id:
@@ -843,16 +2628,46 @@ components:
       type:
       - object
       - 'null'
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
+    TaskState:
+      description: 'Task state.
 
-            (limit, offset) are applied.
+
+        *Changed in version 2.0.2*&#58; ''removed'' is added as a possible value.
+
+
+        *Changed in version 2.2.0*&#58; ''deferred'' is added as a possible value.
+
+
+        *Changed in version 2.4.0*&#58; ''sensing'' state has been removed.
+
+        *Changed in version 2.4.2*&#58; ''restarting'' is added as a possible value
+
+        '
+      enum:
+      - success
+      - running
+      - failed
+      - upstream_failed
+      - skipped
+      - up_for_retry
+      - up_for_reschedule
+      - queued
+      - none
+      - scheduled
+      - deferred
+      - removed
+      - restarting
+      type: string
+    ClearDagRun:
+      properties:
+        dry_run:
+          default: true
+          description: 'If set, don''t actually run this operation. The response will contain a list of task instances
+
+            planned to be cleaned, but not modified in any way.
 
             '
-          type: integer
+          type: boolean
       type: object
     TaskInstanceCollection:
       allOf:
@@ -867,6 +2682,90 @@ components:
 
 
         *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    Error:
+      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
+
+        '
+      properties:
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        instance:
+          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
+
+            not yield further information if dereferenced.
+
+            '
+          type: string
+        status:
+          description: The HTTP status code generated by the API server for this occurrence of the problem.
+          type: number
+        title:
+          description: A short, human-readable summary of the problem type.
+          type: string
+        type:
+          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
+
+            encourages that, when dereferenced, it provide human-readable documentation for
+
+            the problem type.
+
+            '
+          type: string
+      required:
+      - type
+      - title
+      - status
+      type: object
+    Trigger:
+      properties:
+        classpath:
+          type: string
+        created_date:
+          format: datetime
+          type: string
+        id:
+          type: integer
+        kwargs:
+          type: string
+        triggerer_id:
+          type:
+          - integer
+          - 'null'
+      type: object
+    SetDagRunNote:
+      properties:
+        note:
+          description: Custom notes left by users for this Dag Run.
+          type: string
+      type: object
+    DatasetEventCollection:
+      allOf:
+      - properties:
+          dataset_events:
+            items:
+              $ref: '#/components/schemas/DatasetEvent'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'A collection of dataset events.
+
+
+        *New in version 2.4.0*
 
         '
       type: object
@@ -886,11 +2785,65 @@ components:
           - queued
           type: string
       type: object
-    SetDagRunNote:
+    DAGRunCollection:
+      allOf:
+      - properties:
+          dag_runs:
+            items:
+              $ref: '#/components/schemas/DAGRun'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of DAG runs.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    Job:
       properties:
-        note:
-          description: Custom notes left by users for this Dag Run.
-          type: string
+        dag_id:
+          type:
+          - string
+          - 'null'
+        end_date:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        executor_class:
+          type:
+          - string
+          - 'null'
+        hostname:
+          type:
+          - string
+          - 'null'
+        id:
+          type: integer
+        job_type:
+          type:
+          - string
+          - 'null'
+        latest_heartbeat:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        start_date:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        unixname:
+          type:
+          - string
+          - 'null'
       type: object
     DatasetEvent:
       description: 'A dataset event.
@@ -939,66 +2892,47 @@ components:
           description: The dataset event creation time
           type: string
       type: object
-    TaskState:
-      description: 'Task state.
-
-
-        *Changed in version 2.0.2*&#58; ''removed'' is added as a possible value.
-
-
-        *Changed in version 2.2.0*&#58; ''deferred'' is added as a possible value.
-
-
-        *Changed in version 2.4.0*&#58; ''sensing'' state has been removed.
-
-        *Changed in version 2.4.2*&#58; ''restarting'' is added as a possible value
-
-        '
-      enum:
-      - success
-      - running
-      - failed
-      - upstream_failed
-      - skipped
-      - up_for_retry
-      - up_for_reschedule
-      - queued
-      - none
-      - scheduled
-      - deferred
-      - removed
-      - restarting
-      type: string
-    DagState:
-      description: 'DAG State.
-
-
-        *Changed in version 2.1.3*&#58; ''queued'' is added as a possible value.
-
-        '
-      enum:
-      - queued
-      - running
-      - success
-      - failed
-      readOnly: true
-      type: string
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /auth/token
+    HTTPBearer:
+      type: http
+      scheme: bearer
+    Basic:
+      scheme: basic
+      type: http
+    GoogleOpenId:
+      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+      type: openIdConnect
+    Kerberos:
+      scheme: negotiate
+      type: http
   parameters:
-    DAGID:
-      description: The DAG ID.
+    DAGRunID:
+      description: The DAG run ID.
       in: path
-      name: dag_id
+      name: dag_run_id
       required: true
       schema:
         type: string
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
+    FilterExecutionDateGTE:
+      description: 'Returns objects greater or equal to the specified date.
+
+
+        This can be combined with execution_date_lte parameter to receive only the selected period.
+
+        '
       in: query
-      name: offset
+      name: execution_date_gte
       required: false
       schema:
-        minimum: 0
-        type: integer
+        format: date-time
+        type: string
     PageLimit:
       description: The numbers of items to return.
       in: query
@@ -1007,28 +2941,15 @@ components:
       schema:
         default: 100
         type: integer
-    FilterExecutionDateLTE:
+    FilterEndDateLTE:
       description: 'Returns objects less than or equal to the specified date.
 
 
-        This can be combined with execution_date_gte parameter to receive only the selected period.
+        This can be combined with start_date_gte parameter to receive only the selected period.
 
         '
       in: query
-      name: execution_date_lte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    FilterEndDateGTE:
-      description: 'Returns objects greater or equal the specified date.
-
-
-        This can be combined with start_date_lte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: end_date_gte
+      name: end_date_lte
       required: false
       schema:
         format: date-time
@@ -1042,6 +2963,19 @@ components:
         '
       in: query
       name: start_date_gte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    FilterStartDateLTE:
+      description: 'Returns objects less or equal the specified date.
+
+
+        This can be combined with start_date_gte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: start_date_lte
       required: false
       schema:
         format: date-time
@@ -1060,28 +2994,15 @@ components:
       required: false
       schema:
         type: string
-    FilterExecutionDateGTE:
-      description: 'Returns objects greater or equal to the specified date.
+    FilterExecutionDateLTE:
+      description: 'Returns objects less than or equal to the specified date.
 
 
-        This can be combined with execution_date_lte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: execution_date_gte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    FilterStartDateLTE:
-      description: 'Returns objects less or equal the specified date.
-
-
-        This can be combined with start_date_gte parameter to receive only the selected period.
+        This can be combined with execution_date_gte parameter to receive only the selected period.
 
         '
       in: query
-      name: start_date_lte
+      name: execution_date_lte
       required: false
       schema:
         format: date-time
@@ -1095,25 +3016,33 @@ components:
         items:
           type: string
         type: array
-    DAGRunID:
-      description: The DAG run ID.
-      in: path
-      name: dag_run_id
-      required: true
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
       schema:
-        type: string
-    FilterEndDateLTE:
-      description: 'Returns objects less than or equal to the specified date.
+        minimum: 0
+        type: integer
+    FilterEndDateGTE:
+      description: 'Returns objects greater or equal the specified date.
 
 
-        This can be combined with start_date_gte parameter to receive only the selected period.
+        This can be combined with start_date_lte parameter to receive only the selected period.
 
         '
       in: query
-      name: end_date_lte
+      name: end_date_gte
       required: false
       schema:
         format: date-time
+        type: string
+    DAGID:
+      description: The DAG ID.
+      in: path
+      name: dag_id
+      required: true
+      schema:
         type: string
   responses:
     AlreadyExists:
@@ -1122,39 +3051,27 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: An existing resource conflicts with the request.
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.
     BadRequest:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client specified an invalid argument.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
-  securitySchemes:
-    Basic:
-      scheme: basic
-      type: http
-    GoogleOpenId:
-      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
-      type: openIdConnect
-    Kerberos:
-      scheme: negotiate
-      type: http
-externalDocs:
-  url: https://airflow.apache.org/docs/apache-airflow/stable/
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.

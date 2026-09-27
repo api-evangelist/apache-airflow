@@ -1,0 +1,463 @@
+# x-archived-from: airflow-plugin-api-openapi.yml
+# x-archived-on: 2026-09-26
+openapi: 3.2.0
+info:
+  title: Airflow Plugin API
+  description: Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+  version: '2'
+tags:
+- name: Plugin
+paths:
+  /api/v2/plugins:
+    get:
+      tags:
+      - Plugin
+      summary: Airflow Get Plugins
+      operationId: get_plugins
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PluginCollectionResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /api/v2/plugins/importErrors:
+    get:
+      tags:
+      - Plugin
+      summary: Airflow Import Errors
+      operationId: import_errors
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PluginImportErrorCollectionResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  schemas:
+    PluginResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        macros:
+          items:
+            type: string
+          type: array
+          title: Macros
+        flask_blueprints:
+          items:
+            type: string
+          type: array
+          title: Flask Blueprints
+        fastapi_apps:
+          items:
+            $ref: '#/components/schemas/FastAPIAppResponse'
+          type: array
+          title: Fastapi Apps
+        fastapi_root_middlewares:
+          items:
+            $ref: '#/components/schemas/FastAPIRootMiddlewareResponse'
+          type: array
+          title: Fastapi Root Middlewares
+        external_views:
+          items:
+            $ref: '#/components/schemas/ExternalViewResponse'
+          type: array
+          title: External Views
+          description: Aggregate all external views. Both 'external_views' and 'appbuilder_menu_items' are included here.
+        react_apps:
+          items:
+            $ref: '#/components/schemas/ReactAppResponse'
+          type: array
+          title: React Apps
+        appbuilder_views:
+          items:
+            $ref: '#/components/schemas/AppBuilderViewResponse'
+          type: array
+          title: Appbuilder Views
+        appbuilder_menu_items:
+          items:
+            $ref: '#/components/schemas/AppBuilderMenuItemResponse'
+          type: array
+          title: Appbuilder Menu Items
+          deprecated: true
+        global_operator_extra_links:
+          items:
+            type: string
+          type: array
+          title: Global Operator Extra Links
+        operator_extra_links:
+          items:
+            type: string
+          type: array
+          title: Operator Extra Links
+        source:
+          type: string
+          title: Source
+        listeners:
+          items:
+            type: string
+          type: array
+          title: Listeners
+        timetables:
+          items:
+            type: string
+          type: array
+          title: Timetables
+      type: object
+      required:
+      - name
+      - macros
+      - flask_blueprints
+      - fastapi_apps
+      - fastapi_root_middlewares
+      - external_views
+      - react_apps
+      - appbuilder_views
+      - appbuilder_menu_items
+      - global_operator_extra_links
+      - operator_extra_links
+      - source
+      - listeners
+      - timetables
+      title: PluginResponse
+      description: Plugin serializer.
+    FastAPIRootMiddlewareResponse:
+      properties:
+        middleware:
+          type: string
+          title: Middleware
+        name:
+          type: string
+          title: Name
+      additionalProperties: true
+      type: object
+      required:
+      - middleware
+      - name
+      title: FastAPIRootMiddlewareResponse
+      description: Serializer for Plugin FastAPI root middleware responses.
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    PluginImportErrorCollectionResponse:
+      properties:
+        import_errors:
+          items:
+            $ref: '#/components/schemas/PluginImportErrorResponse'
+          type: array
+          title: Import Errors
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - import_errors
+      - total_entries
+      title: PluginImportErrorCollectionResponse
+      description: Plugin Import Error Collection serializer.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PluginCollectionResponse:
+      properties:
+        plugins:
+          items:
+            $ref: '#/components/schemas/PluginResponse'
+          type: array
+          title: Plugins
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - plugins
+      - total_entries
+      title: PluginCollectionResponse
+      description: Plugin Collection serializer.
+    PluginImportErrorResponse:
+      properties:
+        source:
+          type: string
+          title: Source
+        error:
+          type: string
+          title: Error
+      type: object
+      required:
+      - source
+      - error
+      title: PluginImportErrorResponse
+      description: Plugin Import Error serializer for responses.
+    ExternalViewResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        icon:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Icon
+        icon_dark_mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Icon Dark Mode
+        url_route:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url Route
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        href:
+          type: string
+          title: Href
+        destination:
+          type: string
+          enum:
+          - nav
+          - dag
+          - dag_run
+          - task
+          - task_instance
+          - base
+          title: Destination
+          default: nav
+      additionalProperties: true
+      type: object
+      required:
+      - name
+      - href
+      title: ExternalViewResponse
+      description: Serializer for External View Plugin responses.
+    AppBuilderMenuItemResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        href:
+          type: string
+          title: Href
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+      additionalProperties: true
+      type: object
+      required:
+      - name
+      - href
+      title: AppBuilderMenuItemResponse
+      description: Serializer for AppBuilder Menu Item responses.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ReactAppResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        icon:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Icon
+        icon_dark_mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Icon Dark Mode
+        url_route:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url Route
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        bundle_url:
+          type: string
+          title: Bundle Url
+        destination:
+          type: string
+          enum:
+          - nav
+          - dag
+          - dag_run
+          - task
+          - task_instance
+          - base
+          - dashboard
+          title: Destination
+          default: nav
+      additionalProperties: true
+      type: object
+      required:
+      - name
+      - bundle_url
+      title: ReactAppResponse
+      description: Serializer for React App Plugin responses.
+    FastAPIAppResponse:
+      properties:
+        app:
+          type: string
+          title: App
+        url_prefix:
+          type: string
+          title: Url Prefix
+        name:
+          type: string
+          title: Name
+      additionalProperties: true
+      type: object
+      required:
+      - app
+      - url_prefix
+      - name
+      title: FastAPIAppResponse
+      description: Serializer for Plugin FastAPI App responses.
+    AppBuilderViewResponse:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        view:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: View
+        label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Label
+      additionalProperties: true
+      type: object
+      title: AppBuilderViewResponse
+      description: Serializer for AppBuilder View responses.
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /auth/token
+    HTTPBearer:
+      type: http
+      scheme: bearer

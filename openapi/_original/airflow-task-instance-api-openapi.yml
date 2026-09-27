@@ -1,3 +1,5 @@
+# x-archived-from: airflow-task-instance-api-openapi.yml
+# x-archived-on: 2026-09-26
 openapi: 3.2.0
 info:
   title: Airflow Task Instance API
@@ -2764,365 +2766,247 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/FilterExecutionDateGTE'
-    - $ref: '#/components/parameters/FilterExecutionDateLTE'
-    - $ref: '#/components/parameters/FilterStartDateGTE'
-    - $ref: '#/components/parameters/FilterStartDateLTE'
-    - $ref: '#/components/parameters/FilterEndDateGTE'
-    - $ref: '#/components/parameters/FilterEndDateLTE'
-    - $ref: '#/components/parameters/FilterDurationGTE'
-    - $ref: '#/components/parameters/FilterDurationLTE'
-    - $ref: '#/components/parameters/FilterState'
-    - $ref: '#/components/parameters/FilterPool'
-    - $ref: '#/components/parameters/FilterQueue'
-    get:
-      description: This endpoint allows specifying `~` as the dag_id, dag_run_id to retrieve DAG runs for all DAGs and DAG runs.
-      operationId: get_task_instances
-      parameters:
-      - $ref: '#/components/parameters/PageLimit'
-      - $ref: '#/components/parameters/PageOffset'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskInstanceCollection'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow List Task Instances
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/TaskID'
-    get:
-      operationId: get_task_instance
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskInstance'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Get a Task Instance
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
-    patch:
-      description: 'Updates the state for single task instance.
-
-        *New in version 2.5.0*'
-      operationId: patch_task_instance
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateTaskInstance'
-        description: Parameters of action
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskInstanceReference'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Updates the State of a Task Instance
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/links:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/TaskID'
-    get:
-      description: List extra links for task instance.
-      operationId: get_extra_links
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExtraLinkCollection'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow List Extra Links
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.extra_link_endpoint
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/listMapped:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/TaskID'
-    get:
-      description: 'Get details of all mapped task instances.
-
-
-        *New in version 2.3.0*'
-      operationId: get_mapped_task_instances
-      parameters:
-      - $ref: '#/components/parameters/PageLimit'
-      - $ref: '#/components/parameters/PageOffset'
-      - $ref: '#/components/parameters/FilterExecutionDateGTE'
-      - $ref: '#/components/parameters/FilterExecutionDateLTE'
-      - $ref: '#/components/parameters/FilterStartDateGTE'
-      - $ref: '#/components/parameters/FilterStartDateLTE'
-      - $ref: '#/components/parameters/FilterEndDateGTE'
-      - $ref: '#/components/parameters/FilterEndDateLTE'
-      - $ref: '#/components/parameters/FilterDurationGTE'
-      - $ref: '#/components/parameters/FilterDurationLTE'
-      - $ref: '#/components/parameters/FilterState'
-      - $ref: '#/components/parameters/FilterPool'
-      - $ref: '#/components/parameters/FilterQueue'
-      - $ref: '#/components/parameters/OrderBy'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskInstanceCollection'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow List Mapped Task Instances
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/logs/{task_try_number}:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/TaskID'
-    - $ref: '#/components/parameters/TaskTryNumber'
-    - $ref: '#/components/parameters/FullContent'
-    - $ref: '#/components/parameters/FilterMapIndex'
-    - $ref: '#/components/parameters/ContinuationToken'
-    get:
-      description: Get logs for a specific task instance and its try number.
-      operationId: get_log
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  content:
-                    type: string
-                  continuation_token:
-                    type: string
-                type: object
-            text/plain:
-              schema:
-                type: string
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Get Logs
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.log_endpoint
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/setNote:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/TaskID'
-    patch:
-      description: 'Update the manual user note of a non-mapped Task Instance.
-
-
-        *New in version 2.5.0*'
-      operationId: set_task_instance_note
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SetTaskInstanceNote'
-        description: Parameters of set Task Instance note.
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskInstance'
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Update the TaskInstance Note
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/TaskID'
-    - $ref: '#/components/parameters/MapIndex'
-    get:
-      description: 'Get details of a mapped task instance.
-
-
-        *New in version 2.3.0*'
-      operationId: get_mapped_task_instance
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskInstance'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Get a Mapped Task Instance
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
-    patch:
-      description: 'Updates the state for single mapped task instance.
-
-        *New in version 2.5.0*'
-      operationId: patch_mapped_task_instance
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateTaskInstance'
-        description: Parameters of action
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskInstanceReference'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Updates the State of a Mapped Task Instance
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/setNote:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/TaskID'
-    - $ref: '#/components/parameters/MapIndex'
-    patch:
-      description: 'Update the manual user note of a mapped Task Instance.
-
-
-        *New in version 2.5.0*'
-      operationId: set_mapped_task_instance_note
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SetTaskInstanceNote'
-        description: Parameters of set Task Instance note.
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskInstance'
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Update the TaskInstance Note
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
-  /dags/~/dagRuns/~/taskInstances/list:
-    post:
-      description: 'List task instances from all DAGs and DAG runs.
-
-        This endpoint is a POST to allow filtering across a large number of DAG IDs, where as a GET it would run in to maximum HTTP request URL length limits.'
-      operationId: get_task_instances_batch
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ListTaskInstanceForm'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskInstanceCollection'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow List Task Instances (batch)
-      tags:
-      - Task Instance
-      x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
 components:
   schemas:
+    TaskInstanceHistoryResponse:
+      properties:
+        task_id:
+          type: string
+          title: Task Id
+        dag_id:
+          type: string
+          title: Dag Id
+        dag_run_id:
+          type: string
+          title: Dag Run Id
+        map_index:
+          type: integer
+          title: Map Index
+        start_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+        duration:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration
+        state:
+          anyOf:
+          - $ref: '#/components/schemas/TaskInstanceState'
+          - type: 'null'
+        try_number:
+          type: integer
+          title: Try Number
+        max_tries:
+          type: integer
+          title: Max Tries
+        task_display_name:
+          type: string
+          title: Task Display Name
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+        hostname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hostname
+        unixname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unixname
+        pool:
+          type: string
+          title: Pool
+        pool_slots:
+          type: integer
+          title: Pool Slots
+        queue:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Queue
+        priority_weight:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Priority Weight
+        operator:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator
+        operator_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator Name
+        queued_when:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Queued When
+        scheduled_when:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Scheduled When
+        pid:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Pid
+        executor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Executor
+        executor_config:
+          type: string
+          title: Executor Config
+        dag_version:
+          anyOf:
+          - $ref: '#/components/schemas/DagVersionResponse'
+          - type: 'null'
+      type: object
+      required:
+      - task_id
+      - dag_id
+      - dag_run_id
+      - map_index
+      - start_date
+      - end_date
+      - duration
+      - state
+      - try_number
+      - max_tries
+      - task_display_name
+      - dag_display_name
+      - hostname
+      - unixname
+      - pool
+      - pool_slots
+      - queue
+      - priority_weight
+      - operator
+      - operator_name
+      - queued_when
+      - scheduled_when
+      - pid
+      - executor
+      - executor_config
+      - dag_version
+      title: TaskInstanceHistoryResponse
+      description: TaskInstanceHistory serializer for responses.
+    BulkActionOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      - overwrite
+      title: BulkActionOnExistence
+      description: Bulk Action to be taken if the entity already exists or not.
+    BulkDeleteAction_BulkTaskInstanceBody_:
+      properties:
+        action:
+          type: string
+          const: delete
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            anyOf:
+            - type: string
+            - $ref: '#/components/schemas/BulkTaskInstanceBody'
+          type: array
+          title: Entities
+          description: A list of entity id/key or entity objects to be deleted.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkDeleteAction[BulkTaskInstanceBody]
+    ExtraLinkCollectionResponse:
+      properties:
+        extra_links:
+          additionalProperties:
+            anyOf:
+            - type: string
+            - type: 'null'
+          type: object
+          title: Extra Links
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - extra_links
+      - total_entries
+      title: ExtraLinkCollectionResponse
+      description: Extra Links Response.
+    HITLDetailResponse:
+      properties:
+        responded_by:
+          $ref: '#/components/schemas/HITLUser'
+        responded_at:
+          type: string
+          format: date-time
+          title: Responded At
+        chosen_options:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Chosen Options
+        params_input:
+          additionalProperties: true
+          type: object
+          title: Params Input
+      type: object
+      required:
+      - responded_by
+      - responded_at
+      - chosen_options
+      title: HITLDetailResponse
+      description: Response of updating a Human-in-the-loop detail.
+    BulkCreateAction_BulkTaskInstanceBody_:
+      properties:
+        action:
+          type: string
+          const: create
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/BulkTaskInstanceBody'
+          type: array
+          title: Entities
+          description: A list of entities to be created.
+        action_on_existence:
+          $ref: '#/components/schemas/BulkActionOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkCreateAction[BulkTaskInstanceBody]
     BulkUpdateAction_BulkTaskInstanceBody_:
       properties:
         action:
@@ -3153,112 +3037,38 @@ components:
       - action
       - entities
       title: BulkUpdateAction[BulkTaskInstanceBody]
-    TriggerResponse:
+    PatchTaskInstanceBody:
       properties:
-        id:
-          type: integer
-          title: Id
-        classpath:
-          type: string
-          title: Classpath
-        kwargs:
-          type: string
-          title: Kwargs
-        created_date:
-          type: string
-          format: date-time
-          title: Created Date
-        queue:
+        new_state:
+          anyOf:
+          - $ref: '#/components/schemas/TaskInstanceState'
+          - type: 'null'
+        note:
           anyOf:
           - type: string
+            maxLength: 1000
           - type: 'null'
-          title: Queue
-        triggerer_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Triggerer Id
+          title: Note
+        include_upstream:
+          type: boolean
+          title: Include Upstream
+          default: false
+        include_downstream:
+          type: boolean
+          title: Include Downstream
+          default: false
+        include_future:
+          type: boolean
+          title: Include Future
+          default: false
+        include_past:
+          type: boolean
+          title: Include Past
+          default: false
+      additionalProperties: false
       type: object
-      required:
-      - id
-      - classpath
-      - kwargs
-      - created_date
-      - queue
-      - triggerer_id
-      title: TriggerResponse
-      description: Trigger serializer for responses.
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    TaskInstanceCollectionResponse:
-      properties:
-        task_instances:
-          items:
-            $ref: '#/components/schemas/TaskInstanceResponse'
-          type: array
-          title: Task Instances
-        total_entries:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Total Entries
-          description: Total number of matching items. Populated for offset pagination, ``null`` when using cursor pagination.
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-          description: Token pointing to the next page. Populated for cursor pagination, ``null`` when using offset pagination or when there is no next page.
-        previous_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Previous Cursor
-          description: Token pointing to the previous page. Populated for cursor pagination, ``null`` when using offset pagination or when on the first page.
-      type: object
-      required:
-      - task_instances
-      title: TaskInstanceCollectionResponse
-      description: 'Task instance collection response supporting both offset and cursor pagination.
-
-
-        A single flat model is used instead of a discriminated union
-
-        (``Annotated[Offset | Cursor, Field(discriminator=...)]``) because
-
-        the OpenAPI ``oneOf`` + ``discriminator`` construct is not handled
-
-        correctly by ``@hey-api/openapi-ts`` / ``@7nohe/openapi-react-query-codegen``:
-
-        return types degrade to ``unknown`` in JSDoc and can produce
-
-        incorrect TypeScript types (see hey-api/openapi-ts#1613, #3270).'
-    StructuredLogMessage:
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-        event:
-          type: string
-          title: Event
-      additionalProperties: true
-      type: object
-      required:
-      - event
-      title: StructuredLogMessage
-      description: An individual log message.
+      title: PatchTaskInstanceBody
+      description: Request body for Clear Task Instances endpoint.
     HITLDetail:
       properties:
         options:
@@ -3349,26 +3159,12 @@ components:
       required:
       - actions
       title: BulkBody[BulkTaskInstanceBody]
-    JobResponse:
+    ClearTaskInstancesBody:
       properties:
-        id:
-          type: integer
-          title: Id
-        dag_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Dag Id
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        job_type:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Job Type
+        dry_run:
+          type: boolean
+          title: Dry Run
+          default: true
         start_date:
           anyOf:
           - type: string
@@ -3381,68 +3177,160 @@ components:
             format: date-time
           - type: 'null'
           title: End Date
-        latest_heartbeat:
+        only_failed:
+          type: boolean
+          title: Only Failed
+          default: true
+        only_running:
+          type: boolean
+          title: Only Running
+          default: false
+        reset_dag_runs:
+          type: boolean
+          title: Reset Dag Runs
+          default: true
+        task_ids:
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - prefixItems:
+                - type: string
+                - type: integer
+                type: array
+                maxItems: 2
+                minItems: 2
+            type: array
+          - type: 'null'
+          title: Task Ids
+          description: A list of `task_id` or [`task_id`, `map_index`]. If only the `task_id` is provided for a mapped task, all of its map indices will be targeted.
+        dag_run_id:
           anyOf:
           - type: string
-            format: date-time
           - type: 'null'
-          title: Latest Heartbeat
-        executor_class:
+          title: Dag Run Id
+        include_upstream:
+          type: boolean
+          title: Include Upstream
+          default: false
+        include_downstream:
+          type: boolean
+          title: Include Downstream
+          default: false
+        include_future:
+          type: boolean
+          title: Include Future
+          default: false
+        include_past:
+          type: boolean
+          title: Include Past
+          default: false
+        run_on_latest_version:
+          type: boolean
+          title: Run On Latest Version
+          description: (Experimental) Run on the latest bundle version of the dag after clearing the task instances.
+          default: false
+        prevent_running_task:
+          type: boolean
+          title: Prevent Running Task
+          default: false
+        note:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Note
+      additionalProperties: false
+      type: object
+      title: ClearTaskInstancesBody
+      description: Request body for Clear Task Instances endpoint.
+    TaskInstancesLogResponse:
+      properties:
+        content:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/StructuredLogMessage'
+            type: array
+          - items:
+              type: string
+            type: array
+          title: Content
+        continuation_token:
           anyOf:
           - type: string
           - type: 'null'
-          title: Executor Class
-        hostname:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Hostname
-        unixname:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Unixname
-        dag_display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Dag Display Name
+          title: Continuation Token
+      type: object
+      required:
+      - content
+      - continuation_token
+      title: TaskInstancesLogResponse
+      description: Log serializer for responses.
+    HITLUser:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
       type: object
       required:
       - id
-      - dag_id
-      - state
-      - job_type
-      - start_date
-      - end_date
-      - latest_heartbeat
-      - executor_class
-      - hostname
-      - unixname
-      title: JobResponse
-      description: Job serializer for responses.
-    BulkCreateAction_BulkTaskInstanceBody_:
+      - name
+      title: HITLUser
+      description: Schema for a Human-in-the-loop users.
+    BulkResponse:
       properties:
-        action:
-          type: string
-          const: create
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
+        create:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk create operation, including successful keys and errors.
+        update:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk update operation, including successful keys and errors.
+        delete:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk delete operation, including successful keys and errors.
+      type: object
+      title: BulkResponse
+      description: 'Serializer for responses to bulk entity operations.
+
+
+        This represents the results of create, update, and delete actions performed on entity in bulk.
+
+        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
+
+        Fields are populated in the response only if the respective action was part of the request, else are set None.'
+    BulkActionNotOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      title: BulkActionNotOnExistence
+      description: Bulk Action to be taken if the entity does not exist.
+    UpdateHITLDetailPayload:
+      properties:
+        chosen_options:
           items:
-            $ref: '#/components/schemas/BulkTaskInstanceBody'
+            type: string
           type: array
-          title: Entities
-          description: A list of entities to be created.
-        action_on_existence:
-          $ref: '#/components/schemas/BulkActionOnExistence'
-          default: fail
-      additionalProperties: false
+          minItems: 1
+          title: Chosen Options
+        params_input:
+          additionalProperties: true
+          type: object
+          title: Params Input
       type: object
       required:
-      - action
-      - entities
-      title: BulkCreateAction[BulkTaskInstanceBody]
+      - chosen_options
+      title: UpdateHITLDetailPayload
+      description: Schema for updating the content of a Human-in-the-loop detail.
     TaskInstanceResponse:
       properties:
         id:
@@ -3628,241 +3516,6 @@ components:
       - dag_version
       title: TaskInstanceResponse
       description: TaskInstance serializer for responses.
-    TaskInstanceHistoryResponse:
-      properties:
-        task_id:
-          type: string
-          title: Task Id
-        dag_id:
-          type: string
-          title: Dag Id
-        dag_run_id:
-          type: string
-          title: Dag Run Id
-        map_index:
-          type: integer
-          title: Map Index
-        start_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Start Date
-        end_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: End Date
-        duration:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Duration
-        state:
-          anyOf:
-          - $ref: '#/components/schemas/TaskInstanceState'
-          - type: 'null'
-        try_number:
-          type: integer
-          title: Try Number
-        max_tries:
-          type: integer
-          title: Max Tries
-        task_display_name:
-          type: string
-          title: Task Display Name
-        dag_display_name:
-          type: string
-          title: Dag Display Name
-        hostname:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Hostname
-        unixname:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Unixname
-        pool:
-          type: string
-          title: Pool
-        pool_slots:
-          type: integer
-          title: Pool Slots
-        queue:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Queue
-        priority_weight:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Priority Weight
-        operator:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Operator
-        operator_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Operator Name
-        queued_when:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Queued When
-        scheduled_when:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Scheduled When
-        pid:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Pid
-        executor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Executor
-        executor_config:
-          type: string
-          title: Executor Config
-        dag_version:
-          anyOf:
-          - $ref: '#/components/schemas/DagVersionResponse'
-          - type: 'null'
-      type: object
-      required:
-      - task_id
-      - dag_id
-      - dag_run_id
-      - map_index
-      - start_date
-      - end_date
-      - duration
-      - state
-      - try_number
-      - max_tries
-      - task_display_name
-      - dag_display_name
-      - hostname
-      - unixname
-      - pool
-      - pool_slots
-      - queue
-      - priority_weight
-      - operator
-      - operator_name
-      - queued_when
-      - scheduled_when
-      - pid
-      - executor
-      - executor_config
-      - dag_version
-      title: TaskInstanceHistoryResponse
-      description: TaskInstanceHistory serializer for responses.
-    BulkActionNotOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      title: BulkActionNotOnExistence
-      description: Bulk Action to be taken if the entity does not exist.
-    UpdateHITLDetailPayload:
-      properties:
-        chosen_options:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          title: Chosen Options
-        params_input:
-          additionalProperties: true
-          type: object
-          title: Params Input
-      type: object
-      required:
-      - chosen_options
-      title: UpdateHITLDetailPayload
-      description: Schema for updating the content of a Human-in-the-loop detail.
-    ExtraLinkCollectionResponse:
-      properties:
-        extra_links:
-          additionalProperties:
-            anyOf:
-            - type: string
-            - type: 'null'
-          type: object
-          title: Extra Links
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - extra_links
-      - total_entries
-      title: ExtraLinkCollectionResponse
-      description: Extra Links Response.
-    BulkActionResponse:
-      properties:
-        success:
-          items:
-            type: string
-          type: array
-          title: Success
-          description: A list of unique id/key representing successful operations.
-          default: []
-        errors:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Errors
-          description: A list of errors encountered during the operation, each containing details about the issue.
-          default: []
-      type: object
-      title: BulkActionResponse
-      description: 'Serializer for individual bulk action responses.
-
-
-        Represents the outcome of a single bulk operation (create, update, or delete).
-
-        The response includes a list of successful keys and any errors encountered during the operation.
-
-        This structure helps users understand which key actions succeeded and which failed.'
-    BulkDeleteAction_BulkTaskInstanceBody_:
-      properties:
-        action:
-          type: string
-          const: delete
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            anyOf:
-            - type: string
-            - $ref: '#/components/schemas/BulkTaskInstanceBody'
-          type: array
-          title: Entities
-          description: A list of entity id/key or entity objects to be deleted.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkDeleteAction[BulkTaskInstanceBody]
     DagVersionResponse:
       properties:
         id:
@@ -3909,107 +3562,6 @@ components:
       - bundle_url
       title: DagVersionResponse
       description: Dag Version serializer for responses.
-    HITLDetailHistory:
-      properties:
-        options:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          title: Options
-        subject:
-          type: string
-          title: Subject
-        body:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Body
-        defaults:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Defaults
-        multiple:
-          type: boolean
-          title: Multiple
-          default: false
-        params:
-          additionalProperties: true
-          type: object
-          title: Params
-        assigned_users:
-          items:
-            $ref: '#/components/schemas/HITLUser'
-          type: array
-          title: Assigned Users
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        responded_by_user:
-          anyOf:
-          - $ref: '#/components/schemas/HITLUser'
-          - type: 'null'
-        responded_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Responded At
-        chosen_options:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Chosen Options
-        params_input:
-          additionalProperties: true
-          type: object
-          title: Params Input
-        response_received:
-          type: boolean
-          title: Response Received
-          default: false
-        task_instance:
-          $ref: '#/components/schemas/TaskInstanceHistoryResponse'
-      type: object
-      required:
-      - options
-      - subject
-      - created_at
-      - task_instance
-      title: HITLDetailHistory
-      description: Schema for Human-in-the-loop detail history.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     TaskInstancesBatchBody:
       properties:
         dag_ids:
@@ -4198,6 +3750,86 @@ components:
       type: object
       title: TaskInstancesBatchBody
       description: Task Instance body for get batch.
+    TaskDependencyResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        reason:
+          type: string
+          title: Reason
+      type: object
+      required:
+      - name
+      - reason
+      title: TaskDependencyResponse
+      description: Task Dependency serializer for responses.
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    ExternalLogUrlResponse:
+      properties:
+        url:
+          type: string
+          title: Url
+      type: object
+      required:
+      - url
+      title: ExternalLogUrlResponse
+      description: Response for the external log URL endpoint.
+    TaskInstanceCollectionResponse:
+      properties:
+        task_instances:
+          items:
+            $ref: '#/components/schemas/TaskInstanceResponse'
+          type: array
+          title: Task Instances
+        total_entries:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Entries
+          description: Total number of matching items. Populated for offset pagination, ``null`` when using cursor pagination.
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Token pointing to the next page. Populated for cursor pagination, ``null`` when using offset pagination or when there is no next page.
+        previous_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Previous Cursor
+          description: Token pointing to the previous page. Populated for cursor pagination, ``null`` when using offset pagination or when on the first page.
+      type: object
+      required:
+      - task_instances
+      title: TaskInstanceCollectionResponse
+      description: 'Task instance collection response supporting both offset and cursor pagination.
+
+
+        A single flat model is used instead of a discriminated union
+
+        (``Annotated[Offset | Cursor, Field(discriminator=...)]``) because
+
+        the OpenAPI ``oneOf`` + ``discriminator`` construct is not handled
+
+        correctly by ``@hey-api/openapi-ts`` / ``@7nohe/openapi-react-query-codegen``:
+
+        return types degrade to ``unknown`` in JSDoc and can produce
+
+        incorrect TypeScript types (see hey-api/openapi-ts#1613, #3270).'
     TaskInstanceHistoryCollectionResponse:
       properties:
         task_instances:
@@ -4214,81 +3846,32 @@ components:
       - total_entries
       title: TaskInstanceHistoryCollectionResponse
       description: TaskInstanceHistory Collection serializer for responses.
-    HITLDetailCollection:
+    ValidationError:
       properties:
-        hitl_details:
+        loc:
           items:
-            $ref: '#/components/schemas/HITLDetail'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Hitl Details
-        total_entries:
-          type: integer
-          title: Total Entries
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - hitl_details
-      - total_entries
-      title: HITLDetailCollection
-      description: Schema for a collection of Human-in-the-loop details.
-    BulkActionOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      - overwrite
-      title: BulkActionOnExistence
-      description: Bulk Action to be taken if the entity already exists or not.
-    TaskDependencyResponse:
-      properties:
-        name:
-          type: string
-          title: Name
-        reason:
-          type: string
-          title: Reason
-      type: object
-      required:
-      - name
-      - reason
-      title: TaskDependencyResponse
-      description: Task Dependency serializer for responses.
-    BulkResponse:
-      properties:
-        create:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk create operation, including successful keys and errors.
-        update:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk update operation, including successful keys and errors.
-        delete:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk delete operation, including successful keys and errors.
-      type: object
-      title: BulkResponse
-      description: 'Serializer for responses to bulk entity operations.
-
-
-        This represents the results of create, update, and delete actions performed on entity in bulk.
-
-        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
-
-        Fields are populated in the response only if the respective action was part of the request, else are set None.'
-    ExternalLogUrlResponse:
-      properties:
-        url:
-          type: string
-          title: Url
-      type: object
-      required:
-      - url
-      title: ExternalLogUrlResponse
-      description: Response for the external log URL endpoint.
+      - loc
+      - msg
+      - type
+      title: ValidationError
     TaskDependencyCollectionResponse:
       properties:
         dependencies:
@@ -4301,44 +3884,26 @@ components:
       - dependencies
       title: TaskDependencyCollectionResponse
       description: Task scheduling dependencies collection serializer for responses.
-    PatchTaskInstanceBody:
+    JobResponse:
       properties:
-        new_state:
-          anyOf:
-          - $ref: '#/components/schemas/TaskInstanceState'
-          - type: 'null'
-        note:
+        id:
+          type: integer
+          title: Id
+        dag_id:
           anyOf:
           - type: string
-            maxLength: 1000
           - type: 'null'
-          title: Note
-        include_upstream:
-          type: boolean
-          title: Include Upstream
-          default: false
-        include_downstream:
-          type: boolean
-          title: Include Downstream
-          default: false
-        include_future:
-          type: boolean
-          title: Include Future
-          default: false
-        include_past:
-          type: boolean
-          title: Include Past
-          default: false
-      additionalProperties: false
-      type: object
-      title: PatchTaskInstanceBody
-      description: Request body for Clear Task Instances endpoint.
-    ClearTaskInstancesBody:
-      properties:
-        dry_run:
-          type: boolean
-          title: Dry Run
-          default: true
+          title: Dag Id
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        job_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Job Type
         start_date:
           anyOf:
           - type: string
@@ -4351,121 +3916,46 @@ components:
             format: date-time
           - type: 'null'
           title: End Date
-        only_failed:
-          type: boolean
-          title: Only Failed
-          default: true
-        only_running:
-          type: boolean
-          title: Only Running
-          default: false
-        reset_dag_runs:
-          type: boolean
-          title: Reset Dag Runs
-          default: true
-        task_ids:
+        latest_heartbeat:
           anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - prefixItems:
-                - type: string
-                - type: integer
-                type: array
-                maxItems: 2
-                minItems: 2
-            type: array
+          - type: string
+            format: date-time
           - type: 'null'
-          title: Task Ids
-          description: A list of `task_id` or [`task_id`, `map_index`]. If only the `task_id` is provided for a mapped task, all of its map indices will be targeted.
-        dag_run_id:
+          title: Latest Heartbeat
+        executor_class:
           anyOf:
           - type: string
           - type: 'null'
-          title: Dag Run Id
-        include_upstream:
-          type: boolean
-          title: Include Upstream
-          default: false
-        include_downstream:
-          type: boolean
-          title: Include Downstream
-          default: false
-        include_future:
-          type: boolean
-          title: Include Future
-          default: false
-        include_past:
-          type: boolean
-          title: Include Past
-          default: false
-        run_on_latest_version:
-          type: boolean
-          title: Run On Latest Version
-          description: (Experimental) Run on the latest bundle version of the dag after clearing the task instances.
-          default: false
-        prevent_running_task:
-          type: boolean
-          title: Prevent Running Task
-          default: false
-        note:
+          title: Executor Class
+        hostname:
           anyOf:
           - type: string
-            maxLength: 1000
           - type: 'null'
-          title: Note
-      additionalProperties: false
-      type: object
-      title: ClearTaskInstancesBody
-      description: Request body for Clear Task Instances endpoint.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    HITLDetailResponse:
-      properties:
-        responded_by:
-          $ref: '#/components/schemas/HITLUser'
-        responded_at:
-          type: string
-          format: date-time
-          title: Responded At
-        chosen_options:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          title: Chosen Options
-        params_input:
-          additionalProperties: true
-          type: object
-          title: Params Input
-      type: object
-      required:
-      - responded_by
-      - responded_at
-      - chosen_options
-      title: HITLDetailResponse
-      description: Response of updating a Human-in-the-loop detail.
-    HITLUser:
-      properties:
-        id:
-          type: string
-          title: Id
-        name:
-          type: string
-          title: Name
+          title: Hostname
+        unixname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unixname
+        dag_display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Dag Display Name
       type: object
       required:
       - id
-      - name
-      title: HITLUser
-      description: Schema for a Human-in-the-loop users.
+      - dag_id
+      - state
+      - job_type
+      - start_date
+      - end_date
+      - latest_heartbeat
+      - executor_class
+      - hostname
+      - unixname
+      title: JobResponse
+      description: Job serializer for responses.
     BulkTaskInstanceBody:
       properties:
         new_state:
@@ -4518,28 +4008,6 @@ components:
       - task_id
       title: BulkTaskInstanceBody
       description: Request body for bulk update, and delete task instances.
-    TaskInstancesLogResponse:
-      properties:
-        content:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/StructuredLogMessage'
-            type: array
-          - items:
-              type: string
-            type: array
-          title: Content
-        continuation_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Continuation Token
-      type: object
-      required:
-      - content
-      - continuation_token
-      title: TaskInstancesLogResponse
-      description: Log serializer for responses.
     TaskInstanceState:
       type: string
       enum:
@@ -4560,450 +4028,183 @@ components:
 
 
         Note that None is also allowed, so always use this in a type hint with Optional.'
-    TaskInstance:
+    StructuredLogMessage:
       properties:
-        dag_id:
-          type: string
-        dag_run_id:
-          description: 'The DagRun ID for this task instance
-
-
-            *New in version 2.3.0*
-
-            '
-          type: string
-        duration:
-          type:
-          - number
-          - 'null'
-        end_date:
-          format: datetime
-          type:
-          - string
-          - 'null'
-        execution_date:
-          format: datetime
-          type: string
-        executor_config:
-          type: string
-        hostname:
-          type: string
-        map_index:
-          type: integer
-        max_tries:
-          type: integer
-        note:
-          description: 'Contains manually entered notes by the user about the TaskInstance.
-
-
-            *New in version 2.5.0*
-
-            '
-          type:
-          - string
-          - 'null'
-        operator:
-          description: '*Changed in version 2.1.1*&#58; Field becomes nullable.
-
-            '
-          type:
-          - string
-          - 'null'
-        pid:
-          type:
-          - integer
-          - 'null'
-        pool:
-          type: string
-        pool_slots:
-          type: integer
-        priority_weight:
-          type:
-          - integer
-          - 'null'
-        queue:
-          type:
-          - string
-          - 'null'
-        queued_when:
-          type:
-          - string
-          - 'null'
-        rendered_fields:
-          description: 'JSON object describing rendered fields.
-
-
-            *New in version 2.3.0*
-
-            '
-          type: object
-        sla_miss:
-          $ref: '#/components/schemas/SLAMiss'
-        start_date:
-          format: datetime
-          type:
-          - string
-          - 'null'
-        state:
-          $ref: '#/components/schemas/TaskState'
-        task_id:
-          type: string
-        trigger:
-          $ref: '#/components/schemas/Trigger'
-        triggerer_job:
-          $ref: '#/components/schemas/Job'
-        try_number:
-          type: integer
-        unixname:
-          type: string
-      type: object
-    SLAMiss:
-      properties:
-        dag_id:
-          description: The DAG ID.
-          type: string
-        description:
-          type:
-          - string
-          - 'null'
-        email_sent:
-          type: boolean
-        execution_date:
-          format: datetime
-          type: string
-        notification_sent:
-          type: boolean
-        task_id:
-          description: The task ID.
-          readOnly: true
-          type: string
         timestamp:
-          format: datetime
           type: string
-      type:
-      - object
-      - 'null'
-    ClassReference:
-      description: Class reference
-      properties:
-        class_name:
-          readOnly: true
+          format: date-time
+          title: Timestamp
+        event:
           type: string
-        module_path:
-          readOnly: true
-          type: string
+          title: Event
+      additionalProperties: true
       type: object
-    TaskState:
-      description: 'Task state.
-
-
-        *Changed in version 2.0.2*&#58; ''removed'' is added as a possible value.
-
-
-        *Changed in version 2.2.0*&#58; ''deferred'' is added as a possible value.
-
-
-        *Changed in version 2.4.0*&#58; ''sensing'' state has been removed.
-
-        *Changed in version 2.4.2*&#58; ''restarting'' is added as a possible value
-
-        '
-      enum:
-      - success
-      - running
-      - failed
-      - upstream_failed
-      - skipped
-      - up_for_retry
-      - up_for_reschedule
-      - queued
-      - none
-      - scheduled
-      - deferred
-      - removed
-      - restarting
-      type: string
-    ListTaskInstanceForm:
+      required:
+      - event
+      title: StructuredLogMessage
+      description: An individual log message.
+    TriggerResponse:
       properties:
-        dag_ids:
-          description: 'Return objects with specific DAG IDs.
-
-            The value can be repeated to retrieve multiple matching values (OR condition).'
-          items:
-            type: string
-          type: array
-        duration_gte:
-          description: 'Returns objects greater than or equal to the specified values.
-
-
-            This can be combined with duration_lte parameter to receive only the selected period.
-
-            '
-          type: number
-        duration_lte:
-          description: 'Returns objects less than or equal to the specified values.
-
-
-            This can be combined with duration_gte parameter to receive only the selected range.
-
-            '
-          type: number
-        end_date_gte:
-          description: 'Returns objects greater or equal the specified date.
-
-
-            This can be combined with start_date_lte parameter to receive only the selected period.
-
-            '
-          format: date-time
-          type: string
-        end_date_lte:
-          description: 'Returns objects less than or equal to the specified date.
-
-
-            This can be combined with start_date_gte parameter to receive only the selected period.
-
-            '
-          format: date-time
-          type: string
-        execution_date_gte:
-          description: 'Returns objects greater or equal to the specified date.
-
-
-            This can be combined with execution_date_lte parameter to receive only the selected period.
-
-            '
-          format: date-time
-          type: string
-        execution_date_lte:
-          description: 'Returns objects less than or equal to the specified date.
-
-
-            This can be combined with execution_date_gte parameter to receive only the selected period.
-
-            '
-          format: date-time
-          type: string
-        pool:
-          description: The value can be repeated to retrieve multiple matching values (OR condition).
-          items:
-            type: string
-          type: array
-        queue:
-          description: The value can be repeated to retrieve multiple matching values (OR condition).
-          items:
-            type: string
-          type: array
-        start_date_gte:
-          description: 'Returns objects greater or equal the specified date.
-
-
-            This can be combined with start_date_lte parameter to receive only the selected period.
-
-            '
-          format: date-time
-          type: string
-        start_date_lte:
-          description: 'Returns objects less or equal the specified date.
-
-
-            This can be combined with start_date_gte parameter to receive only the selected period.
-
-            '
-          format: date-time
-          type: string
-        state:
-          description: The value can be repeated to retrieve multiple matching values (OR condition).
-          items:
-            $ref: '#/components/schemas/TaskState'
-          type: array
-      type: object
-    ExtraLink:
-      description: Additional links containing additional information about the task.
-      properties:
-        class_ref:
-          $ref: '#/components/schemas/ClassReference'
-        href:
-          readOnly: true
-          type: string
-        name:
-          readOnly: true
-          type: string
-      type: object
-    TaskInstanceCollection:
-      allOf:
-      - properties:
-          task_instances:
-            items:
-              $ref: '#/components/schemas/TaskInstance'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of task instances.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    ExtraLinkCollection:
-      description: The collection of extra links.
-      properties:
-        extra_links:
-          items:
-            $ref: '#/components/schemas/ExtraLink'
-          type: array
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
+        id:
           type: integer
-      type: object
-    SetTaskInstanceNote:
-      properties:
-        note:
-          description: The custom note to set for this Task Instance.
-          type: string
-      required:
-      - note
-      type: object
-    Error:
-      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
-
-        '
-      properties:
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        instance:
-          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
-
-            not yield further information if dereferenced.
-
-            '
-          type: string
-        status:
-          description: The HTTP status code generated by the API server for this occurrence of the problem.
-          type: number
-        title:
-          description: A short, human-readable summary of the problem type.
-          type: string
-        type:
-          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
-
-            encourages that, when dereferenced, it provide human-readable documentation for
-
-            the problem type.
-
-            '
-          type: string
-      required:
-      - type
-      - title
-      - status
-      type: object
-    Trigger:
-      properties:
+          title: Id
         classpath:
           type: string
-        created_date:
-          format: datetime
-          type: string
-        id:
-          type: integer
+          title: Classpath
         kwargs:
           type: string
+          title: Kwargs
+        created_date:
+          type: string
+          format: date-time
+          title: Created Date
+        queue:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Queue
         triggerer_id:
-          type:
-          - integer
-          - 'null'
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Triggerer Id
       type: object
-    UpdateTaskInstance:
+      required:
+      - id
+      - classpath
+      - kwargs
+      - created_date
+      - queue
+      - triggerer_id
+      title: TriggerResponse
+      description: Trigger serializer for responses.
+    BulkActionResponse:
       properties:
-        dry_run:
-          default: false
-          description: 'If set, don''t actually run this operation. The response will contain the task instance
+        success:
+          items:
+            type: string
+          type: array
+          title: Success
+          description: A list of unique id/key representing successful operations.
+          default: []
+        errors:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Errors
+          description: A list of errors encountered during the operation, each containing details about the issue.
+          default: []
+      type: object
+      title: BulkActionResponse
+      description: 'Serializer for individual bulk action responses.
 
-            planned to be affected, but won''t be modified in any way.
 
-            '
+        Represents the outcome of a single bulk operation (create, update, or delete).
+
+        The response includes a list of successful keys and any errors encountered during the operation.
+
+        This structure helps users understand which key actions succeeded and which failed.'
+    HITLDetailHistory:
+      properties:
+        options:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Options
+        subject:
+          type: string
+          title: Subject
+        body:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Body
+        defaults:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Defaults
+        multiple:
           type: boolean
-        new_state:
-          description: Expected new state.
-          enum:
-          - success
-          - failed
+          title: Multiple
+          default: false
+        params:
+          additionalProperties: true
+          type: object
+          title: Params
+        assigned_users:
+          items:
+            $ref: '#/components/schemas/HITLUser'
+          type: array
+          title: Assigned Users
+        created_at:
           type: string
+          format: date-time
+          title: Created At
+        responded_by_user:
+          anyOf:
+          - $ref: '#/components/schemas/HITLUser'
+          - type: 'null'
+        responded_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Responded At
+        chosen_options:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Chosen Options
+        params_input:
+          additionalProperties: true
+          type: object
+          title: Params Input
+        response_received:
+          type: boolean
+          title: Response Received
+          default: false
+        task_instance:
+          $ref: '#/components/schemas/TaskInstanceHistoryResponse'
       type: object
-    Job:
+      required:
+      - options
+      - subject
+      - created_at
+      - task_instance
+      title: HITLDetailHistory
+      description: Schema for Human-in-the-loop detail history.
+    HTTPValidationError:
       properties:
-        dag_id:
-          type:
-          - string
-          - 'null'
-        end_date:
-          format: datetime
-          type:
-          - string
-          - 'null'
-        executor_class:
-          type:
-          - string
-          - 'null'
-        hostname:
-          type:
-          - string
-          - 'null'
-        id:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HITLDetailCollection:
+      properties:
+        hitl_details:
+          items:
+            $ref: '#/components/schemas/HITLDetail'
+          type: array
+          title: Hitl Details
+        total_entries:
           type: integer
-        job_type:
-          type:
-          - string
-          - 'null'
-        latest_heartbeat:
-          format: datetime
-          type:
-          - string
-          - 'null'
-        start_date:
-          format: datetime
-          type:
-          - string
-          - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        unixname:
-          type:
-          - string
-          - 'null'
+          title: Total Entries
       type: object
-    TaskInstanceReference:
-      properties:
-        dag_id:
-          description: The DAG ID.
-          readOnly: true
-          type: string
-        dag_run_id:
-          description: The DAG run ID.
-          readOnly: true
-          type: string
-        execution_date:
-          format: datetime
-          readOnly: true
-          type: string
-        task_id:
-          description: The task ID.
-          readOnly: true
-          type: string
-      type: object
+      required:
+      - hitl_details
+      - total_entries
+      title: HITLDetailCollection
+      description: Schema for a collection of Human-in-the-loop details.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2
@@ -5015,259 +4216,3 @@ components:
     HTTPBearer:
       type: http
       scheme: bearer
-    Basic:
-      scheme: basic
-      type: http
-    GoogleOpenId:
-      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
-      type: openIdConnect
-    Kerberos:
-      scheme: negotiate
-      type: http
-  parameters:
-    DAGRunID:
-      description: The DAG run ID.
-      in: path
-      name: dag_run_id
-      required: true
-      schema:
-        type: string
-    FilterExecutionDateGTE:
-      description: 'Returns objects greater or equal to the specified date.
-
-
-        This can be combined with execution_date_lte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: execution_date_gte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
-    FilterDurationGTE:
-      description: 'Returns objects greater than or equal to the specified values.
-
-
-        This can be combined with duration_lte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: duration_gte
-      required: false
-      schema:
-        type: number
-    FilterEndDateLTE:
-      description: 'Returns objects less than or equal to the specified date.
-
-
-        This can be combined with start_date_gte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: end_date_lte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    FilterStartDateGTE:
-      description: 'Returns objects greater or equal the specified date.
-
-
-        This can be combined with start_date_lte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: start_date_gte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    TaskID:
-      description: The task ID.
-      in: path
-      name: task_id
-      required: true
-      schema:
-        type: string
-    OrderBy:
-      description: 'The name of the field to order the results by.
-
-        Prefix a field name with `-` to reverse the sort order.
-
-
-        *New in version 2.1.0*
-
-        '
-      in: query
-      name: order_by
-      required: false
-      schema:
-        type: string
-    FilterStartDateLTE:
-      description: 'Returns objects less or equal the specified date.
-
-
-        This can be combined with start_date_gte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: start_date_lte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    FilterExecutionDateLTE:
-      description: 'Returns objects less than or equal to the specified date.
-
-
-        This can be combined with execution_date_gte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: execution_date_lte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    FilterState:
-      description: The value can be repeated to retrieve multiple matching values (OR condition).
-      in: query
-      name: state
-      required: false
-      schema:
-        items:
-          type: string
-        type: array
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    FilterEndDateGTE:
-      description: 'Returns objects greater or equal the specified date.
-
-
-        This can be combined with start_date_lte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: end_date_gte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    FilterPool:
-      description: The value can be repeated to retrieve multiple matching values (OR condition).
-      in: query
-      name: pool
-      required: false
-      schema:
-        items:
-          type: string
-        type: array
-    TaskTryNumber:
-      description: The task try number.
-      in: path
-      name: task_try_number
-      required: true
-      schema:
-        type: integer
-    DAGID:
-      description: The DAG ID.
-      in: path
-      name: dag_id
-      required: true
-      schema:
-        type: string
-    FilterDurationLTE:
-      description: 'Returns objects less than or equal to the specified values.
-
-
-        This can be combined with duration_gte parameter to receive only the selected range.
-
-        '
-      in: query
-      name: duration_lte
-      required: false
-      schema:
-        type: number
-    ContinuationToken:
-      description: 'A token that allows you to continue fetching logs.
-
-        If passed, it will specify the location from which the download should be continued.
-
-        '
-      in: query
-      name: token
-      required: false
-      schema:
-        type: string
-    FilterQueue:
-      description: The value can be repeated to retrieve multiple matching values (OR condition).
-      in: query
-      name: queue
-      schema:
-        items:
-          type: string
-        type: array
-    FullContent:
-      description: 'A full content will be returned.
-
-        By default, only the first fragment will be returned.
-
-        '
-      in: query
-      name: full_content
-      required: false
-      schema:
-        type: boolean
-    MapIndex:
-      description: The map index.
-      in: path
-      name: map_index
-      required: true
-      schema:
-        type: integer
-    FilterMapIndex:
-      description: Filter on map index for mapped task.
-      in: query
-      name: map_index
-      schema:
-        type: integer
-  responses:
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client specified an invalid argument.
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.

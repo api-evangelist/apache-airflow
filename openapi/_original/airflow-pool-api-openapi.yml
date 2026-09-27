@@ -1,153 +1,20 @@
+# x-archived-from: airflow-pool-api-openapi.yml
+# x-archived-on: 2026-09-26
 openapi: 3.2.0
 info:
-  title: Apache Airflow Pool API
-  x-refined-note:
-  - x-apisguru-categories differs across the merged source definitions and was not carried
-  - x-logo differs across the merged source definitions and was not carried
-  - x-origin differs across the merged source definitions and was not carried
-  - x-providerName differs across the merged source definitions and was not carried
-  - x-serviceName differs across the merged source definitions and was not carried
-  version: '1.0'
-  description: 'Operations tagged Pool across 2 of this provider''s published API definitions: apache-airflow-openapi.yaml, airflow-pool-api-openapi.yml. Each path carries the servers of the definition it was published in.'
-servers:
-- description: Apache Airflow Stable API.
-  url: /api/v1
-- url: https://apache.local
+  title: Airflow Pool API
+  description: Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+  version: '2'
 tags:
 - name: Pool
 paths:
-  /pools:
-    get:
-      operationId: get_pools
-      parameters:
-      - $ref: '#/components/parameters/PageLimit'
-      - $ref: '#/components/parameters/PageOffset'
-      - $ref: '#/components/parameters/OrderBy'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PoolCollection'
-          description: List of pools.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow List Pools
-      tags:
-      - Pool
-      x-openapi-router-controller: airflow.api_connexion.endpoints.pool_endpoint
-    post:
-      operationId: post_pool
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pool'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pool'
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow Create a Pool
-      tags:
-      - Pool
-      x-openapi-router-controller: airflow.api_connexion.endpoints.pool_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
-  /pools/{pool_name}:
-    parameters:
-    - $ref: '#/components/parameters/PoolName'
-    delete:
-      operationId: delete_pool
-      responses:
-        '204':
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Delete a Pool
-      tags:
-      - Pool
-      x-openapi-router-controller: airflow.api_connexion.endpoints.pool_endpoint
-    get:
-      operationId: get_pool
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pool'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Get a Pool
-      tags:
-      - Pool
-      x-openapi-router-controller: airflow.api_connexion.endpoints.pool_endpoint
-    patch:
-      operationId: patch_pool
-      parameters:
-      - $ref: '#/components/parameters/UpdateMask'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pool'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pool'
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '409':
-          $ref: '#/components/responses/AlreadyExists'
-      summary: Apache Airflow Update a Pool
-      tags:
-      - Pool
-      x-openapi-router-controller: airflow.api_connexion.endpoints.pool_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
   /api/v2/pools/{pool_name}:
     delete:
       tags:
       - Pool
       summary: Airflow Delete Pool
       description: Delete a pool entry.
-      operationId: deleteApiV2PoolsByPoolName
+      operationId: delete_pool
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -194,14 +61,12 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: delete_pool
     get:
       tags:
       - Pool
       summary: Airflow Get Pool
       description: Get a pool.
-      operationId: getApiV2PoolsByPoolName
+      operationId: get_pool
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -246,14 +111,12 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: get_pool
     patch:
       tags:
       - Pool
       summary: Airflow Patch Pool
       description: Update a Pool.
-      operationId: patchApiV2PoolsByPoolName
+      operationId: patch_pool
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -320,15 +183,13 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: patch_pool
   /api/v2/pools:
     get:
       tags:
       - Pool
       summary: Airflow Get Pools
       description: Get all pools entries.
-      operationId: getApiV2Pools
+      operationId: get_pools
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -405,14 +266,12 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: get_pools
     post:
       tags:
       - Pool
       summary: Airflow Post Pool
       description: Create a Pool.
-      operationId: postApiV2Pools
+      operationId: post_pool
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -456,8 +315,6 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: post_pool
     patch:
       tags:
       - Pool
@@ -502,200 +359,7 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
-  parameters:
-    PoolName:
-      description: The pool name.
-      in: path
-      name: pool_name
-      required: true
-      schema:
-        type: string
-    OrderBy:
-      description: 'The name of the field to order the results by.
-
-        Prefix a field name with `-` to reverse the sort order.
-
-
-        *New in version 2.1.0*
-
-        '
-      in: query
-      name: order_by
-      required: false
-      schema:
-        type: string
-    UpdateMask:
-      description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
-
-        A comma-separated list of fully qualified names of fields.
-
-        '
-      explode: false
-      in: query
-      name: update_mask
-      schema:
-        items:
-          type: string
-        type: array
-      style: form
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
   schemas:
-    Error:
-      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
-
-        '
-      properties:
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        instance:
-          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
-
-            not yield further information if dereferenced.
-
-            '
-          type: string
-        status:
-          description: The HTTP status code generated by the API server for this occurrence of the problem.
-          type: number
-        title:
-          description: A short, human-readable summary of the problem type.
-          type: string
-        type:
-          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
-
-            encourages that, when dereferenced, it provide human-readable documentation for
-
-            the problem type.
-
-            '
-          type: string
-      required:
-      - type
-      - title
-      - status
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
-    Pool:
-      description: The pool
-      properties:
-        description:
-          description: 'The description of the pool.
-
-
-            *New in version 2.3.0*
-
-            '
-          type:
-          - string
-          - 'null'
-        name:
-          description: The name of pool.
-          type: string
-        occupied_slots:
-          description: The number of slots used by running/queued tasks at the moment.
-          readOnly: true
-          type: integer
-        open_slots:
-          description: The number of free slots at the moment.
-          readOnly: true
-          type: integer
-        queued_slots:
-          description: The number of slots used by queued tasks at the moment.
-          readOnly: true
-          type: integer
-        slots:
-          description: 'The maximum number of slots that can be assigned to tasks. One job may occupy one or more slots.
-
-            '
-          type: integer
-        used_slots:
-          description: The number of slots used by running tasks at the moment.
-          readOnly: true
-          type: integer
-      type: object
-    PoolCollection:
-      allOf:
-      - properties:
-          pools:
-            items:
-              $ref: '#/components/schemas/Pool'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of pools.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    BulkBody_PoolBody_:
-      properties:
-        actions:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/BulkCreateAction_PoolBody_'
-            - $ref: '#/components/schemas/BulkUpdateAction_PoolBody_'
-            - $ref: '#/components/schemas/BulkDeleteAction_PoolBody_'
-          type: array
-          title: Actions
-      additionalProperties: false
-      type: object
-      required:
-      - actions
-      title: BulkBody[PoolBody]
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     PoolPatchBody:
       properties:
         pool:
@@ -730,15 +394,148 @@ components:
       type: object
       title: PoolPatchBody
       description: Pool serializer for patch bodies.
-    HTTPValidationError:
+    HTTPExceptionResponse:
       properties:
         detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
           title: Detail
       type: object
-      title: HTTPValidationError
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    PoolBody:
+      properties:
+        name:
+          type: string
+          maxLength: 256
+          title: Name
+        slots:
+          type: integer
+          minimum: -1.0
+          title: Slots
+          description: Number of slots. Use -1 for unlimited.
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        include_deferred:
+          type: boolean
+          title: Include Deferred
+          default: false
+        team_name:
+          anyOf:
+          - type: string
+            maxLength: 50
+          - type: 'null'
+          title: Team Name
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - slots
+      title: PoolBody
+      description: Pool serializer for post bodies.
+    BulkUpdateAction_PoolBody_:
+      properties:
+        action:
+          type: string
+          const: update
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/PoolBody'
+          type: array
+          title: Entities
+          description: A list of entities to be updated.
+        update_mask:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Update Mask
+          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkUpdateAction[PoolBody]
+    BulkActionOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      - overwrite
+      title: BulkActionOnExistence
+      description: Bulk Action to be taken if the entity already exists or not.
+    PoolCollectionResponse:
+      properties:
+        pools:
+          items:
+            $ref: '#/components/schemas/PoolResponse'
+          type: array
+          title: Pools
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - pools
+      - total_entries
+      title: PoolCollectionResponse
+      description: Pool Collection serializer for responses.
+    BulkBody_PoolBody_:
+      properties:
+        actions:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/BulkCreateAction_PoolBody_'
+            - $ref: '#/components/schemas/BulkUpdateAction_PoolBody_'
+            - $ref: '#/components/schemas/BulkDeleteAction_PoolBody_'
+          type: array
+          title: Actions
+      additionalProperties: false
+      type: object
+      required:
+      - actions
+      title: BulkBody[PoolBody]
+    BulkResponse:
+      properties:
+        create:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk create operation, including successful keys and errors.
+        update:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk update operation, including successful keys and errors.
+        delete:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk delete operation, including successful keys and errors.
+      type: object
+      title: BulkResponse
+      description: 'Serializer for responses to bulk entity operations.
+
+
+        This represents the results of create, update, and delete actions performed on entity in bulk.
+
+        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
+
+        Fields are populated in the response only if the respective action was part of the request, else are set None.'
     PoolResponse:
       properties:
         name:
@@ -794,84 +591,6 @@ components:
       - team_name
       title: PoolResponse
       description: Pool serializer for responses.
-    BulkUpdateAction_PoolBody_:
-      properties:
-        action:
-          type: string
-          const: update
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            $ref: '#/components/schemas/PoolBody'
-          type: array
-          title: Entities
-          description: A list of entities to be updated.
-        update_mask:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Update Mask
-          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkUpdateAction[PoolBody]
-    BulkDeleteAction_PoolBody_:
-      properties:
-        action:
-          type: string
-          const: delete
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            anyOf:
-            - type: string
-            - $ref: '#/components/schemas/PoolBody'
-          type: array
-          title: Entities
-          description: A list of entity id/key or entity objects to be deleted.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkDeleteAction[PoolBody]
-    PoolCollectionResponse:
-      properties:
-        pools:
-          items:
-            $ref: '#/components/schemas/PoolResponse'
-          type: array
-          title: Pools
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - pools
-      - total_entries
-      title: PoolCollectionResponse
-      description: Pool Collection serializer for responses.
-    BulkActionOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      - overwrite
-      title: BulkActionOnExistence
-      description: Bulk Action to be taken if the entity already exists or not.
     BulkActionNotOnExistence:
       type: string
       enum:
@@ -879,6 +598,28 @@ components:
       - skip
       title: BulkActionNotOnExistence
       description: Bulk Action to be taken if the entity does not exist.
+    BulkCreateAction_PoolBody_:
+      properties:
+        action:
+          type: string
+          const: create
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/PoolBody'
+          type: array
+          title: Entities
+          description: A list of entities to be created.
+        action_on_existence:
+          $ref: '#/components/schemas/BulkActionOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkCreateAction[PoolBody]
     BulkActionResponse:
       properties:
         success:
@@ -906,142 +647,66 @@ components:
         The response includes a list of successful keys and any errors encountered during the operation.
 
         This structure helps users understand which key actions succeeded and which failed.'
-    BulkResponse:
-      properties:
-        create:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk create operation, including successful keys and errors.
-        update:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk update operation, including successful keys and errors.
-        delete:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk delete operation, including successful keys and errors.
-      type: object
-      title: BulkResponse
-      description: 'Serializer for responses to bulk entity operations.
-
-
-        This represents the results of create, update, and delete actions performed on entity in bulk.
-
-        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
-
-        Fields are populated in the response only if the respective action was part of the request, else are set None.'
-    BulkCreateAction_PoolBody_:
+    BulkDeleteAction_PoolBody_:
       properties:
         action:
           type: string
-          const: create
+          const: delete
           title: Action
           description: The action to be performed on the entities.
         entities:
           items:
-            $ref: '#/components/schemas/PoolBody'
+            anyOf:
+            - type: string
+            - $ref: '#/components/schemas/PoolBody'
           type: array
           title: Entities
-          description: A list of entities to be created.
-        action_on_existence:
-          $ref: '#/components/schemas/BulkActionOnExistence'
+          description: A list of entity id/key or entity objects to be deleted.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
           default: fail
       additionalProperties: false
       type: object
       required:
       - action
       - entities
-      title: BulkCreateAction[PoolBody]
-    HTTPExceptionResponse:
+      title: BulkDeleteAction[PoolBody]
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
       properties:
         detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
           title: Detail
       type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    PoolBody:
-      properties:
-        name:
-          type: string
-          maxLength: 256
-          title: Name
-        slots:
-          type: integer
-          minimum: -1.0
-          title: Slots
-          description: Number of slots. Use -1 for unlimited.
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        include_deferred:
-          type: boolean
-          title: Include Deferred
-          default: false
-        team_name:
-          anyOf:
-          - type: string
-            maxLength: 50
-          - type: 'null'
-          title: Team Name
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      - slots
-      title: PoolBody
-      description: Pool serializer for post bodies.
-  responses:
-    AlreadyExists:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: An existing resource conflicts with the request.
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client specified an invalid argument.
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.
+      title: HTTPValidationError
   securitySchemes:
-    Basic:
-      scheme: basic
-      type: http
-    GoogleOpenId:
-      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
-      type: openIdConnect
-    Kerberos:
-      scheme: negotiate
-      type: http
     OAuth2PasswordBearer:
       type: oauth2
       description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
@@ -1052,8 +717,3 @@ components:
     HTTPBearer:
       type: http
       scheme: bearer
-externalDocs:
-  url: https://airflow.apache.org/docs/apache-airflow/stable/
-x-refined-from:
-- apache-airflow-openapi.yaml
-- airflow-pool-api-openapi.yml

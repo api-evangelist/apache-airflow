@@ -41,7 +41,7 @@ tags:
 - DAG
 - Data Pipeline
 - ETL
-- Open-Source
+- Open Source
 - Orchestration
 - Python
 - Scheduling
@@ -56,6 +56,7 @@ tags_raw:
 - Python
 - Scheduling
 - Workflow
+- Open-Source
 created: '2024-01-15'
 modified: '2026-06-20'
 url: https://raw.githubusercontent.com/api-evangelist/apache-airflow/refs/heads/main/apis.yml
@@ -405,9 +406,295 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+- aid: apache-airflow:apache-airflow-asset-api
+  name: Apache Airflow Asset API
+  description: The Asset API from Apache Airflow — 9 operation(s) for asset.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Asset
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-asset-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-backfill-api
+  name: Apache Airflow Backfill API
+  description: The Backfill API from Apache Airflow — 6 operation(s) for backfill.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Backfill
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-backfill-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-dag-parsing-api
+  name: Apache Airflow DAG Parsing API
+  description: The DAG Parsing API from Apache Airflow — 1 operation(s) for dag parsing.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - DAG Parsing
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-dag-parsing-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-dagsource-api
+  name: Apache Airflow Dag Source API
+  description: The DagSource API from Apache Airflow — 1 operation(s) for dagsource.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - DagSource
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-dagsource-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-dagstats-api
+  name: Apache Airflow Dag Stats API
+  description: The DagStats API from Apache Airflow — 1 operation(s) for dagstats.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - DagStats
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-dagstats-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-dagversion-api
+  name: Apache Airflow Dag Version API
+  description: The DagVersion API from Apache Airflow — 2 operation(s) for dagversion.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - DagVersion
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-dagversion-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-experimental-api
+  name: Apache Airflow Experimental API
+  description: The Experimental API from Apache Airflow — 1 operation(s) for experimental.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Experimental
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-experimental-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-extra-links-api
+  name: Apache Airflow Extra Links API
+  description: The Extra Links API from Apache Airflow — 1 operation(s) for extra links.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Extra Links
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-extra-links-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-job-api
+  name: Apache Airflow Job API
+  description: The Job API from Apache Airflow — 1 operation(s) for job.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Job
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-job-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-login-api
+  name: Apache Airflow Login API
+  description: The Login API from Apache Airflow — 2 operation(s) for login.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Login
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-login-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-monitor-api
+  name: Apache Airflow Monitor API
+  description: The Monitor API from Apache Airflow — 1 operation(s) for monitor.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Monitor
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-monitor-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-task-api
+  name: Apache Airflow Task API
+  description: The Task API from Apache Airflow — 2 operation(s) for task.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Task
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-task-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-version-api
+  name: Apache Airflow Version API
+  description: The Version API from Apache Airflow — 1 operation(s) for version.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Version
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-version-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: APIReference
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow/
+  - type: SDKs
+    url: https://pypi.org/project/apache-airflow-client/
+  - type: SDKs
+    url: https://github.com/apache/airflow
 common:
 - type: Website
-  url: https://www.apache.org/
+  url: https://airflow.apache.org/
 - type: Overlay
   url: overlays/apache-airflow-openapi-overlay.yaml
 - type: IssueTracker

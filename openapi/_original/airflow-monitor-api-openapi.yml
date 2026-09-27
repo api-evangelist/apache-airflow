@@ -1,0 +1,124 @@
+# x-archived-from: airflow-monitor-api-openapi.yml
+# x-archived-on: 2026-09-26
+openapi: 3.2.0
+info:
+  title: Airflow Monitor API
+  description: Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+  version: '2'
+tags:
+- name: Monitor
+paths:
+  /api/v2/monitor/health:
+    get:
+      tags:
+      - Monitor
+      summary: Airflow Get Health
+      operationId: get_health
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthInfoResponse'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  schemas:
+    DagProcessorInfoResponse:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        latest_dag_processor_heartbeat:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Latest Dag Processor Heartbeat
+      type: object
+      required:
+      - status
+      - latest_dag_processor_heartbeat
+      title: DagProcessorInfoResponse
+      description: DagProcessor info serializer for responses.
+    TriggererInfoResponse:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        latest_triggerer_heartbeat:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Latest Triggerer Heartbeat
+      type: object
+      required:
+      - status
+      - latest_triggerer_heartbeat
+      title: TriggererInfoResponse
+      description: Triggerer info serializer for responses.
+    HealthInfoResponse:
+      properties:
+        metadatabase:
+          $ref: '#/components/schemas/BaseInfoResponse'
+        scheduler:
+          $ref: '#/components/schemas/SchedulerInfoResponse'
+        triggerer:
+          $ref: '#/components/schemas/TriggererInfoResponse'
+        dag_processor:
+          anyOf:
+          - $ref: '#/components/schemas/DagProcessorInfoResponse'
+          - type: 'null'
+      type: object
+      required:
+      - metadatabase
+      - scheduler
+      - triggerer
+      title: HealthInfoResponse
+      description: Health serializer for responses.
+    SchedulerInfoResponse:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        latest_scheduler_heartbeat:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Latest Scheduler Heartbeat
+      type: object
+      required:
+      - status
+      - latest_scheduler_heartbeat
+      title: SchedulerInfoResponse
+      description: Scheduler info serializer for responses.
+    BaseInfoResponse:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      type: object
+      required:
+      - status
+      title: BaseInfoResponse
+      description: Base info serializer for responses.
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /auth/token
+    HTTPBearer:
+      type: http
+      scheme: bearer

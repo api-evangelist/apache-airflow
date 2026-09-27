@@ -1,36 +1,18 @@
 openapi: 3.2.0
 info:
-  contact:
-    email: dev@airflow.apache.org
-    name: Apache Software Foundation
-    url: https://airflow.apache.org
-    x-twitter: TheASF
-  description: '# Overview
-
-
-    To facilitate management, Apache Airflow supports a range of REST API endpoints across its
-
-    objects.'
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Airflow API (Stable) Provider API
-  version: 2.5.3
-  x-apisguru-categories:
-  - messaging
-  x-logo:
-    url: https://twitter.com/TheASF/profile_image?size=original
-  x-origin:
-  - format: openapi
-    url: https://airflow.apache.org/docs/apache-airflow/stable/_specs/v1.yaml
-    version: '3.0'
-  x-providerName: apache.org
-  x-serviceName: airflow
+  title: Apache Airflow Provider API
+  x-refined-note:
+  - x-apisguru-categories differs across the merged source definitions and was not carried
+  - x-logo differs across the merged source definitions and was not carried
+  - x-origin differs across the merged source definitions and was not carried
+  - x-providerName differs across the merged source definitions and was not carried
+  - x-serviceName differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged Provider across 2 of this provider''s published API definitions: apache-airflow-openapi.yaml, airflow-provider-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - description: Apache Airflow Stable API.
   url: /api/v1
 - url: https://apache.local
-security: []
 tags:
 - name: Provider
 paths:
@@ -58,18 +40,81 @@ paths:
       tags:
       - Provider
       x-openapi-router-controller: airflow.api_connexion.endpoints.provider_endpoint
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
+  /api/v2/providers:
+    get:
+      tags:
+      - Provider
+      summary: Airflow Get Providers
+      description: Get providers.
+      operationId: getApiV2Providers
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderCollectionResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+      x-operation-id-source: normalized
+      x-operation-id-original: get_providers
 components:
   schemas:
-    CollectionInfo:
-      description: Metadata about collection.
+    ProviderCollection:
+      description: 'Collection of providers.
+
+
+        *New in version 2.1.0*
+
+        '
       properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
+        providers:
+          items:
+            $ref: '#/components/schemas/Provider'
+          type: array
       type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
@@ -124,32 +169,118 @@ components:
           description: The version of the provider.
           type: string
       type: object
-    ProviderCollection:
-      description: 'Collection of providers.
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
 
+            (limit, offset) are applied.
 
-        *New in version 2.1.0*
-
-        '
+            '
+          type: integer
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ProviderCollectionResponse:
       properties:
         providers:
           items:
-            $ref: '#/components/schemas/Provider'
+            $ref: '#/components/schemas/ProviderResponse'
           type: array
+          title: Providers
+        total_entries:
+          type: integer
+          title: Total Entries
       type: object
+      required:
+      - providers
+      - total_entries
+      title: ProviderCollectionResponse
+      description: Provider Collection serializer for responses.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ProviderResponse:
+      properties:
+        package_name:
+          type: string
+          title: Package Name
+        description:
+          type: string
+          title: Description
+        version:
+          type: string
+          title: Version
+        documentation_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentation Url
+      type: object
+      required:
+      - package_name
+      - description
+      - version
+      - documentation_url
+      title: ProviderResponse
+      description: Provider serializer for responses.
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
   responses:
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
   securitySchemes:
     Basic:
       scheme: basic
@@ -160,5 +291,18 @@ components:
     Kerberos:
       scheme: negotiate
       type: http
+    OAuth2PasswordBearer:
+      type: oauth2
+      description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /auth/token
+    HTTPBearer:
+      type: http
+      scheme: bearer
 externalDocs:
   url: https://airflow.apache.org/docs/apache-airflow/stable/
+x-refined-from:
+- apache-airflow-openapi.yaml
+- airflow-provider-api-openapi.yml

@@ -67,6 +67,31 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DagStatsCollectionResponse:
+      properties:
+        dags:
+          items:
+            $ref: '#/components/schemas/DagStatsResponse'
+          type: array
+          title: Dags
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - dags
+      - total_entries
+      title: DagStatsCollectionResponse
+      description: DAG Stats Collection serializer for responses.
     DagStatsResponse:
       properties:
         dag_id:
@@ -87,6 +112,19 @@ components:
       - stats
       title: DagStatsResponse
       description: DAG Stats serializer for responses.
+    DagStatsStateResponse:
+      properties:
+        state:
+          $ref: '#/components/schemas/DagRunState'
+        count:
+          type: integer
+          title: Count
+      type: object
+      required:
+      - state
+      - count
+      title: DagStatsStateResponse
+      description: DagStatsState serializer for responses.
     ValidationError:
       properties:
         loc:
@@ -113,57 +151,6 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    DagStatsCollectionResponse:
-      properties:
-        dags:
-          items:
-            $ref: '#/components/schemas/DagStatsResponse'
-          type: array
-          title: Dags
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - dags
-      - total_entries
-      title: DagStatsCollectionResponse
-      description: DAG Stats Collection serializer for responses.
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    DagStatsStateResponse:
-      properties:
-        state:
-          $ref: '#/components/schemas/DagRunState'
-        count:
-          type: integer
-          title: Count
-      type: object
-      required:
-      - state
-      - count
-      title: DagStatsStateResponse
-      description: DagStatsState serializer for responses.
     DagRunState:
       type: string
       enum:
@@ -180,6 +167,19 @@ components:
         so please ensure that their values always match the ones with the
 
         same name in TaskInstanceState.'
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

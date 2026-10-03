@@ -61,17 +61,21 @@ paths:
       x-openapi-router-controller: airflow.api_connexion.endpoints.role_and_permission_endpoint
 components:
   schemas:
-    Action:
-      description: 'An action Item.
+    ActionCollection:
+      allOf:
+      - properties:
+          actions:
+            items:
+              $ref: '#/components/schemas/Action'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'A collection of actions.
 
 
         *New in version 2.1.0*
 
         '
-      properties:
-        name:
-          description: The name of the permission "action"
-          type: string
       type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
@@ -108,22 +112,6 @@ components:
       - title
       - status
       type: object
-    ActionCollection:
-      allOf:
-      - properties:
-          actions:
-            items:
-              $ref: '#/components/schemas/Action'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'A collection of actions.
-
-
-        *New in version 2.1.0*
-
-        '
-      type: object
     CollectionInfo:
       description: Metadata about collection.
       properties:
@@ -134,6 +122,18 @@ components:
 
             '
           type: integer
+      type: object
+    Action:
+      description: 'An action Item.
+
+
+        *New in version 2.1.0*
+
+        '
+      properties:
+        name:
+          description: The name of the permission "action"
+          type: string
       type: object
   parameters:
     PageOffset:
@@ -153,18 +153,18 @@ components:
         default: 100
         type: integer
   responses:
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
     Unauthenticated:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Request not authenticated due to missing, invalid, authentication info.
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
   securitySchemes:
     Basic:
       scheme: basic

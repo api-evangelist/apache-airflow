@@ -8,7 +8,7 @@ info:
   - x-providerName differs across the merged source definitions and was not carried
   - x-serviceName differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged Provider across 2 of this provider''s published API definitions: apache-airflow-openapi.yaml, airflow-provider-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Provider across 2 of this provider''s published API definitions: airflow-provider-api-openapi.yml, apache-airflow-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
 - description: Apache Airflow Stable API.
   url: /api/v1
@@ -16,41 +16,13 @@ servers:
 tags:
 - name: Provider
 paths:
-  /providers:
-    get:
-      description: 'Get a list of providers.
-
-
-        *New in version 2.1.0*'
-      operationId: get_providers
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProviderCollection'
-                - $ref: '#/components/schemas/CollectionInfo'
-          description: List of providers.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow List Providers
-      tags:
-      - Provider
-      x-openapi-router-controller: airflow.api_connexion.endpoints.provider_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
   /api/v2/providers:
     get:
       tags:
       - Provider
       summary: Airflow Get Providers
       description: Get providers.
-      operationId: getApiV2Providers
+      operationId: get_providers
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -99,22 +71,136 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
+  /providers:
+    get:
+      description: 'Get a list of providers.
+
+
+        *New in version 2.1.0*'
+      operationId: getProviders
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProviderCollection'
+                - $ref: '#/components/schemas/CollectionInfo'
+          description: List of providers.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+      summary: Apache Airflow List Providers
+      tags:
+      - Provider
+      x-openapi-router-controller: airflow.api_connexion.endpoints.provider_endpoint
       x-operation-id-source: normalized
       x-operation-id-original: get_providers
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
 components:
   schemas:
-    ProviderCollection:
-      description: 'Collection of providers.
-
-
-        *New in version 2.1.0*
-
-        '
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ProviderCollectionResponse:
       properties:
         providers:
           items:
-            $ref: '#/components/schemas/Provider'
+            $ref: '#/components/schemas/ProviderResponse'
           type: array
+          title: Providers
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - providers
+      - total_entries
+      title: ProviderCollectionResponse
+      description: Provider Collection serializer for responses.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    ProviderResponse:
+      properties:
+        package_name:
+          type: string
+          title: Package Name
+        description:
+          type: string
+          title: Description
+        version:
+          type: string
+          title: Version
+        documentation_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentation Url
+      type: object
+      required:
+      - package_name
+      - description
+      - version
+      - documentation_url
+      title: ProviderResponse
+      description: Provider serializer for responses.
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
       type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
@@ -169,128 +255,33 @@ components:
           description: The version of the provider.
           type: string
       type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
+    ProviderCollection:
+      description: 'Collection of providers.
 
-            (limit, offset) are applied.
 
-            '
-          type: integer
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ProviderCollectionResponse:
+        *New in version 2.1.0*
+
+        '
       properties:
         providers:
           items:
-            $ref: '#/components/schemas/ProviderResponse'
+            $ref: '#/components/schemas/Provider'
           type: array
-          title: Providers
-        total_entries:
-          type: integer
-          title: Total Entries
       type: object
-      required:
-      - providers
-      - total_entries
-      title: ProviderCollectionResponse
-      description: Provider Collection serializer for responses.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ProviderResponse:
-      properties:
-        package_name:
-          type: string
-          title: Package Name
-        description:
-          type: string
-          title: Description
-        version:
-          type: string
-          title: Version
-        documentation_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Documentation Url
-      type: object
-      required:
-      - package_name
-      - description
-      - version
-      - documentation_url
-      title: ProviderResponse
-      description: Provider serializer for responses.
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
   responses:
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
     Unauthenticated:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Request not authenticated due to missing, invalid, authentication info.
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
   securitySchemes:
-    Basic:
-      scheme: basic
-      type: http
-    GoogleOpenId:
-      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
-      type: openIdConnect
-    Kerberos:
-      scheme: negotiate
-      type: http
     OAuth2PasswordBearer:
       type: oauth2
       description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
@@ -301,8 +292,17 @@ components:
     HTTPBearer:
       type: http
       scheme: bearer
+    Basic:
+      scheme: basic
+      type: http
+    GoogleOpenId:
+      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+      type: openIdConnect
+    Kerberos:
+      scheme: negotiate
+      type: http
 externalDocs:
   url: https://airflow.apache.org/docs/apache-airflow/stable/
 x-refined-from:
-- apache-airflow-openapi.yaml
 - airflow-provider-api-openapi.yml
+- apache-airflow-openapi.yaml

@@ -193,6 +193,15 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     JobResponse:
       properties:
         id:
@@ -291,15 +300,19 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
+    HTTPExceptionResponse:
       properties:
         detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
           title: Detail
       type: object
-      title: HTTPValidationError
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
     JobCollectionResponse:
       properties:
         jobs:
@@ -316,19 +329,6 @@ components:
       - total_entries
       title: JobCollectionResponse
       description: Job Collection Response.
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

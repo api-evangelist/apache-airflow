@@ -929,29 +929,193 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    QueuedEventResponse:
+    HTTPValidationError:
       properties:
-        dag_id:
-          type: string
-          title: Dag Id
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AssetCollectionResponse:
+      properties:
+        assets:
+          items:
+            $ref: '#/components/schemas/AssetResponse'
+          type: array
+          title: Assets
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - assets
+      - total_entries
+      title: AssetCollectionResponse
+      description: Asset collection response.
+    AssetEventResponse:
+      properties:
+        id:
+          type: integer
+          title: Id
         asset_id:
           type: integer
           title: Asset Id
+        uri:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Uri
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        group:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Group
+        extra:
+          anyOf:
+          - additionalProperties:
+              $ref: '#/components/schemas/JsonValue'
+            type: object
+          - type: 'null'
+          title: Extra
+        source_task_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Task Id
+        source_dag_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Dag Id
+        source_run_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Run Id
+        source_map_index:
+          type: integer
+          title: Source Map Index
+        created_dagruns:
+          items:
+            $ref: '#/components/schemas/DagRunAssetReference'
+          type: array
+          title: Created Dagruns
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+        partition_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Partition Key
+      type: object
+      required:
+      - id
+      - asset_id
+      - source_map_index
+      - created_dagruns
+      - timestamp
+      title: AssetEventResponse
+      description: Asset event serializer for responses.
+    AssetResponse:
+      properties:
+        id:
+          type: integer
+          title: Id
+        name:
+          type: string
+          title: Name
+        uri:
+          type: string
+          title: Uri
+        group:
+          type: string
+          title: Group
+        extra:
+          anyOf:
+          - additionalProperties:
+              $ref: '#/components/schemas/JsonValue'
+            type: object
+          - type: 'null'
+          title: Extra
         created_at:
           type: string
           format: date-time
           title: Created At
-        dag_display_name:
+        updated_at:
           type: string
-          title: Dag Display Name
+          format: date-time
+          title: Updated At
+        scheduled_dags:
+          items:
+            $ref: '#/components/schemas/DagScheduleAssetReference'
+          type: array
+          title: Scheduled Dags
+        producing_tasks:
+          items:
+            $ref: '#/components/schemas/TaskOutletAssetReference'
+          type: array
+          title: Producing Tasks
+        consuming_tasks:
+          items:
+            $ref: '#/components/schemas/TaskInletAssetReference'
+          type: array
+          title: Consuming Tasks
+        aliases:
+          items:
+            $ref: '#/components/schemas/AssetAliasResponse'
+          type: array
+          title: Aliases
+        watchers:
+          items:
+            $ref: '#/components/schemas/AssetWatcherResponse'
+          type: array
+          title: Watchers
+        last_asset_event:
+          anyOf:
+          - $ref: '#/components/schemas/LastAssetEventResponse'
+          - type: 'null'
       type: object
       required:
-      - dag_id
-      - asset_id
+      - id
+      - name
+      - uri
+      - group
       - created_at
-      - dag_display_name
-      title: QueuedEventResponse
-      description: Queued Event serializer for responses..
+      - updated_at
+      - scheduled_dags
+      - producing_tasks
+      - consuming_tasks
+      - aliases
+      - watchers
+      title: AssetResponse
+      description: Asset serializer for responses.
+    AssetAliasResponse:
+      properties:
+        id:
+          type: integer
+          title: Id
+        name:
+          type: string
+          title: Name
+        group:
+          type: string
+          title: Group
+      type: object
+      required:
+      - id
+      - name
+      - group
+      title: AssetAliasResponse
+      description: Asset alias serializer for responses.
     TaskInletAssetReference:
       properties:
         dag_id:
@@ -977,33 +1141,32 @@ components:
       - updated_at
       title: TaskInletAssetReference
       description: Task inlet reference serializer for assets.
-    DagRunAssetReference:
+    AssetWatcherResponse:
       properties:
-        run_id:
+        name:
           type: string
-          title: Run Id
-        dag_id:
-          type: string
-          title: Dag Id
-        logical_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Logical Date
-        start_date:
+          title: Name
+        trigger_id:
+          type: integer
+          title: Trigger Id
+        created_date:
           type: string
           format: date-time
-          title: Start Date
-        end_date:
+          title: Created Date
+      type: object
+      required:
+      - name
+      - trigger_id
+      - created_date
+      title: AssetWatcherResponse
+      description: Asset watcher serializer for responses.
+    MaterializeAssetBody:
+      properties:
+        dag_run_id:
           anyOf:
           - type: string
-            format: date-time
           - type: 'null'
-          title: End Date
-        state:
-          type: string
-          title: State
+          title: Dag Run Id
         data_interval_start:
           anyOf:
           - type: string
@@ -1016,6 +1179,29 @@ components:
             format: date-time
           - type: 'null'
           title: Data Interval End
+        logical_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date
+        run_after:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Run After
+        conf:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Conf
+        note:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Note
         partition_key:
           anyOf:
           - type: string
@@ -1023,18 +1209,163 @@ components:
           title: Partition Key
       additionalProperties: false
       type: object
+      title: MaterializeAssetBody
+      description: Materialize asset request.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
       required:
-      - run_id
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DagRunType:
+      type: string
+      enum:
+      - backfill
+      - scheduled
+      - manual
+      - operator_triggered
+      - asset_triggered
+      - asset_materialization
+      title: DagRunType
+      description: Class with DagRun types.
+    AssetAliasCollectionResponse:
+      properties:
+        asset_aliases:
+          items:
+            $ref: '#/components/schemas/AssetAliasResponse'
+          type: array
+          title: Asset Aliases
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - asset_aliases
+      - total_entries
+      title: AssetAliasCollectionResponse
+      description: Asset alias collection response.
+    TaskOutletAssetReference:
+      properties:
+        dag_id:
+          type: string
+          title: Dag Id
+        task_id:
+          type: string
+          title: Task Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      additionalProperties: false
+      type: object
+      required:
       - dag_id
-      - logical_date
-      - start_date
-      - end_date
-      - state
-      - data_interval_start
-      - data_interval_end
-      - partition_key
-      title: DagRunAssetReference
-      description: DagRun serializer for asset responses.
+      - task_id
+      - created_at
+      - updated_at
+      title: TaskOutletAssetReference
+      description: Task outlet reference serializer for assets.
+    CreateAssetEventsBody:
+      properties:
+        asset_id:
+          type: integer
+          title: Asset Id
+        partition_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Partition Key
+        extra:
+          additionalProperties: true
+          type: object
+          title: Extra
+      additionalProperties: false
+      type: object
+      required:
+      - asset_id
+      title: CreateAssetEventsBody
+      description: Create asset events request.
+    LastAssetEventResponse:
+      properties:
+        id:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Id
+        timestamp:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Timestamp
+      type: object
+      title: LastAssetEventResponse
+      description: Last asset event response serializer.
+    JsonValue: {}
+    QueuedEventResponse:
+      properties:
+        dag_id:
+          type: string
+          title: Dag Id
+        asset_id:
+          type: integer
+          title: Asset Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+      type: object
+      required:
+      - dag_id
+      - asset_id
+      - created_at
+      - dag_display_name
+      title: QueuedEventResponse
+      description: Queued Event serializer for responses..
+    QueuedEventCollectionResponse:
+      properties:
+        queued_events:
+          items:
+            $ref: '#/components/schemas/QueuedEventResponse'
+          type: array
+          title: Queued Events
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - queued_events
+      - total_entries
+      title: QueuedEventCollectionResponse
+      description: Queued Event Collection serializer for responses.
     DAGRunResponse:
       properties:
         dag_run_id:
@@ -1161,54 +1492,19 @@ components:
       - partition_key
       title: DAGRunResponse
       description: DAG Run serializer for responses.
-    AssetCollectionResponse:
-      properties:
-        assets:
-          items:
-            $ref: '#/components/schemas/AssetResponse'
-          type: array
-          title: Assets
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - assets
-      - total_entries
-      title: AssetCollectionResponse
-      description: Asset collection response.
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    AssetWatcherResponse:
-      properties:
-        name:
-          type: string
-          title: Name
-        trigger_id:
-          type: integer
-          title: Trigger Id
-        created_date:
-          type: string
-          format: date-time
-          title: Created Date
-      type: object
-      required:
-      - name
-      - trigger_id
-      - created_date
-      title: AssetWatcherResponse
-      description: Asset watcher serializer for responses.
+    DagRunTriggeredByType:
+      type: string
+      enum:
+      - cli
+      - operator
+      - rest_api
+      - ui
+      - test
+      - timetable
+      - asset
+      - backfill
+      title: DagRunTriggeredByType
+      description: Class with TriggeredBy types for DagRun.
     DagRunState:
       type: string
       enum:
@@ -1225,24 +1521,22 @@ components:
         so please ensure that their values always match the ones with the
 
         same name in TaskInstanceState.'
-    AssetAliasResponse:
+    AssetEventCollectionResponse:
       properties:
-        id:
+        asset_events:
+          items:
+            $ref: '#/components/schemas/AssetEventResponse'
+          type: array
+          title: Asset Events
+        total_entries:
           type: integer
-          title: Id
-        name:
-          type: string
-          title: Name
-        group:
-          type: string
-          title: Group
+          title: Total Entries
       type: object
       required:
-      - id
-      - name
-      - group
-      title: AssetAliasResponse
-      description: Asset alias serializer for responses.
+      - asset_events
+      - total_entries
+      title: AssetEventCollectionResponse
+      description: Asset event collection response.
     DagScheduleAssetReference:
       properties:
         dag_id:
@@ -1264,65 +1558,6 @@ components:
       - updated_at
       title: DagScheduleAssetReference
       description: DAG schedule reference serializer for assets.
-    AssetEventCollectionResponse:
-      properties:
-        asset_events:
-          items:
-            $ref: '#/components/schemas/AssetEventResponse'
-          type: array
-          title: Asset Events
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - asset_events
-      - total_entries
-      title: AssetEventCollectionResponse
-      description: Asset event collection response.
-    JsonValue: {}
-    TaskOutletAssetReference:
-      properties:
-        dag_id:
-          type: string
-          title: Dag Id
-        task_id:
-          type: string
-          title: Task Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          type: string
-          format: date-time
-          title: Updated At
-      additionalProperties: false
-      type: object
-      required:
-      - dag_id
-      - task_id
-      - created_at
-      - updated_at
-      title: TaskOutletAssetReference
-      description: Task outlet reference serializer for assets.
-    LastAssetEventResponse:
-      properties:
-        id:
-          anyOf:
-          - type: integer
-            minimum: 0.0
-          - type: 'null'
-          title: Id
-        timestamp:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Timestamp
-      type: object
-      title: LastAssetEventResponse
-      description: Last asset event response serializer.
     DagVersionResponse:
       properties:
         id:
@@ -1369,128 +1604,46 @@ components:
       - bundle_url
       title: DagVersionResponse
       description: Dag Version serializer for responses.
-    QueuedEventCollectionResponse:
+    HTTPExceptionResponse:
       properties:
-        queued_events:
-          items:
-            $ref: '#/components/schemas/QueuedEventResponse'
-          type: array
-          title: Queued Events
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - queued_events
-      - total_entries
-      title: QueuedEventCollectionResponse
-      description: Queued Event Collection serializer for responses.
-    AssetResponse:
-      properties:
-        id:
-          type: integer
-          title: Id
-        name:
-          type: string
-          title: Name
-        uri:
-          type: string
-          title: Uri
-        group:
-          type: string
-          title: Group
-        extra:
-          anyOf:
-          - additionalProperties:
-              $ref: '#/components/schemas/JsonValue'
-            type: object
-          - type: 'null'
-          title: Extra
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          type: string
-          format: date-time
-          title: Updated At
-        scheduled_dags:
-          items:
-            $ref: '#/components/schemas/DagScheduleAssetReference'
-          type: array
-          title: Scheduled Dags
-        producing_tasks:
-          items:
-            $ref: '#/components/schemas/TaskOutletAssetReference'
-          type: array
-          title: Producing Tasks
-        consuming_tasks:
-          items:
-            $ref: '#/components/schemas/TaskInletAssetReference'
-          type: array
-          title: Consuming Tasks
-        aliases:
-          items:
-            $ref: '#/components/schemas/AssetAliasResponse'
-          type: array
-          title: Aliases
-        watchers:
-          items:
-            $ref: '#/components/schemas/AssetWatcherResponse'
-          type: array
-          title: Watchers
-        last_asset_event:
-          anyOf:
-          - $ref: '#/components/schemas/LastAssetEventResponse'
-          - type: 'null'
-      type: object
-      required:
-      - id
-      - name
-      - uri
-      - group
-      - created_at
-      - updated_at
-      - scheduled_dags
-      - producing_tasks
-      - consuming_tasks
-      - aliases
-      - watchers
-      title: AssetResponse
-      description: Asset serializer for responses.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    MaterializeAssetBody:
-      properties:
-        dag_run_id:
+        detail:
           anyOf:
           - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    DagRunAssetReference:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+        dag_id:
+          type: string
+          title: Dag Id
+        logical_date:
+          anyOf:
+          - type: string
+            format: date-time
           - type: 'null'
-          title: Dag Run Id
+          title: Logical Date
+        start_date:
+          type: string
+          format: date-time
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+        state:
+          type: string
+          title: State
         data_interval_start:
           anyOf:
           - type: string
@@ -1503,29 +1656,6 @@ components:
             format: date-time
           - type: 'null'
           title: Data Interval End
-        logical_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Logical Date
-        run_after:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Run After
-        conf:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Conf
-        note:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Note
         partition_key:
           anyOf:
           - type: string
@@ -1533,148 +1663,18 @@ components:
           title: Partition Key
       additionalProperties: false
       type: object
-      title: MaterializeAssetBody
-      description: Materialize asset request.
-    DagRunType:
-      type: string
-      enum:
-      - backfill
-      - scheduled
-      - manual
-      - operator_triggered
-      - asset_triggered
-      - asset_materialization
-      title: DagRunType
-      description: Class with DagRun types.
-    AssetEventResponse:
-      properties:
-        id:
-          type: integer
-          title: Id
-        asset_id:
-          type: integer
-          title: Asset Id
-        uri:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Uri
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        group:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Group
-        extra:
-          anyOf:
-          - additionalProperties:
-              $ref: '#/components/schemas/JsonValue'
-            type: object
-          - type: 'null'
-          title: Extra
-        source_task_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Task Id
-        source_dag_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Dag Id
-        source_run_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Run Id
-        source_map_index:
-          type: integer
-          title: Source Map Index
-        created_dagruns:
-          items:
-            $ref: '#/components/schemas/DagRunAssetReference'
-          type: array
-          title: Created Dagruns
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-        partition_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Partition Key
-      type: object
       required:
-      - id
-      - asset_id
-      - source_map_index
-      - created_dagruns
-      - timestamp
-      title: AssetEventResponse
-      description: Asset event serializer for responses.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    AssetAliasCollectionResponse:
-      properties:
-        asset_aliases:
-          items:
-            $ref: '#/components/schemas/AssetAliasResponse'
-          type: array
-          title: Asset Aliases
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - asset_aliases
-      - total_entries
-      title: AssetAliasCollectionResponse
-      description: Asset alias collection response.
-    DagRunTriggeredByType:
-      type: string
-      enum:
-      - cli
-      - operator
-      - rest_api
-      - ui
-      - test
-      - timetable
-      - asset
-      - backfill
-      title: DagRunTriggeredByType
-      description: Class with TriggeredBy types for DagRun.
-    CreateAssetEventsBody:
-      properties:
-        asset_id:
-          type: integer
-          title: Asset Id
-        partition_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Partition Key
-        extra:
-          additionalProperties: true
-          type: object
-          title: Extra
-      additionalProperties: false
-      type: object
-      required:
-      - asset_id
-      title: CreateAssetEventsBody
-      description: Create asset events request.
+      - run_id
+      - dag_id
+      - logical_date
+      - start_date
+      - end_date
+      - state
+      - data_interval_start
+      - data_interval_end
+      - partition_key
+      title: DagRunAssetReference
+      description: DagRun serializer for asset responses.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

@@ -8,7 +8,7 @@ info:
   - x-providerName differs across the merged source definitions and was not carried
   - x-serviceName differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged Variable across 2 of this provider''s published API definitions: apache-airflow-openapi.yaml, airflow-variable-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Variable across 2 of this provider''s published API definitions: airflow-variable-api-openapi.yml, apache-airflow-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
 - description: Apache Airflow Stable API.
   url: /api/v1
@@ -16,139 +16,13 @@ servers:
 tags:
 - name: Variable
 paths:
-  /variables:
-    get:
-      description: The collection does not contain data. To get data, you must get a single entity.
-      operationId: get_variables
-      parameters:
-      - $ref: '#/components/parameters/PageLimit'
-      - $ref: '#/components/parameters/PageOffset'
-      - $ref: '#/components/parameters/OrderBy'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VariableCollection'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow List Variables
-      tags:
-      - Variable
-      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
-    post:
-      operationId: post_variables
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Variable'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Variable'
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow Create a Variable
-      tags:
-      - Variable
-      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
-  /variables/{variable_key}:
-    parameters:
-    - $ref: '#/components/parameters/VariableKey'
-    delete:
-      operationId: delete_variable
-      responses:
-        '204':
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Delete a Variable
-      tags:
-      - Variable
-      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
-    get:
-      description: Get a variable by key.
-      operationId: get_variable
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Variable'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Get a Variable
-      tags:
-      - Variable
-      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
-    patch:
-      description: Update a variable by key.
-      operationId: patch_variable
-      parameters:
-      - $ref: '#/components/parameters/UpdateMask'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Variable'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Variable'
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Update a Variable
-      tags:
-      - Variable
-      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
   /api/v2/variables/{variable_key}:
     delete:
       tags:
       - Variable
       summary: Airflow Delete Variable
       description: Delete a variable entry.
-      operationId: deleteApiV2VariablesByVariableKey
+      operationId: delete_variable
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -189,14 +63,12 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: delete_variable
     get:
       tags:
       - Variable
       summary: Airflow Get Variable
       description: Get a variable entry.
-      operationId: getApiV2VariablesByVariableKey
+      operationId: get_variable
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -241,14 +113,12 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: get_variable
     patch:
       tags:
       - Variable
       summary: Airflow Patch Variable
       description: Update a variable by key.
-      operationId: patchApiV2VariablesByVariableKey
+      operationId: patch_variable
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -315,15 +185,13 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: patch_variable
   /api/v2/variables:
     get:
       tags:
       - Variable
       summary: Airflow Get Variables
       description: Get all Variables entries.
-      operationId: getApiV2Variables
+      operationId: get_variables
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -394,8 +262,6 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: get_variables
     post:
       tags:
       - Variable
@@ -488,61 +354,423 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
+  /variables:
+    get:
+      description: The collection does not contain data. To get data, you must get a single entity.
+      operationId: getVariables
+      parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/PageOffset'
+      - $ref: '#/components/parameters/OrderBy'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariableCollection'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+      summary: Apache Airflow List Variables
+      tags:
+      - Variable
+      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: get_variables
+    post:
+      operationId: post_variables
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Variable'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Variable'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+      summary: Apache Airflow Create a Variable
+      tags:
+      - Variable
+      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
+  /variables/{variable_key}:
+    parameters:
+    - $ref: '#/components/parameters/VariableKey'
+    delete:
+      operationId: deleteVariablesByVariableKey
+      responses:
+        '204':
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Delete a Variable
+      tags:
+      - Variable
+      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: delete_variable
+    get:
+      description: Get a variable by key.
+      operationId: getVariablesByVariableKey
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Variable'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Get a Variable
+      tags:
+      - Variable
+      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: get_variable
+    patch:
+      description: Update a variable by key.
+      operationId: patchVariablesByVariableKey
+      parameters:
+      - $ref: '#/components/parameters/UpdateMask'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Variable'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Variable'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Update a Variable
+      tags:
+      - Variable
+      x-openapi-router-controller: airflow.api_connexion.endpoints.variable_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: patch_variable
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
 components:
-  parameters:
-    OrderBy:
-      description: 'The name of the field to order the results by.
-
-        Prefix a field name with `-` to reverse the sort order.
-
-
-        *New in version 2.1.0*
-
-        '
-      in: query
-      name: order_by
-      required: false
-      schema:
-        type: string
-    UpdateMask:
-      description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
-
-        A comma-separated list of fully qualified names of fields.
-
-        '
-      explode: false
-      in: query
-      name: update_mask
-      schema:
-        items:
-          type: string
-        type: array
-      style: form
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    VariableKey:
-      description: The variable Key.
-      in: path
-      name: variable_key
-      required: true
-      schema:
-        format: path
-        type: string
   schemas:
+    BulkActionNotOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      title: BulkActionNotOnExistence
+      description: Bulk Action to be taken if the entity does not exist.
+    VariableBody:
+      properties:
+        key:
+          type: string
+          maxLength: 250
+          title: Key
+        value:
+          $ref: '#/components/schemas/JsonValue'
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        team_name:
+          anyOf:
+          - type: string
+            maxLength: 50
+          - type: 'null'
+          title: Team Name
+      additionalProperties: false
+      type: object
+      required:
+      - key
+      - value
+      title: VariableBody
+      description: Variable serializer for bodies.
+    BulkResponse:
+      properties:
+        create:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk create operation, including successful keys and errors.
+        update:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk update operation, including successful keys and errors.
+        delete:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk delete operation, including successful keys and errors.
+      type: object
+      title: BulkResponse
+      description: 'Serializer for responses to bulk entity operations.
+
+
+        This represents the results of create, update, and delete actions performed on entity in bulk.
+
+        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
+
+        Fields are populated in the response only if the respective action was part of the request, else are set None.'
+    BulkCreateAction_VariableBody_:
+      properties:
+        action:
+          type: string
+          const: create
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/VariableBody'
+          type: array
+          title: Entities
+          description: A list of entities to be created.
+        action_on_existence:
+          $ref: '#/components/schemas/BulkActionOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkCreateAction[VariableBody]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    VariableResponse:
+      properties:
+        key:
+          type: string
+          title: Key
+        value:
+          type: string
+          title: Value
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        is_encrypted:
+          type: boolean
+          title: Is Encrypted
+        team_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Team Name
+      type: object
+      required:
+      - key
+      - value
+      - description
+      - is_encrypted
+      - team_name
+      title: VariableResponse
+      description: Variable serializer for responses.
+    VariableCollectionResponse:
+      properties:
+        variables:
+          items:
+            $ref: '#/components/schemas/VariableResponse'
+          type: array
+          title: Variables
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - variables
+      - total_entries
+      title: VariableCollectionResponse
+      description: Variable Collection serializer for responses.
+    BulkDeleteAction_VariableBody_:
+      properties:
+        action:
+          type: string
+          const: delete
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            anyOf:
+            - type: string
+            - $ref: '#/components/schemas/VariableBody'
+          type: array
+          title: Entities
+          description: A list of entity id/key or entity objects to be deleted.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkDeleteAction[VariableBody]
+    BulkActionResponse:
+      properties:
+        success:
+          items:
+            type: string
+          type: array
+          title: Success
+          description: A list of unique id/key representing successful operations.
+          default: []
+        errors:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Errors
+          description: A list of errors encountered during the operation, each containing details about the issue.
+          default: []
+      type: object
+      title: BulkActionResponse
+      description: 'Serializer for individual bulk action responses.
+
+
+        Represents the outcome of a single bulk operation (create, update, or delete).
+
+        The response includes a list of successful keys and any errors encountered during the operation.
+
+        This structure helps users understand which key actions succeeded and which failed.'
+    BulkBody_VariableBody_:
+      properties:
+        actions:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/BulkCreateAction_VariableBody_'
+            - $ref: '#/components/schemas/BulkUpdateAction_VariableBody_'
+            - $ref: '#/components/schemas/BulkDeleteAction_VariableBody_'
+          type: array
+          title: Actions
+      additionalProperties: false
+      type: object
+      required:
+      - actions
+      title: BulkBody[VariableBody]
+    BulkActionOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      - overwrite
+      title: BulkActionOnExistence
+      description: Bulk Action to be taken if the entity already exists or not.
+    BulkUpdateAction_VariableBody_:
+      properties:
+        action:
+          type: string
+          const: update
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/VariableBody'
+          type: array
+          title: Entities
+          description: A list of entities to be updated.
+        update_mask:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Update Mask
+          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkUpdateAction[VariableBody]
+    JsonValue: {}
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     VariableCollectionItem:
       description: 'XCom entry collection item.
 
@@ -596,22 +824,6 @@ components:
       - title
       - status
       type: object
-    VariableCollection:
-      allOf:
-      - properties:
-          variables:
-            items:
-              $ref: '#/components/schemas/VariableCollectionItem'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of variables.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
     Variable:
       allOf:
       - $ref: '#/components/schemas/VariableCollectionItem'
@@ -631,300 +843,76 @@ components:
             '
           type: integer
       type: object
-    VariableBody:
-      properties:
-        key:
-          type: string
-          maxLength: 250
-          title: Key
-        value:
-          $ref: '#/components/schemas/JsonValue'
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        team_name:
-          anyOf:
-          - type: string
-            maxLength: 50
-          - type: 'null'
-          title: Team Name
-      additionalProperties: false
-      type: object
-      required:
-      - key
-      - value
-      title: VariableBody
-      description: Variable serializer for bodies.
-    VariableCollectionResponse:
-      properties:
-        variables:
-          items:
-            $ref: '#/components/schemas/VariableResponse'
-          type: array
-          title: Variables
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - variables
-      - total_entries
-      title: VariableCollectionResponse
-      description: Variable Collection serializer for responses.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    JsonValue: {}
-    BulkCreateAction_VariableBody_:
-      properties:
-        action:
-          type: string
-          const: create
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            $ref: '#/components/schemas/VariableBody'
-          type: array
-          title: Entities
-          description: A list of entities to be created.
-        action_on_existence:
-          $ref: '#/components/schemas/BulkActionOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkCreateAction[VariableBody]
-    BulkActionNotOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      title: BulkActionNotOnExistence
-      description: Bulk Action to be taken if the entity does not exist.
-    BulkDeleteAction_VariableBody_:
-      properties:
-        action:
-          type: string
-          const: delete
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            anyOf:
-            - type: string
-            - $ref: '#/components/schemas/VariableBody'
-          type: array
-          title: Entities
-          description: A list of entity id/key or entity objects to be deleted.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkDeleteAction[VariableBody]
-    BulkActionOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      - overwrite
-      title: BulkActionOnExistence
-      description: Bulk Action to be taken if the entity already exists or not.
-    BulkActionResponse:
-      properties:
-        success:
-          items:
-            type: string
-          type: array
-          title: Success
-          description: A list of unique id/key representing successful operations.
-          default: []
-        errors:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Errors
-          description: A list of errors encountered during the operation, each containing details about the issue.
-          default: []
-      type: object
-      title: BulkActionResponse
-      description: 'Serializer for individual bulk action responses.
-
-
-        Represents the outcome of a single bulk operation (create, update, or delete).
-
-        The response includes a list of successful keys and any errors encountered during the operation.
-
-        This structure helps users understand which key actions succeeded and which failed.'
-    BulkResponse:
-      properties:
-        create:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk create operation, including successful keys and errors.
-        update:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk update operation, including successful keys and errors.
-        delete:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk delete operation, including successful keys and errors.
-      type: object
-      title: BulkResponse
-      description: 'Serializer for responses to bulk entity operations.
-
-
-        This represents the results of create, update, and delete actions performed on entity in bulk.
-
-        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
-
-        Fields are populated in the response only if the respective action was part of the request, else are set None.'
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    BulkUpdateAction_VariableBody_:
-      properties:
-        action:
-          type: string
-          const: update
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            $ref: '#/components/schemas/VariableBody'
-          type: array
-          title: Entities
-          description: A list of entities to be updated.
-        update_mask:
-          anyOf:
-          - items:
-              type: string
+    VariableCollection:
+      allOf:
+      - properties:
+          variables:
+            items:
+              $ref: '#/components/schemas/VariableCollectionItem'
             type: array
-          - type: 'null'
-          title: Update Mask
-          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of variables.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
       type: object
-      required:
-      - action
-      - entities
-      title: BulkUpdateAction[VariableBody]
-    VariableResponse:
-      properties:
-        key:
+  parameters:
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    UpdateMask:
+      description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
+
+        A comma-separated list of fully qualified names of fields.
+
+        '
+      explode: false
+      in: query
+      name: update_mask
+      schema:
+        items:
           type: string
-          title: Key
-        value:
-          type: string
-          title: Value
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        is_encrypted:
-          type: boolean
-          title: Is Encrypted
-        team_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Team Name
-      type: object
-      required:
-      - key
-      - value
-      - description
-      - is_encrypted
-      - team_name
-      title: VariableResponse
-      description: Variable serializer for responses.
-    BulkBody_VariableBody_:
-      properties:
-        actions:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/BulkCreateAction_VariableBody_'
-            - $ref: '#/components/schemas/BulkUpdateAction_VariableBody_'
-            - $ref: '#/components/schemas/BulkDeleteAction_VariableBody_'
-          type: array
-          title: Actions
-      additionalProperties: false
-      type: object
-      required:
-      - actions
-      title: BulkBody[VariableBody]
+        type: array
+      style: form
+    OrderBy:
+      description: 'The name of the field to order the results by.
+
+        Prefix a field name with `-` to reverse the sort order.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: string
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
+    VariableKey:
+      description: The variable Key.
+      in: path
+      name: variable_key
+      required: true
+      schema:
+        format: path
+        type: string
   responses:
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client specified an invalid argument.
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
     Unauthenticated:
       content:
         application/json:
@@ -937,16 +925,19 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: A specified resource is not found.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client specified an invalid argument.
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
   securitySchemes:
-    Basic:
-      scheme: basic
-      type: http
-    GoogleOpenId:
-      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
-      type: openIdConnect
-    Kerberos:
-      scheme: negotiate
-      type: http
     OAuth2PasswordBearer:
       type: oauth2
       description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
@@ -957,8 +948,17 @@ components:
     HTTPBearer:
       type: http
       scheme: bearer
+    Basic:
+      scheme: basic
+      type: http
+    GoogleOpenId:
+      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+      type: openIdConnect
+    Kerberos:
+      scheme: negotiate
+      type: http
 externalDocs:
   url: https://airflow.apache.org/docs/apache-airflow/stable/
 x-refined-from:
-- apache-airflow-openapi.yaml
 - airflow-variable-api-openapi.yml
+- apache-airflow-openapi.yaml

@@ -8,7 +8,7 @@ info:
   - x-providerName differs across the merged source definitions and was not carried
   - x-serviceName differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged DagWarning across 2 of this provider''s published API definitions: apache-airflow-openapi.yaml, airflow-dagwarning-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged DagWarning across 2 of this provider''s published API definitions: airflow-dagwarning-api-openapi.yml, apache-airflow-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
 - description: Apache Airflow Stable API.
   url: /api/v1
@@ -16,44 +16,6 @@ servers:
 tags:
 - name: DagWarning
 paths:
-  /dagWarnings:
-    get:
-      operationId: get_dag_warnings
-      parameters:
-      - description: If set, only return DAG warnings with this dag_id.
-        in: query
-        name: dag_id
-        required: false
-        schema:
-          type: string
-      - description: If set, only return DAG warnings with this type.
-        in: query
-        name: warning_type
-        required: false
-        schema:
-          type: string
-      - $ref: '#/components/parameters/PageLimit'
-      - $ref: '#/components/parameters/PageOffset'
-      - $ref: '#/components/parameters/OrderBy'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DagWarningCollection'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow List Dag Warnings
-      tags:
-      - DagWarning
-      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_warning_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
   /api/v2/dagWarnings:
     get:
       tags:
@@ -137,118 +99,68 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
+  /dagWarnings:
+    get:
+      operationId: get_dag_warnings
+      parameters:
+      - description: If set, only return DAG warnings with this dag_id.
+        in: query
+        name: dag_id
+        required: false
+        schema:
+          type: string
+      - description: If set, only return DAG warnings with this type.
+        in: query
+        name: warning_type
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/PageOffset'
+      - $ref: '#/components/parameters/OrderBy'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DagWarningCollection'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+      summary: Apache Airflow List Dag Warnings
+      tags:
+      - DagWarning
+      x-openapi-router-controller: airflow.api_connexion.endpoints.dag_warning_endpoint
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
 components:
-  parameters:
-    OrderBy:
-      description: 'The name of the field to order the results by.
-
-        Prefix a field name with `-` to reverse the sort order.
-
-
-        *New in version 2.1.0*
-
-        '
-      in: query
-      name: order_by
-      required: false
-      schema:
-        type: string
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
   schemas:
-    DagWarningCollection:
-      allOf:
-      - properties:
-          import_errors:
-            items:
-              $ref: '#/components/schemas/DagWarning'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of DAG warnings.
-
-        '
-      type: object
-    Error:
-      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
-
-        '
+    HTTPValidationError:
       properties:
         detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        instance:
-          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
-
-            not yield further information if dereferenced.
-
-            '
-          type: string
-        status:
-          description: The HTTP status code generated by the API server for this occurrence of the problem.
-          type: number
-        title:
-          description: A short, human-readable summary of the problem type.
-          type: string
-        type:
-          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
-
-            encourages that, when dereferenced, it provide human-readable documentation for
-
-            the problem type.
-
-            '
-          type: string
-      required:
-      - type
-      - title
-      - status
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-    DagWarning:
-      properties:
-        dag_id:
-          description: The dag_id.
-          readOnly: true
-          type: string
-        message:
-          description: The message for the dag warning.
-          readOnly: true
-          type: string
-        timestamp:
-          description: The time when this warning was logged.
-          format: datetime
-          readOnly: true
-          type: string
-        warning_type:
-          description: The warning type for the dag warning.
-          readOnly: true
-          type: string
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
+      title: HTTPValidationError
+    DagWarningType:
+      type: string
+      enum:
+      - asset conflict
+      - non-existent pool
+      - runtime varying value
+      title: DagWarningType
+      description: 'Enum for DAG warning types.
 
-            (limit, offset) are applied.
 
-            '
-          type: integer
-      type: object
+        This is the set of allowable values for the ``warning_type`` field
+
+        in the DagWarning model.'
     DAGWarningResponse:
       properties:
         dag_id:
@@ -301,28 +213,6 @@ components:
       - msg
       - type
       title: ValidationError
-    DagWarningType:
-      type: string
-      enum:
-      - asset conflict
-      - non-existent pool
-      - runtime varying value
-      title: DagWarningType
-      description: 'Enum for DAG warning types.
-
-
-        This is the set of allowable values for the ``warning_type`` field
-
-        in the DagWarning model.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     DAGWarningCollectionResponse:
       properties:
         dag_warnings:
@@ -352,29 +242,130 @@ components:
       - detail
       title: HTTPExceptionResponse
       description: HTTPException Model used for error response.
+    Error:
+      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
+
+        '
+      properties:
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        instance:
+          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
+
+            not yield further information if dereferenced.
+
+            '
+          type: string
+        status:
+          description: The HTTP status code generated by the API server for this occurrence of the problem.
+          type: number
+        title:
+          description: A short, human-readable summary of the problem type.
+          type: string
+        type:
+          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
+
+            encourages that, when dereferenced, it provide human-readable documentation for
+
+            the problem type.
+
+            '
+          type: string
+      required:
+      - type
+      - title
+      - status
+      type: object
+    DagWarningCollection:
+      allOf:
+      - properties:
+          import_errors:
+            items:
+              $ref: '#/components/schemas/DagWarning'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of DAG warnings.
+
+        '
+      type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    DagWarning:
+      properties:
+        dag_id:
+          description: The dag_id.
+          readOnly: true
+          type: string
+        message:
+          description: The message for the dag warning.
+          readOnly: true
+          type: string
+        timestamp:
+          description: The time when this warning was logged.
+          format: datetime
+          readOnly: true
+          type: string
+        warning_type:
+          description: The warning type for the dag warning.
+          readOnly: true
+          type: string
+      type: object
+  parameters:
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    OrderBy:
+      description: 'The name of the field to order the results by.
+
+        Prefix a field name with `-` to reverse the sort order.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: string
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
   responses:
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
     Unauthenticated:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Request not authenticated due to missing, invalid, authentication info.
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
   securitySchemes:
-    Basic:
-      scheme: basic
-      type: http
-    GoogleOpenId:
-      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
-      type: openIdConnect
-    Kerberos:
-      scheme: negotiate
-      type: http
     OAuth2PasswordBearer:
       type: oauth2
       description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
@@ -385,8 +376,17 @@ components:
     HTTPBearer:
       type: http
       scheme: bearer
+    Basic:
+      scheme: basic
+      type: http
+    GoogleOpenId:
+      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+      type: openIdConnect
+    Kerberos:
+      scheme: negotiate
+      type: http
 externalDocs:
   url: https://airflow.apache.org/docs/apache-airflow/stable/
 x-refined-from:
-- apache-airflow-openapi.yaml
 - airflow-dagwarning-api-openapi.yml
+- apache-airflow-openapi.yaml

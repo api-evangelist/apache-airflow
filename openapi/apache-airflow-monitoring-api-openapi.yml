@@ -67,6 +67,38 @@ paths:
       x-openapi-router-controller: airflow.api_connexion.endpoints.version_endpoint
 components:
   schemas:
+    VersionInfo:
+      description: Version information.
+      properties:
+        git_version:
+          description: The git version (including git commit hash)
+          type:
+          - string
+          - 'null'
+        version:
+          description: The version of Airflow
+          type: string
+      type: object
+    HealthStatus:
+      description: Health status
+      enum:
+      - healthy
+      - unhealthy
+      type: string
+    HealthInfo:
+      description: Instance status information.
+      properties:
+        metadatabase:
+          $ref: '#/components/schemas/MetadatabaseStatus'
+        scheduler:
+          $ref: '#/components/schemas/SchedulerStatus'
+      type: object
+    MetadatabaseStatus:
+      description: The status of the metadatabase.
+      properties:
+        status:
+          $ref: '#/components/schemas/HealthStatus'
+      type: object
     SchedulerStatus:
       description: The status and the latest scheduler heartbeat.
       properties:
@@ -79,38 +111,6 @@ components:
           - 'null'
         status:
           $ref: '#/components/schemas/HealthStatus'
-      type: object
-    MetadatabaseStatus:
-      description: The status of the metadatabase.
-      properties:
-        status:
-          $ref: '#/components/schemas/HealthStatus'
-      type: object
-    HealthInfo:
-      description: Instance status information.
-      properties:
-        metadatabase:
-          $ref: '#/components/schemas/MetadatabaseStatus'
-        scheduler:
-          $ref: '#/components/schemas/SchedulerStatus'
-      type: object
-    HealthStatus:
-      description: Health status
-      enum:
-      - healthy
-      - unhealthy
-      type: string
-    VersionInfo:
-      description: Version information.
-      properties:
-        git_version:
-          description: The git version (including git commit hash)
-          type:
-          - string
-          - 'null'
-        version:
-          description: The version of Airflow
-          type: string
       type: object
   securitySchemes:
     Basic:

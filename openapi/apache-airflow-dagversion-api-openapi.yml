@@ -167,6 +167,15 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -193,44 +202,6 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    DAGVersionCollectionResponse:
-      properties:
-        dag_versions:
-          items:
-            $ref: '#/components/schemas/DagVersionResponse'
-          type: array
-          title: Dag Versions
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - dag_versions
-      - total_entries
-      title: DAGVersionCollectionResponse
-      description: DAG Version Collection serializer for responses.
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
     DagVersionResponse:
       properties:
         id:
@@ -277,6 +248,35 @@ components:
       - bundle_url
       title: DagVersionResponse
       description: Dag Version serializer for responses.
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    DAGVersionCollectionResponse:
+      properties:
+        dag_versions:
+          items:
+            $ref: '#/components/schemas/DagVersionResponse'
+          type: array
+          title: Dag Versions
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - dag_versions
+      - total_entries
+      title: DAGVersionCollectionResponse
+      description: DAG Version Collection serializer for responses.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

@@ -24,54 +24,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    TriggererInfoResponse:
-      properties:
-        status:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Status
-        latest_triggerer_heartbeat:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Latest Triggerer Heartbeat
-      type: object
-      required:
-      - status
-      - latest_triggerer_heartbeat
-      title: TriggererInfoResponse
-      description: Triggerer info serializer for responses.
-    BaseInfoResponse:
-      properties:
-        status:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Status
-      type: object
-      required:
-      - status
-      title: BaseInfoResponse
-      description: Base info serializer for responses.
-    DagProcessorInfoResponse:
-      properties:
-        status:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Status
-        latest_dag_processor_heartbeat:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Latest Dag Processor Heartbeat
-      type: object
-      required:
-      - status
-      - latest_dag_processor_heartbeat
-      title: DagProcessorInfoResponse
-      description: DagProcessor info serializer for responses.
     SchedulerInfoResponse:
       properties:
         status:
@@ -90,6 +42,24 @@ components:
       - latest_scheduler_heartbeat
       title: SchedulerInfoResponse
       description: Scheduler info serializer for responses.
+    DagProcessorInfoResponse:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        latest_dag_processor_heartbeat:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Latest Dag Processor Heartbeat
+      type: object
+      required:
+      - status
+      - latest_dag_processor_heartbeat
+      title: DagProcessorInfoResponse
+      description: DagProcessor info serializer for responses.
     HealthInfoResponse:
       properties:
         metadatabase:
@@ -109,6 +79,36 @@ components:
       - triggerer
       title: HealthInfoResponse
       description: Health serializer for responses.
+    BaseInfoResponse:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      type: object
+      required:
+      - status
+      title: BaseInfoResponse
+      description: Base info serializer for responses.
+    TriggererInfoResponse:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        latest_triggerer_heartbeat:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Latest Triggerer Heartbeat
+      type: object
+      required:
+      - status
+      - latest_triggerer_heartbeat
+      title: TriggererInfoResponse
+      description: Triggerer info serializer for responses.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

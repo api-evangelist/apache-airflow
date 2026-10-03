@@ -150,63 +150,6 @@ components:
       - total_entries
       title: TaskCollectionResponse
       description: Task collection serializer for responses.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    TimeDelta:
-      properties:
-        __type:
-          type: string
-          title: Type
-          default: TimeDelta
-        days:
-          type: integer
-          title: Days
-        seconds:
-          type: integer
-          title: Seconds
-        microseconds:
-          type: integer
-          title: Microseconds
-      type: object
-      required:
-      - days
-      - seconds
-      - microseconds
-      title: TimeDelta
-      description: TimeDelta can be used to interact with datetime.timedelta objects.
     TaskResponse:
       properties:
         task_id:
@@ -377,6 +320,63 @@ components:
       - extra_links
       title: TaskResponse
       description: Task serializer for responses.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TimeDelta:
+      properties:
+        __type:
+          type: string
+          title: Type
+          default: TimeDelta
+        days:
+          type: integer
+          title: Days
+        seconds:
+          type: integer
+          title: Seconds
+        microseconds:
+          type: integer
+          title: Microseconds
+      type: object
+      required:
+      - days
+      - seconds
+      - microseconds
+      title: TimeDelta
+      description: TimeDelta can be used to interact with datetime.timedelta objects.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     HTTPExceptionResponse:
       properties:
         detail:

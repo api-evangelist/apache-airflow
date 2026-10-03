@@ -8,7 +8,7 @@ info:
   - x-providerName differs across the merged source definitions and was not carried
   - x-serviceName differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged Config across 2 of this provider''s published API definitions: apache-airflow-openapi.yaml, airflow-config-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Config across 2 of this provider''s published API definitions: airflow-config-api-openapi.yml, apache-airflow-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
 - description: Apache Airflow Stable API.
   url: /api/v1
@@ -16,60 +16,12 @@ servers:
 tags:
 - name: Config
 paths:
-  /config:
-    get:
-      operationId: get_config
-      responses:
-        '200':
-          content:
-            application/json:
-              example:
-                sections:
-                - name: core
-                  options:
-                  - key: dags_folder
-                    value: /home/user/my-dags-folder
-                - name: smtp
-                  options:
-                  - key: smtp_host
-                    value: localhost
-                  - key: smtp_mail_from
-                    value: airflow@example.com
-              schema:
-                $ref: '#/components/schemas/Config'
-            text/plain:
-              example: '[core]
-
-                dags_folder = /home/user/my-dags-folder
-
-                [smtp]
-
-                smtp_host = localhost
-
-                smtp_mail_from =  airflow@example.com
-
-                '
-              schema:
-                type: string
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow Get Current Configuration
-      tags:
-      - Config
-      x-openapi-router-controller: airflow.api_connexion.endpoints.config_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
   /api/v2/config:
     get:
       tags:
       - Config
       summary: Airflow Get Config
-      operationId: getApiV2Config
+      operationId: get_config
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -99,7 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Config_2'
+                $ref: '#/components/schemas/Config'
             text/plain:
               schema:
                 type: string
@@ -150,8 +102,6 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: get_config
   /api/v2/config/section/{section}/option/{option}:
     get:
       tags:
@@ -191,7 +141,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Config_2'
+                $ref: '#/components/schemas/Config'
             text/plain:
               schema:
                 type: string
@@ -235,14 +185,167 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
+  /config:
+    get:
+      operationId: getConfig
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                sections:
+                - name: core
+                  options:
+                  - key: dags_folder
+                    value: /home/user/my-dags-folder
+                - name: smtp
+                  options:
+                  - key: smtp_host
+                    value: localhost
+                  - key: smtp_mail_from
+                    value: airflow@example.com
+              schema:
+                $ref: '#/components/schemas/Config_2'
+            text/plain:
+              example: '[core]
+
+                dags_folder = /home/user/my-dags-folder
+
+                [smtp]
+
+                smtp_host = localhost
+
+                smtp_mail_from =  airflow@example.com
+
+                '
+              schema:
+                type: string
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+      summary: Apache Airflow Get Current Configuration
+      tags:
+      - Config
+      x-openapi-router-controller: airflow.api_connexion.endpoints.config_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: get_config
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ConfigSection:
+      properties:
+        name:
+          type: string
+          title: Name
+        options:
+          items:
+            $ref: '#/components/schemas/ConfigOption'
+          type: array
+          title: Options
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - options
+      title: ConfigSection
+      description: Config Section Schema.
     Config:
-      description: The configuration.
       properties:
         sections:
           items:
             $ref: '#/components/schemas/ConfigSection'
+          type: array
+          title: Sections
+      additionalProperties: false
+      type: object
+      required:
+      - sections
+      title: Config
+      description: List of config sections with their options.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    ConfigOption:
+      properties:
+        key:
+          type: string
+          title: Key
+        value:
+          anyOf:
+          - type: string
+          - prefixItems:
+            - type: string
+            - type: string
+            type: array
+            maxItems: 2
+            minItems: 2
+          title: Value
+      additionalProperties: false
+      type: object
+      required:
+      - key
+      - value
+      title: ConfigOption
+      description: Config option.
+    ConfigSection_2:
+      description: The section of configuration.
+      properties:
+        name:
+          readOnly: true
+          type: string
+        options:
+          items:
+            $ref: '#/components/schemas/ConfigOption_2'
           type: array
       type: object
     Error:
@@ -280,18 +383,15 @@ components:
       - title
       - status
       type: object
-    ConfigSection:
-      description: The section of configuration.
+    Config_2:
+      description: The configuration.
       properties:
-        name:
-          readOnly: true
-          type: string
-        options:
+        sections:
           items:
-            $ref: '#/components/schemas/ConfigOption'
+            $ref: '#/components/schemas/ConfigSection_2'
           type: array
       type: object
-    ConfigOption:
+    ConfigOption_2:
       description: The option of configuration.
       properties:
         key:
@@ -301,129 +401,20 @@ components:
           readOnly: true
           type: string
       type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ConfigSection_2:
-      properties:
-        name:
-          type: string
-          title: Name
-        options:
-          items:
-            $ref: '#/components/schemas/ConfigOption_2'
-          type: array
-          title: Options
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      - options
-      title: ConfigSection
-      description: Config Section Schema.
-    ConfigOption_2:
-      properties:
-        key:
-          type: string
-          title: Key
-        value:
-          anyOf:
-          - type: string
-          - prefixItems:
-            - type: string
-            - type: string
-            type: array
-            maxItems: 2
-            minItems: 2
-          title: Value
-      additionalProperties: false
-      type: object
-      required:
-      - key
-      - value
-      title: ConfigOption
-      description: Config option.
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    Config_2:
-      properties:
-        sections:
-          items:
-            $ref: '#/components/schemas/ConfigSection_2'
-          type: array
-          title: Sections
-      additionalProperties: false
-      type: object
-      required:
-      - sections
-      title: Config
-      description: List of config sections with their options.
   responses:
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
     Unauthenticated:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Request not authenticated due to missing, invalid, authentication info.
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
   securitySchemes:
-    Basic:
-      scheme: basic
-      type: http
-    GoogleOpenId:
-      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
-      type: openIdConnect
-    Kerberos:
-      scheme: negotiate
-      type: http
     OAuth2PasswordBearer:
       type: oauth2
       description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
@@ -434,8 +425,17 @@ components:
     HTTPBearer:
       type: http
       scheme: bearer
+    Basic:
+      scheme: basic
+      type: http
+    GoogleOpenId:
+      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+      type: openIdConnect
+    Kerberos:
+      scheme: negotiate
+      type: http
 externalDocs:
   url: https://airflow.apache.org/docs/apache-airflow/stable/
 x-refined-from:
-- apache-airflow-openapi.yaml
 - airflow-config-api-openapi.yml
+- apache-airflow-openapi.yaml

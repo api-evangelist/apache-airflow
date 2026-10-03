@@ -8,7 +8,7 @@ info:
   - x-providerName differs across the merged source definitions and was not carried
   - x-serviceName differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged Connection across 2 of this provider''s published API definitions: apache-airflow-openapi.yaml, airflow-connection-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Connection across 2 of this provider''s published API definitions: airflow-connection-api-openapi.yml, apache-airflow-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
 - description: Apache Airflow Stable API.
   url: /api/v1
@@ -16,172 +16,13 @@ servers:
 tags:
 - name: Connection
 paths:
-  /connections:
-    get:
-      operationId: get_connections
-      parameters:
-      - $ref: '#/components/parameters/PageLimit'
-      - $ref: '#/components/parameters/PageOffset'
-      - $ref: '#/components/parameters/OrderBy'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConnectionCollection'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow List Connections
-      tags:
-      - Connection
-      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
-    post:
-      operationId: post_connection
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Connection'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Connection'
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow Create a Connection
-      tags:
-      - Connection
-      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
-  /connections/test:
-    post:
-      description: 'Test a connection.
-
-
-        *New in version 2.2.0*'
-      operationId: test_connection
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Connection'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConnectionTest'
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Test a Connection
-      tags:
-      - Connection
-      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
-  /connections/{connection_id}:
-    parameters:
-    - $ref: '#/components/parameters/ConnectionID'
-    delete:
-      operationId: delete_connection
-      responses:
-        '204':
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Delete a Connection
-      tags:
-      - Connection
-      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
-    get:
-      operationId: get_connection
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Connection'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Get a Connection
-      tags:
-      - Connection
-      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
-    patch:
-      operationId: patch_connection
-      parameters:
-      - $ref: '#/components/parameters/UpdateMask'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Connection'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Connection'
-          description: Success.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Update a Connection
-      tags:
-      - Connection
-      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
   /api/v2/connections/{connection_id}:
     delete:
       tags:
       - Connection
       summary: Airflow Delete Connection
       description: Delete a connection entry.
-      operationId: deleteApiV2ConnectionsByConnectionId
+      operationId: delete_connection
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -222,14 +63,12 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: delete_connection
     get:
       tags:
       - Connection
       summary: Airflow Get Connection
       description: Get a connection entry.
-      operationId: getApiV2ConnectionsByConnectionId
+      operationId: get_connection
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -274,14 +113,12 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: get_connection
     patch:
       tags:
       - Connection
       summary: Airflow Patch Connection
       description: Update a connection entry.
-      operationId: patchApiV2ConnectionsByConnectionId
+      operationId: patch_connection
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -348,15 +185,13 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: patch_connection
   /api/v2/connections:
     get:
       tags:
       - Connection
       summary: Airflow Get Connections
       description: Get all connection entries.
-      operationId: getApiV2Connections
+      operationId: get_connections
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -433,14 +268,12 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: get_connections
     post:
       tags:
       - Connection
       summary: Airflow Post Connection
       description: Create connection entry.
-      operationId: postApiV2Connections
+      operationId: post_connection
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -484,8 +317,6 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: post_connection
     patch:
       tags:
       - Connection
@@ -542,7 +373,7 @@ paths:
         as some hook classes tries to find out the `conn` from their __init__ method & errors out if not found.
 
         It also deletes the conn id env connection after the test.'
-      operationId: postApiV2ConnectionsTest
+      operationId: test_connection
       requestBody:
         content:
           application/json:
@@ -580,8 +411,6 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
-      x-operation-id-source: normalized
-      x-operation-id-original: test_connection
   /api/v2/connections/defaults:
     post:
       tags:
@@ -610,24 +439,537 @@ paths:
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
+  /connections:
+    get:
+      operationId: getConnections
+      parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/PageOffset'
+      - $ref: '#/components/parameters/OrderBy'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionCollection'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+      summary: Apache Airflow List Connections
+      tags:
+      - Connection
+      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: get_connections
+    post:
+      operationId: postConnections
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Connection'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connection'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+      summary: Apache Airflow Create a Connection
+      tags:
+      - Connection
+      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: post_connection
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
+  /connections/test:
+    post:
+      description: 'Test a connection.
+
+
+        *New in version 2.2.0*'
+      operationId: postConnectionsTest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Connection'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionTest'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Test a Connection
+      tags:
+      - Connection
+      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: test_connection
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
+  /connections/{connection_id}:
+    parameters:
+    - $ref: '#/components/parameters/ConnectionID'
+    delete:
+      operationId: deleteConnectionsByConnectionId
+      responses:
+        '204':
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Delete a Connection
+      tags:
+      - Connection
+      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: delete_connection
+    get:
+      operationId: getConnectionsByConnectionId
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connection'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Get a Connection
+      tags:
+      - Connection
+      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: get_connection
+    patch:
+      operationId: patchConnectionsByConnectionId
+      parameters:
+      - $ref: '#/components/parameters/UpdateMask'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Connection'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connection'
+          description: Success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Update a Connection
+      tags:
+      - Connection
+      x-openapi-router-controller: airflow.api_connexion.endpoints.connection_endpoint
+      x-operation-id-source: normalized
+      x-operation-id-original: patch_connection
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
 components:
   schemas:
-    Connection:
-      allOf:
-      - $ref: '#/components/schemas/ConnectionCollectionItem'
-      - properties:
-          extra:
-            description: Other values that cannot be put into another field, e.g. RSA keys.
-            type:
-            - string
-            - 'null'
-          password:
-            description: Password of the connection.
-            format: password
+    BulkActionNotOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      title: BulkActionNotOnExistence
+      description: Bulk Action to be taken if the entity does not exist.
+    BulkResponse:
+      properties:
+        create:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk create operation, including successful keys and errors.
+        update:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk update operation, including successful keys and errors.
+        delete:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk delete operation, including successful keys and errors.
+      type: object
+      title: BulkResponse
+      description: 'Serializer for responses to bulk entity operations.
+
+
+        This represents the results of create, update, and delete actions performed on entity in bulk.
+
+        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
+
+        Fields are populated in the response only if the respective action was part of the request, else are set None.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ConnectionResponse:
+      properties:
+        connection_id:
+          type: string
+          title: Connection Id
+        conn_type:
+          type: string
+          title: Conn Type
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        host:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Host
+        login:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Login
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Schema
+        port:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Port
+        password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Password
+        extra:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Extra
+        team_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Team Name
+      type: object
+      required:
+      - connection_id
+      - conn_type
+      - description
+      - host
+      - login
+      - schema
+      - port
+      - password
+      - extra
+      - team_name
+      title: ConnectionResponse
+      description: Connection serializer for responses.
+    BulkDeleteAction_ConnectionBody_:
+      properties:
+        action:
+          type: string
+          const: delete
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            anyOf:
+            - type: string
+            - $ref: '#/components/schemas/ConnectionBody'
+          type: array
+          title: Entities
+          description: A list of entity id/key or entity objects to be deleted.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkDeleteAction[ConnectionBody]
+    BulkUpdateAction_ConnectionBody_:
+      properties:
+        action:
+          type: string
+          const: update
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/ConnectionBody'
+          type: array
+          title: Entities
+          description: A list of entities to be updated.
+        update_mask:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Update Mask
+          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkUpdateAction[ConnectionBody]
+    BulkBody_ConnectionBody_:
+      properties:
+        actions:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/BulkCreateAction_ConnectionBody_'
+            - $ref: '#/components/schemas/BulkUpdateAction_ConnectionBody_'
+            - $ref: '#/components/schemas/BulkDeleteAction_ConnectionBody_'
+          type: array
+          title: Actions
+      additionalProperties: false
+      type: object
+      required:
+      - actions
+      title: BulkBody[ConnectionBody]
+    BulkActionResponse:
+      properties:
+        success:
+          items:
             type: string
-            writeOnly: true
-        type: object
-      description: Full representation of the connection.
+          type: array
+          title: Success
+          description: A list of unique id/key representing successful operations.
+          default: []
+        errors:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Errors
+          description: A list of errors encountered during the operation, each containing details about the issue.
+          default: []
+      type: object
+      title: BulkActionResponse
+      description: 'Serializer for individual bulk action responses.
+
+
+        Represents the outcome of a single bulk operation (create, update, or delete).
+
+        The response includes a list of successful keys and any errors encountered during the operation.
+
+        This structure helps users understand which key actions succeeded and which failed.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ConnectionCollectionResponse:
+      properties:
+        connections:
+          items:
+            $ref: '#/components/schemas/ConnectionResponse'
+          type: array
+          title: Connections
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - connections
+      - total_entries
+      title: ConnectionCollectionResponse
+      description: Connection Collection serializer for responses.
+    BulkActionOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      - overwrite
+      title: BulkActionOnExistence
+      description: Bulk Action to be taken if the entity already exists or not.
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    BulkCreateAction_ConnectionBody_:
+      properties:
+        action:
+          type: string
+          const: create
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/ConnectionBody'
+          type: array
+          title: Entities
+          description: A list of entities to be created.
+        action_on_existence:
+          $ref: '#/components/schemas/BulkActionOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkCreateAction[ConnectionBody]
+    ConnectionTestResponse:
+      properties:
+        status:
+          type: boolean
+          title: Status
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - status
+      - message
+      title: ConnectionTestResponse
+      description: Connection Test serializer for responses.
+    ConnectionBody:
+      properties:
+        connection_id:
+          type: string
+          maxLength: 200
+          pattern: ^[\w.-]+$
+          title: Connection Id
+        conn_type:
+          type: string
+          title: Conn Type
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        host:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Host
+        login:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Login
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Schema
+        port:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Port
+        password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Password
+        extra:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Extra
+        team_name:
+          anyOf:
+          - type: string
+            maxLength: 50
+          - type: 'null'
+          title: Team Name
+      additionalProperties: false
+      type: object
+      required:
+      - connection_id
+      - conn_type
+      title: ConnectionBody
+      description: Connection Serializer for requests body.
     ConnectionCollectionItem:
       description: 'Connection collection item.
 
@@ -702,21 +1044,22 @@ components:
       - title
       - status
       type: object
-    ConnectionTest:
-      description: 'Connection test results.
-
-
-        *New in version 2.2.0*
-
-        '
-      properties:
-        message:
-          description: The success or failure message of the request.
-          type: string
-        status:
-          description: The status of the request.
-          type: boolean
-      type: object
+    Connection:
+      allOf:
+      - $ref: '#/components/schemas/ConnectionCollectionItem'
+      - properties:
+          extra:
+            description: Other values that cannot be put into another field, e.g. RSA keys.
+            type:
+            - string
+            - 'null'
+          password:
+            description: Password of the connection.
+            format: password
+            type: string
+            writeOnly: true
+        type: object
+      description: Full representation of the connection.
     ConnectionCollection:
       allOf:
       - properties:
@@ -744,379 +1087,30 @@ components:
             '
           type: integer
       type: object
-    BulkCreateAction_ConnectionBody_:
-      properties:
-        action:
-          type: string
-          const: create
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            $ref: '#/components/schemas/ConnectionBody'
-          type: array
-          title: Entities
-          description: A list of entities to be created.
-        action_on_existence:
-          $ref: '#/components/schemas/BulkActionOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkCreateAction[ConnectionBody]
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ConnectionBody:
-      properties:
-        connection_id:
-          type: string
-          maxLength: 200
-          pattern: ^[\w.-]+$
-          title: Connection Id
-        conn_type:
-          type: string
-          title: Conn Type
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        host:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Host
-        login:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Login
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Schema
-        port:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Port
-        password:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Password
-        extra:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Extra
-        team_name:
-          anyOf:
-          - type: string
-            maxLength: 50
-          - type: 'null'
-          title: Team Name
-      additionalProperties: false
-      type: object
-      required:
-      - connection_id
-      - conn_type
-      title: ConnectionBody
-      description: Connection Serializer for requests body.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    BulkDeleteAction_ConnectionBody_:
-      properties:
-        action:
-          type: string
-          const: delete
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            anyOf:
-            - type: string
-            - $ref: '#/components/schemas/ConnectionBody'
-          type: array
-          title: Entities
-          description: A list of entity id/key or entity objects to be deleted.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkDeleteAction[ConnectionBody]
-    ConnectionResponse:
-      properties:
-        connection_id:
-          type: string
-          title: Connection Id
-        conn_type:
-          type: string
-          title: Conn Type
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        host:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Host
-        login:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Login
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Schema
-        port:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Port
-        password:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Password
-        extra:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Extra
-        team_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Team Name
-      type: object
-      required:
-      - connection_id
-      - conn_type
-      - description
-      - host
-      - login
-      - schema
-      - port
-      - password
-      - extra
-      - team_name
-      title: ConnectionResponse
-      description: Connection serializer for responses.
-    ConnectionCollectionResponse:
-      properties:
-        connections:
-          items:
-            $ref: '#/components/schemas/ConnectionResponse'
-          type: array
-          title: Connections
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - connections
-      - total_entries
-      title: ConnectionCollectionResponse
-      description: Connection Collection serializer for responses.
-    ConnectionTestResponse:
-      properties:
-        status:
-          type: boolean
-          title: Status
-        message:
-          type: string
-          title: Message
-      type: object
-      required:
-      - status
-      - message
-      title: ConnectionTestResponse
-      description: Connection Test serializer for responses.
-    BulkActionNotOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      title: BulkActionNotOnExistence
-      description: Bulk Action to be taken if the entity does not exist.
-    BulkActionOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      - overwrite
-      title: BulkActionOnExistence
-      description: Bulk Action to be taken if the entity already exists or not.
-    BulkActionResponse:
-      properties:
-        success:
-          items:
-            type: string
-          type: array
-          title: Success
-          description: A list of unique id/key representing successful operations.
-          default: []
-        errors:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Errors
-          description: A list of errors encountered during the operation, each containing details about the issue.
-          default: []
-      type: object
-      title: BulkActionResponse
-      description: 'Serializer for individual bulk action responses.
+    ConnectionTest:
+      description: 'Connection test results.
 
 
-        Represents the outcome of a single bulk operation (create, update, or delete).
-
-        The response includes a list of successful keys and any errors encountered during the operation.
-
-        This structure helps users understand which key actions succeeded and which failed.'
-    BulkResponse:
-      properties:
-        create:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk create operation, including successful keys and errors.
-        update:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk update operation, including successful keys and errors.
-        delete:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk delete operation, including successful keys and errors.
-      type: object
-      title: BulkResponse
-      description: 'Serializer for responses to bulk entity operations.
-
-
-        This represents the results of create, update, and delete actions performed on entity in bulk.
-
-        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
-
-        Fields are populated in the response only if the respective action was part of the request, else are set None.'
-    BulkBody_ConnectionBody_:
-      properties:
-        actions:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/BulkCreateAction_ConnectionBody_'
-            - $ref: '#/components/schemas/BulkUpdateAction_ConnectionBody_'
-            - $ref: '#/components/schemas/BulkDeleteAction_ConnectionBody_'
-          type: array
-          title: Actions
-      additionalProperties: false
-      type: object
-      required:
-      - actions
-      title: BulkBody[ConnectionBody]
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    BulkUpdateAction_ConnectionBody_:
-      properties:
-        action:
-          type: string
-          const: update
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            $ref: '#/components/schemas/ConnectionBody'
-          type: array
-          title: Entities
-          description: A list of entities to be updated.
-        update_mask:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Update Mask
-          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkUpdateAction[ConnectionBody]
-  parameters:
-    OrderBy:
-      description: 'The name of the field to order the results by.
-
-        Prefix a field name with `-` to reverse the sort order.
-
-
-        *New in version 2.1.0*
+        *New in version 2.2.0*
 
         '
+      properties:
+        message:
+          description: The success or failure message of the request.
+          type: string
+        status:
+          description: The status of the request.
+          type: boolean
+      type: object
+  parameters:
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
       in: query
-      name: order_by
+      name: offset
       required: false
       schema:
-        type: string
+        minimum: 0
+        type: integer
     UpdateMask:
       description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
 
@@ -1131,6 +1125,20 @@ components:
           type: string
         type: array
       style: form
+    OrderBy:
+      description: 'The name of the field to order the results by.
+
+        Prefix a field name with `-` to reverse the sort order.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: string
     ConnectionID:
       description: The connection ID.
       in: path
@@ -1146,27 +1154,7 @@ components:
       schema:
         default: 100
         type: integer
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
   responses:
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client specified an invalid argument.
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
     Unauthenticated:
       content:
         application/json:
@@ -1179,16 +1167,19 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: A specified resource is not found.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client specified an invalid argument.
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
   securitySchemes:
-    Basic:
-      scheme: basic
-      type: http
-    GoogleOpenId:
-      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
-      type: openIdConnect
-    Kerberos:
-      scheme: negotiate
-      type: http
     OAuth2PasswordBearer:
       type: oauth2
       description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
@@ -1199,8 +1190,17 @@ components:
     HTTPBearer:
       type: http
       scheme: bearer
+    Basic:
+      scheme: basic
+      type: http
+    GoogleOpenId:
+      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+      type: openIdConnect
+    Kerberos:
+      scheme: negotiate
+      type: http
 externalDocs:
   url: https://airflow.apache.org/docs/apache-airflow/stable/
 x-refined-from:
-- apache-airflow-openapi.yaml
 - airflow-connection-api-openapi.yml
+- apache-airflow-openapi.yaml

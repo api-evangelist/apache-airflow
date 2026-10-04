@@ -171,6 +171,41 @@ paths:
       x-openapi-router-controller: airflow.api_connexion.endpoints.role_and_permission_endpoint
 components:
   schemas:
+    Resource:
+      description: 'A resource on which permissions are granted.
+
+
+        *New in version 2.1.0*
+
+        '
+      properties:
+        name:
+          description: The name of the resource
+          type: string
+      type: object
+    Action:
+      description: 'An action Item.
+
+
+        *New in version 2.1.0*
+
+        '
+      properties:
+        name:
+          description: The name of the permission "action"
+          type: string
+      type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
     ActionResource:
       description: 'The Action-Resource item.
 
@@ -187,6 +222,22 @@ components:
           $ref: '#/components/schemas/Resource'
           description: The permission resource
           type: object
+      type: object
+    RoleCollection:
+      allOf:
+      - properties:
+          roles:
+            items:
+              $ref: '#/components/schemas/Role'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'A collection of roles.
+
+
+        *New in version 2.1.0*
+
+        '
       type: object
     Role:
       description: 'a role item.
@@ -245,65 +296,7 @@ components:
       - title
       - status
       type: object
-    Resource:
-      description: 'A resource on which permissions are granted.
-
-
-        *New in version 2.1.0*
-
-        '
-      properties:
-        name:
-          description: The name of the resource
-          type: string
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
-    RoleCollection:
-      allOf:
-      - properties:
-          roles:
-            items:
-              $ref: '#/components/schemas/Role'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'A collection of roles.
-
-
-        *New in version 2.1.0*
-
-        '
-      type: object
-    Action:
-      description: 'An action Item.
-
-
-        *New in version 2.1.0*
-
-        '
-      properties:
-        name:
-          description: The name of the permission "action"
-          type: string
-      type: object
   parameters:
-    RoleName:
-      description: The role name
-      in: path
-      name: role_name
-      required: true
-      schema:
-        type: string
     PageOffset:
       description: The number of items to skip before starting to collect the result set.
       in: query
@@ -311,6 +304,35 @@ components:
       required: false
       schema:
         minimum: 0
+        type: integer
+    OrderBy:
+      description: 'The name of the field to order the results by.
+
+        Prefix a field name with `-` to reverse the sort order.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: string
+    RoleName:
+      description: The role name
+      in: path
+      name: role_name
+      required: true
+      schema:
+        type: string
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
         type: integer
     UpdateMask:
       description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
@@ -326,53 +348,31 @@ components:
           type: string
         type: array
       style: form
-    OrderBy:
-      description: 'The name of the field to order the results by.
-
-        Prefix a field name with `-` to reverse the sort order.
-
-
-        *New in version 2.1.0*
-
-        '
-      in: query
-      name: order_by
-      required: false
-      schema:
-        type: string
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
   responses:
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client specified an invalid argument.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client specified an invalid argument.
   securitySchemes:
     Basic:
       scheme: basic

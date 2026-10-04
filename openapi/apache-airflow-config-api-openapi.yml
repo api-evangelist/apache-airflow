@@ -246,36 +246,28 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ConfigSection:
+    ConfigOption:
       properties:
-        name:
+        key:
           type: string
-          title: Name
-        options:
-          items:
-            $ref: '#/components/schemas/ConfigOption'
-          type: array
-          title: Options
+          title: Key
+        value:
+          anyOf:
+          - type: string
+          - prefixItems:
+            - type: string
+            - type: string
+            type: array
+            maxItems: 2
+            minItems: 2
+          title: Value
       additionalProperties: false
       type: object
       required:
-      - name
-      - options
-      title: ConfigSection
-      description: Config Section Schema.
-    Config:
-      properties:
-        sections:
-          items:
-            $ref: '#/components/schemas/ConfigSection'
-          type: array
-          title: Sections
-      additionalProperties: false
-      type: object
-      required:
-      - sections
-      title: Config
-      description: List of config sections with their options.
+      - key
+      - value
+      title: ConfigOption
+      description: Config option.
     ValidationError:
       properties:
         loc:
@@ -315,28 +307,54 @@ components:
       - detail
       title: HTTPExceptionResponse
       description: HTTPException Model used for error response.
-    ConfigOption:
+    Config:
       properties:
-        key:
-          type: string
-          title: Key
-        value:
-          anyOf:
-          - type: string
-          - prefixItems:
-            - type: string
-            - type: string
-            type: array
-            maxItems: 2
-            minItems: 2
-          title: Value
+        sections:
+          items:
+            $ref: '#/components/schemas/ConfigSection'
+          type: array
+          title: Sections
       additionalProperties: false
       type: object
       required:
-      - key
-      - value
-      title: ConfigOption
-      description: Config option.
+      - sections
+      title: Config
+      description: List of config sections with their options.
+    ConfigSection:
+      properties:
+        name:
+          type: string
+          title: Name
+        options:
+          items:
+            $ref: '#/components/schemas/ConfigOption'
+          type: array
+          title: Options
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - options
+      title: ConfigSection
+      description: Config Section Schema.
+    ConfigOption_2:
+      description: The option of configuration.
+      properties:
+        key:
+          readOnly: true
+          type: string
+        value:
+          readOnly: true
+          type: string
+      type: object
+    Config_2:
+      description: The configuration.
+      properties:
+        sections:
+          items:
+            $ref: '#/components/schemas/ConfigSection_2'
+          type: array
+      type: object
     ConfigSection_2:
       description: The section of configuration.
       properties:
@@ -383,37 +401,19 @@ components:
       - title
       - status
       type: object
-    Config_2:
-      description: The configuration.
-      properties:
-        sections:
-          items:
-            $ref: '#/components/schemas/ConfigSection_2'
-          type: array
-      type: object
-    ConfigOption_2:
-      description: The option of configuration.
-      properties:
-        key:
-          readOnly: true
-          type: string
-        value:
-          readOnly: true
-          type: string
-      type: object
   responses:
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

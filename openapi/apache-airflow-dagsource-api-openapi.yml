@@ -94,54 +94,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    DAGSourceResponse:
-      properties:
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Content
-        dag_id:
-          type: string
-          title: Dag Id
-        version_number:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Version Number
-        dag_display_name:
-          type: string
-          title: Dag Display Name
-      type: object
-      required:
-      - content
-      - dag_id
-      - version_number
-      - dag_display_name
-      title: DAGSourceResponse
-      description: DAG Source serializer for responses.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -168,6 +120,54 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DAGSourceResponse:
+      properties:
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+        dag_id:
+          type: string
+          title: Dag Id
+        version_number:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Version Number
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+      type: object
+      required:
+      - content
+      - dag_id
+      - version_number
+      - dag_display_name
+      title: DAGSourceResponse
+      description: DAG Source serializer for responses.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

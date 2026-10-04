@@ -134,22 +134,37 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    TaskCollectionResponse:
+    TimeDelta:
       properties:
-        tasks:
-          items:
-            $ref: '#/components/schemas/TaskResponse'
-          type: array
-          title: Tasks
-        total_entries:
+        __type:
+          type: string
+          title: Type
+          default: TimeDelta
+        days:
           type: integer
-          title: Total Entries
+          title: Days
+        seconds:
+          type: integer
+          title: Seconds
+        microseconds:
+          type: integer
+          title: Microseconds
       type: object
       required:
-      - tasks
-      - total_entries
-      title: TaskCollectionResponse
-      description: Task collection serializer for responses.
+      - days
+      - seconds
+      - microseconds
+      title: TimeDelta
+      description: TimeDelta can be used to interact with datetime.timedelta objects.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     TaskResponse:
       properties:
         task_id:
@@ -320,37 +335,6 @@ components:
       - extra_links
       title: TaskResponse
       description: Task serializer for responses.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    TimeDelta:
-      properties:
-        __type:
-          type: string
-          title: Type
-          default: TimeDelta
-        days:
-          type: integer
-          title: Days
-        seconds:
-          type: integer
-          title: Seconds
-        microseconds:
-          type: integer
-          title: Microseconds
-      type: object
-      required:
-      - days
-      - seconds
-      - microseconds
-      title: TimeDelta
-      description: TimeDelta can be used to interact with datetime.timedelta objects.
     ValidationError:
       properties:
         loc:
@@ -390,6 +374,22 @@ components:
       - detail
       title: HTTPExceptionResponse
       description: HTTPException Model used for error response.
+    TaskCollectionResponse:
+      properties:
+        tasks:
+          items:
+            $ref: '#/components/schemas/TaskResponse'
+          type: array
+          title: Tasks
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - tasks
+      - total_entries
+      title: TaskCollectionResponse
+      description: Task collection serializer for responses.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

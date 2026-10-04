@@ -189,19 +189,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
     ValidationError:
       properties:
         loc:
@@ -228,6 +215,35 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    ImportErrorCollectionResponse:
+      properties:
+        import_errors:
+          items:
+            $ref: '#/components/schemas/ImportErrorResponse'
+          type: array
+          title: Import Errors
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - import_errors
+      - total_entries
+      title: ImportErrorCollectionResponse
+      description: Import Error Collection Response.
     ImportErrorResponse:
       properties:
         import_error_id:
@@ -257,22 +273,53 @@ components:
       - stack_trace
       title: ImportErrorResponse
       description: Import Error Response.
-    ImportErrorCollectionResponse:
+    CollectionInfo:
+      description: Metadata about collection.
       properties:
-        import_errors:
-          items:
-            $ref: '#/components/schemas/ImportErrorResponse'
-          type: array
-          title: Import Errors
         total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
           type: integer
-          title: Total Entries
       type: object
-      required:
-      - import_errors
-      - total_entries
-      title: ImportErrorCollectionResponse
-      description: Import Error Collection Response.
+    ImportErrorCollection:
+      allOf:
+      - properties:
+          import_errors:
+            items:
+              $ref: '#/components/schemas/ImportError'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of import errors.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    ImportError:
+      properties:
+        filename:
+          description: The filename
+          readOnly: true
+          type: string
+        import_error_id:
+          description: The import error ID.
+          readOnly: true
+          type: integer
+        stack_trace:
+          description: The full stackstrace..
+          readOnly: true
+          type: string
+        timestamp:
+          description: The time when this error was created.
+          format: datetime
+          readOnly: true
+          type: string
+      type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
 
@@ -308,53 +355,6 @@ components:
       - title
       - status
       type: object
-    ImportError:
-      properties:
-        filename:
-          description: The filename
-          readOnly: true
-          type: string
-        import_error_id:
-          description: The import error ID.
-          readOnly: true
-          type: integer
-        stack_trace:
-          description: The full stackstrace..
-          readOnly: true
-          type: string
-        timestamp:
-          description: The time when this error was created.
-          format: datetime
-          readOnly: true
-          type: string
-      type: object
-    ImportErrorCollection:
-      allOf:
-      - properties:
-          import_errors:
-            items:
-              $ref: '#/components/schemas/ImportError'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of import errors.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2
@@ -376,13 +376,6 @@ components:
       scheme: negotiate
       type: http
   parameters:
-    ImportErrorID:
-      description: The import error ID.
-      in: path
-      name: import_error_id
-      required: true
-      schema:
-        type: integer
     PageOffset:
       description: The number of items to skip before starting to collect the result set.
       in: query
@@ -405,6 +398,13 @@ components:
       required: false
       schema:
         type: string
+    ImportErrorID:
+      description: The import error ID.
+      in: path
+      name: import_error_id
+      required: true
+      schema:
+        type: integer
     PageLimit:
       description: The numbers of items to return.
       in: query
@@ -414,21 +414,21 @@ components:
         default: 100
         type: integer
   responses:
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.

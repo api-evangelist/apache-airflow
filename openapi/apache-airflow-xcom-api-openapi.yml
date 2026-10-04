@@ -661,15 +661,6 @@ paths:
     - url: https://apache.local
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     XComCollectionResponse:
       properties:
         xcom_entries:
@@ -686,11 +677,71 @@ components:
       - total_entries
       title: XComCollectionResponse
       description: XCom Collection serializer for responses.
-    XComCreateBody:
+    XComResponseNative:
       properties:
         key:
           type: string
           title: Key
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+        logical_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date
+        map_index:
+          type: integer
+          title: Map Index
+        task_id:
+          type: string
+          title: Task Id
+        dag_id:
+          type: string
+          title: Dag Id
+        run_id:
+          type: string
+          title: Run Id
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+        task_display_name:
+          type: string
+          title: Task Display Name
+        run_after:
+          type: string
+          format: date-time
+          title: Run After
+        value:
+          title: Value
+      type: object
+      required:
+      - key
+      - timestamp
+      - logical_date
+      - map_index
+      - task_id
+      - dag_id
+      - run_id
+      - dag_display_name
+      - task_display_name
+      - run_after
+      - value
+      title: XComResponseNative
+      description: XCom response serializer with native return type.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    XComUpdateBody:
+      properties:
         value:
           title: Value
         map_index:
@@ -700,10 +751,48 @@ components:
       additionalProperties: false
       type: object
       required:
-      - key
       - value
-      title: XComCreateBody
-      description: Payload serializer for creating an XCom entry.
+      title: XComUpdateBody
+      description: Payload serializer for updating an XCom entry.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
     XComResponseString:
       properties:
         key:
@@ -812,101 +901,11 @@ components:
       - run_after
       title: XComResponse
       description: Serializer for a xcom item.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    XComResponseNative:
+    XComCreateBody:
       properties:
         key:
           type: string
           title: Key
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-        logical_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Logical Date
-        map_index:
-          type: integer
-          title: Map Index
-        task_id:
-          type: string
-          title: Task Id
-        dag_id:
-          type: string
-          title: Dag Id
-        run_id:
-          type: string
-          title: Run Id
-        dag_display_name:
-          type: string
-          title: Dag Display Name
-        task_display_name:
-          type: string
-          title: Task Display Name
-        run_after:
-          type: string
-          format: date-time
-          title: Run After
-        value:
-          title: Value
-      type: object
-      required:
-      - key
-      - timestamp
-      - logical_date
-      - map_index
-      - task_id
-      - dag_id
-      - run_id
-      - dag_display_name
-      - task_display_name
-      - run_after
-      - value
-      title: XComResponseNative
-      description: XCom response serializer with native return type.
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    XComUpdateBody:
-      properties:
         value:
           title: Value
         map_index:
@@ -916,9 +915,67 @@ components:
       additionalProperties: false
       type: object
       required:
+      - key
       - value
-      title: XComUpdateBody
-      description: Payload serializer for updating an XCom entry.
+      title: XComCreateBody
+      description: Payload serializer for creating an XCom entry.
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    XCom:
+      allOf:
+      - $ref: '#/components/schemas/XComCollectionItem'
+      - properties:
+          value:
+            description: The value
+            type: string
+        type: object
+      description: Full representations of XCom entry.
+    XComCollection:
+      allOf:
+      - properties:
+          xcom_entries:
+            items:
+              $ref: '#/components/schemas/XComCollectionItem'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of XCom entries.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    XComCollectionItem:
+      description: 'XCom entry collection item.
+
+
+        The value field is only available when reading a single object due to the size of the value.
+
+        '
+      properties:
+        dag_id:
+          type: string
+        execution_date:
+          format: datetime
+          type: string
+        key:
+          type: string
+        task_id:
+          type: string
+        timestamp:
+          format: datetime
+          type: string
+      type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
 
@@ -954,71 +1011,15 @@ components:
       - title
       - status
       type: object
-    XComCollectionItem:
-      description: 'XCom entry collection item.
-
-
-        The value field is only available when reading a single object due to the size of the value.
-
-        '
-      properties:
-        dag_id:
-          type: string
-        execution_date:
-          format: datetime
-          type: string
-        key:
-          type: string
-        task_id:
-          type: string
-        timestamp:
-          format: datetime
-          type: string
-      type: object
-    XCom:
-      allOf:
-      - $ref: '#/components/schemas/XComCollectionItem'
-      - properties:
-          value:
-            description: The value
-            type: string
-        type: object
-      description: Full representations of XCom entry.
-    XComCollection:
-      allOf:
-      - properties:
-          xcom_entries:
-            items:
-              $ref: '#/components/schemas/XComCollectionItem'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of XCom entries.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
   parameters:
-    XComKey:
-      description: The XCom key.
-      in: path
-      name: xcom_key
-      required: true
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
       schema:
-        type: string
+        minimum: 0
+        type: integer
     DAGRunID:
       description: The DAG run ID.
       in: path
@@ -1033,14 +1034,13 @@ components:
       required: true
       schema:
         type: string
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
+    XComKey:
+      description: The XCom key.
+      in: path
+      name: xcom_key
+      required: true
       schema:
-        minimum: 0
-        type: integer
+        type: string
     PageLimit:
       description: The numbers of items to return.
       in: query
@@ -1057,24 +1057,24 @@ components:
       schema:
         type: string
   responses:
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

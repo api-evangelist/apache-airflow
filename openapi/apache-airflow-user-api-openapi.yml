@@ -172,7 +172,106 @@ paths:
       - User
       x-openapi-router-controller: airflow.api_connexion.endpoints.user_endpoint
 components:
+  parameters:
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    OrderBy:
+      description: 'The name of the field to order the results by.
+
+        Prefix a field name with `-` to reverse the sort order.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: string
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
+    Username:
+      description: 'The username of the user.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: path
+      name: username
+      required: true
+      schema:
+        type: string
+    UpdateMask:
+      description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
+
+        A comma-separated list of fully qualified names of fields.
+
+        '
+      explode: false
+      in: query
+      name: update_mask
+      schema:
+        items:
+          type: string
+        type: array
+      style: form
   schemas:
+    User:
+      allOf:
+      - $ref: '#/components/schemas/UserCollectionItem'
+      - properties:
+          password:
+            type: string
+            writeOnly: true
+        type: object
+      description: 'A user object with sensitive data.
+
+
+        *New in version 2.1.0*
+
+        '
+      type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    UserCollection:
+      allOf:
+      - properties:
+          users:
+            items:
+              $ref: '#/components/schemas/UserCollectionItem'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of users.
+
+
+        *New in version 2.1.0*
+
+        '
+      type: object
     UserCollectionItem:
       description: 'A user object.
 
@@ -305,105 +404,6 @@ components:
       - title
       - status
       type: object
-    User:
-      allOf:
-      - $ref: '#/components/schemas/UserCollectionItem'
-      - properties:
-          password:
-            type: string
-            writeOnly: true
-        type: object
-      description: 'A user object with sensitive data.
-
-
-        *New in version 2.1.0*
-
-        '
-      type: object
-    UserCollection:
-      allOf:
-      - properties:
-          users:
-            items:
-              $ref: '#/components/schemas/UserCollectionItem'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of users.
-
-
-        *New in version 2.1.0*
-
-        '
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
-  parameters:
-    Username:
-      description: 'The username of the user.
-
-
-        *New in version 2.1.0*
-
-        '
-      in: path
-      name: username
-      required: true
-      schema:
-        type: string
-    UpdateMask:
-      description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
-
-        A comma-separated list of fully qualified names of fields.
-
-        '
-      explode: false
-      in: query
-      name: update_mask
-      schema:
-        items:
-          type: string
-        type: array
-      style: form
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    OrderBy:
-      description: 'The name of the field to order the results by.
-
-        Prefix a field name with `-` to reverse the sort order.
-
-
-        *New in version 2.1.0*
-
-        '
-      in: query
-      name: order_by
-      required: false
-      schema:
-        type: string
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
   responses:
     AlreadyExists:
       content:
@@ -411,30 +411,30 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: An existing resource conflicts with the request.
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client specified an invalid argument.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client specified an invalid argument.
   securitySchemes:
     Basic:
       scheme: basic

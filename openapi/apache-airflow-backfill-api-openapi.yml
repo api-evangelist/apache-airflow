@@ -417,6 +417,31 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    BackfillCollectionResponse:
+      properties:
+        backfills:
+          items:
+            $ref: '#/components/schemas/BackfillResponse'
+          type: array
+          title: Backfills
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - backfills
+      - total_entries
+      title: BackfillCollectionResponse
+      description: Backfill Collection serializer for responses.
     DryRunBackfillResponse:
       properties:
         logical_date:
@@ -443,6 +468,45 @@ components:
       - partition_date
       title: DryRunBackfillResponse
       description: Backfill serializer for responses in dry-run mode.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
     BackfillPostBody:
       properties:
         dag_id:
@@ -484,6 +548,22 @@ components:
       - to_date
       title: BackfillPostBody
       description: Object used for create backfill request.
+    DryRunBackfillCollectionResponse:
+      properties:
+        backfills:
+          items:
+            $ref: '#/components/schemas/DryRunBackfillResponse'
+          type: array
+          title: Backfills
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - backfills
+      - total_entries
+      title: DryRunBackfillCollectionResponse
+      description: Backfill collection serializer for responses in dry-run mode.
     BackfillResponse:
       properties:
         id:
@@ -559,86 +639,6 @@ components:
 
 
         :meta private:'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    BackfillCollectionResponse:
-      properties:
-        backfills:
-          items:
-            $ref: '#/components/schemas/BackfillResponse'
-          type: array
-          title: Backfills
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - backfills
-      - total_entries
-      title: BackfillCollectionResponse
-      description: Backfill Collection serializer for responses.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    DryRunBackfillCollectionResponse:
-      properties:
-        backfills:
-          items:
-            $ref: '#/components/schemas/DryRunBackfillResponse'
-          type: array
-          title: Backfills
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - backfills
-      - total_entries
-      title: DryRunBackfillCollectionResponse
-      description: Backfill collection serializer for responses in dry-run mode.
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

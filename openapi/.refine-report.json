@@ -62,9 +62,7 @@
     "apache-airflow-taskinstance-api-openapi.yml",
     "apache-airflow-user-api-openapi.yml"
   ],
-  "archived": [
-    "deleted 2 superseded output(s) from the previous generation"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
@@ -80,7 +78,6 @@
     "tag 'Provider' spans 2 source specs (airflow-provider-api-openapi.yml, apache-airflow-openapi.yaml): per-path servers applied",
     "tag 'Variable' spans 2 source specs (airflow-variable-api-openapi.yml, apache-airflow-openapi.yaml): per-path servers applied",
     "tag 'XCom' spans 2 source specs (airflow-xcom-api-openapi.yml, apache-airflow-openapi.yaml): per-path servers applied",
-    "superseded outputs removed: apache-airflow-experimental-api-openapi.yml, apache-airflow-extra-links-api-openapi.yml",
     "apis.yml register: written (+4 apis, 34 total)"
   ],
   "skipped": [
@@ -99,8 +96,6 @@
     "apache-airflow-dagwarning-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "apache-airflow-dataset-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "apache-airflow-event-log-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "apache-airflow-experimental-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "apache-airflow-extra-links-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "apache-airflow-import-error-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "apache-airflow-job-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "apache-airflow-login-api-openapi.yml: previously refined output, superseded by openapi/_original/",

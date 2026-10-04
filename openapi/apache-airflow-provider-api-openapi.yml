@@ -128,6 +128,30 @@ components:
       - total_entries
       title: ProviderCollectionResponse
       description: Provider Collection serializer for responses.
+    ProviderResponse:
+      properties:
+        package_name:
+          type: string
+          title: Package Name
+        description:
+          type: string
+          title: Description
+        version:
+          type: string
+          title: Version
+        documentation_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Documentation Url
+      type: object
+      required:
+      - package_name
+      - description
+      - version
+      - documentation_url
+      title: ProviderResponse
+      description: Provider serializer for responses.
     ValidationError:
       properties:
         loc:
@@ -167,30 +191,24 @@ components:
       - detail
       title: HTTPExceptionResponse
       description: HTTPException Model used for error response.
-    ProviderResponse:
+    Provider:
+      description: 'The provider
+
+
+        *New in version 2.1.0*
+
+        '
       properties:
-        package_name:
-          type: string
-          title: Package Name
         description:
+          description: The description of the provider.
           type: string
-          title: Description
+        package_name:
+          description: The package name of the provider.
+          type: string
         version:
+          description: The version of the provider.
           type: string
-          title: Version
-        documentation_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Documentation Url
       type: object
-      required:
-      - package_name
-      - description
-      - version
-      - documentation_url
-      title: ProviderResponse
-      description: Provider serializer for responses.
     CollectionInfo:
       description: Metadata about collection.
       properties:
@@ -201,6 +219,19 @@ components:
 
             '
           type: integer
+      type: object
+    ProviderCollection:
+      description: 'Collection of providers.
+
+
+        *New in version 2.1.0*
+
+        '
+      properties:
+        providers:
+          items:
+            $ref: '#/components/schemas/Provider'
+          type: array
       type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
@@ -237,50 +268,19 @@ components:
       - title
       - status
       type: object
-    Provider:
-      description: 'The provider
-
-
-        *New in version 2.1.0*
-
-        '
-      properties:
-        description:
-          description: The description of the provider.
-          type: string
-        package_name:
-          description: The package name of the provider.
-          type: string
-        version:
-          description: The version of the provider.
-          type: string
-      type: object
-    ProviderCollection:
-      description: 'Collection of providers.
-
-
-        *New in version 2.1.0*
-
-        '
-      properties:
-        providers:
-          items:
-            $ref: '#/components/schemas/Provider'
-          type: array
-      type: object
   responses:
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

@@ -60,6 +60,23 @@ paths:
       - Permission
       x-openapi-router-controller: airflow.api_connexion.endpoints.role_and_permission_endpoint
 components:
+  parameters:
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
   schemas:
     ActionCollection:
       allOf:
@@ -76,6 +93,29 @@ components:
         *New in version 2.1.0*
 
         '
+      type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    Action:
+      description: 'An action Item.
+
+
+        *New in version 2.1.0*
+
+        '
+      properties:
+        name:
+          description: The name of the permission "action"
+          type: string
       type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
@@ -112,59 +152,19 @@ components:
       - title
       - status
       type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
-    Action:
-      description: 'An action Item.
-
-
-        *New in version 2.1.0*
-
-        '
-      properties:
-        name:
-          description: The name of the permission "action"
-          type: string
-      type: object
-  parameters:
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
   responses:
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
   securitySchemes:
     Basic:
       scheme: basic

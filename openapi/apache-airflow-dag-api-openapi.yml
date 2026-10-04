@@ -1218,31 +1218,33 @@ paths:
     - url: https://apache.local
 components:
   schemas:
-    DagRunState:
+    DAGTagCollectionResponse:
+      properties:
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - tags
+      - total_entries
+      title: DAGTagCollectionResponse
+      description: DAG Tags Collection serializer for responses.
+    DagRunType:
       type: string
       enum:
-      - queued
-      - running
-      - success
-      - failed
-      title: DagRunState
-      description: 'All possible states that a DagRun can be in.
-
-
-        These are "shared" with TaskInstanceState in some parts of the code,
-
-        so please ensure that their values always match the ones with the
-
-        same name in TaskInstanceState.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
+      - backfill
+      - scheduled
+      - manual
+      - operator_triggered
+      - asset_triggered
+      - asset_materialization
+      title: DagRunType
+      description: Class with DagRun types.
     DAGResponse:
       properties:
         dag_id:
@@ -1415,93 +1417,6 @@ components:
       - file_token
       title: DAGResponse
       description: DAG serializer for responses.
-    DAGCollectionResponse:
-      properties:
-        dags:
-          items:
-            $ref: '#/components/schemas/DAGResponse'
-          type: array
-          title: Dags
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - dags
-      - total_entries
-      title: DAGCollectionResponse
-      description: DAG Collection serializer for responses.
-    DagTagResponse:
-      properties:
-        name:
-          type: string
-          title: Name
-        dag_id:
-          type: string
-          title: Dag Id
-        dag_display_name:
-          type: string
-          title: Dag Display Name
-      type: object
-      required:
-      - name
-      - dag_id
-      - dag_display_name
-      title: DagTagResponse
-      description: DAG Tag serializer for responses.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    DAGTagCollectionResponse:
-      properties:
-        tags:
-          items:
-            type: string
-          type: array
-          title: Tags
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - tags
-      - total_entries
-      title: DAGTagCollectionResponse
-      description: DAG Tags Collection serializer for responses.
-    DagRunType:
-      type: string
-      enum:
-      - backfill
-      - scheduled
-      - manual
-      - operator_triggered
-      - asset_triggered
-      - asset_materialization
-      title: DagRunType
-      description: Class with DagRun types.
     DagVersionResponse:
       properties:
         id:
@@ -1548,6 +1463,57 @@ components:
       - bundle_url
       title: DagVersionResponse
       description: Dag Version serializer for responses.
+    DAGCollectionResponse:
+      properties:
+        dags:
+          items:
+            $ref: '#/components/schemas/DAGResponse'
+          type: array
+          title: Dags
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - dags
+      - total_entries
+      title: DAGCollectionResponse
+      description: DAG Collection serializer for responses.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     HTTPExceptionResponse:
       properties:
         detail:
@@ -1561,17 +1527,6 @@ components:
       - detail
       title: HTTPExceptionResponse
       description: HTTPException Model used for error response.
-    DAGPatchBody:
-      properties:
-        is_paused:
-          type: boolean
-          title: Is Paused
-      additionalProperties: false
-      type: object
-      required:
-      - is_paused
-      title: DAGPatchBody
-      description: Dag Serializer for updatable bodies.
     DAGDetailsResponse:
       properties:
         dag_id:
@@ -1859,6 +1814,147 @@ components:
       - latest_dag_version
       title: DAGDetailsResponse
       description: Specific serializer for DAG Details responses.
+    DagRunState:
+      type: string
+      enum:
+      - queued
+      - running
+      - success
+      - failed
+      title: DagRunState
+      description: 'All possible states that a DagRun can be in.
+
+
+        These are "shared" with TaskInstanceState in some parts of the code,
+
+        so please ensure that their values always match the ones with the
+
+        same name in TaskInstanceState.'
+    DagTagResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        dag_id:
+          type: string
+          title: Dag Id
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+      type: object
+      required:
+      - name
+      - dag_id
+      - dag_display_name
+      title: DagTagResponse
+      description: DAG Tag serializer for responses.
+    DAGPatchBody:
+      properties:
+        is_paused:
+          type: boolean
+          title: Is Paused
+      additionalProperties: false
+      type: object
+      required:
+      - is_paused
+      title: DAGPatchBody
+      description: Dag Serializer for updatable bodies.
+    TimeDelta:
+      description: Time delta
+      properties:
+        __type:
+          type: string
+        days:
+          type: integer
+        microseconds:
+          type: integer
+        seconds:
+          type: integer
+      required:
+      - __type
+      - days
+      - seconds
+      - microseconds
+      type: object
+    TaskInstanceReference:
+      properties:
+        dag_id:
+          description: The DAG ID.
+          readOnly: true
+          type: string
+        dag_run_id:
+          description: The DAG run ID.
+          readOnly: true
+          type: string
+        execution_date:
+          format: datetime
+          readOnly: true
+          type: string
+        task_id:
+          description: The task ID.
+          readOnly: true
+          type: string
+      type: object
+    TaskCollection:
+      description: Collection of tasks.
+      properties:
+        tasks:
+          items:
+            $ref: '#/components/schemas/Task'
+          type: array
+      type: object
+    Color:
+      description: Color in hexadecimal notation.
+      pattern: ^#[a-fA-F0-9]{3,6}$
+      type: string
+    ScheduleInterval:
+      anyOf:
+      - $ref: '#/components/schemas/TimeDelta'
+      - $ref: '#/components/schemas/RelativeDelta'
+      - $ref: '#/components/schemas/CronExpression'
+      description: 'Schedule interval. Defines how often DAG runs, this object gets added to your latest task instance''s
+
+        execution_date to figure out the next schedule.
+
+        '
+      discriminator:
+        propertyName: __type
+      readOnly: true
+    Error:
+      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
+
+        '
+      properties:
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        instance:
+          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
+
+            not yield further information if dereferenced.
+
+            '
+          type: string
+        status:
+          description: The HTTP status code generated by the API server for this occurrence of the problem.
+          type: number
+        title:
+          description: A short, human-readable summary of the problem type.
+          type: string
+        type:
+          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
+
+            encourages that, when dereferenced, it provide human-readable documentation for
+
+            the problem type.
+
+            '
+          type: string
+      required:
+      - type
+      - title
+      - status
+      type: object
     DAGDetail:
       allOf:
       - $ref: '#/components/schemas/DAG'
@@ -1972,42 +2068,25 @@ components:
         [airflow.models.DAG](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.DAG)
 
         '
-    TaskInstanceReference:
+    Tag:
+      description: Tag
       properties:
-        dag_id:
-          description: The DAG ID.
-          readOnly: true
-          type: string
-        dag_run_id:
-          description: The DAG run ID.
-          readOnly: true
-          type: string
-        execution_date:
-          format: datetime
-          readOnly: true
-          type: string
-        task_id:
-          description: The task ID.
-          readOnly: true
+        name:
           type: string
       type: object
-    TimeDelta:
-      description: Time delta
+    CronExpression:
+      description: Cron expression
       properties:
         __type:
           type: string
-        days:
-          type: integer
-        microseconds:
-          type: integer
-        seconds:
-          type: integer
+        value:
+          type: string
       required:
       - __type
-      - days
-      - seconds
-      - microseconds
-      type: object
+      - value
+      type:
+      - object
+      - 'null'
     ClearTaskInstances:
       properties:
         dag_run_id:
@@ -2076,6 +2155,200 @@ components:
           minItems: 1
           type: array
       type: object
+    DAGCollection:
+      allOf:
+      - properties:
+          dags:
+            items:
+              $ref: '#/components/schemas/DAG'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of DAGs.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    Task:
+      description: 'For details see:
+
+        [airflow.models.BaseOperator](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.BaseOperator)
+
+        '
+      properties:
+        class_ref:
+          $ref: '#/components/schemas/ClassReference'
+        depends_on_past:
+          readOnly: true
+          type: boolean
+        downstream_task_ids:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        end_date:
+          format: date-time
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        execution_timeout:
+          $ref: '#/components/schemas/TimeDelta'
+        extra_links:
+          items:
+            properties:
+              class_ref:
+                $ref: '#/components/schemas/ClassReference'
+            type: object
+          readOnly: true
+          type: array
+        is_mapped:
+          readOnly: true
+          type: boolean
+        owner:
+          readOnly: true
+          type: string
+        pool:
+          readOnly: true
+          type: string
+        pool_slots:
+          readOnly: true
+          type: number
+        priority_weight:
+          readOnly: true
+          type: number
+        queue:
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        retries:
+          readOnly: true
+          type: number
+        retry_delay:
+          $ref: '#/components/schemas/TimeDelta'
+        retry_exponential_backoff:
+          readOnly: true
+          type: boolean
+        start_date:
+          format: date-time
+          readOnly: true
+          type: string
+        sub_dag:
+          $ref: '#/components/schemas/DAG'
+        task_id:
+          readOnly: true
+          type: string
+        template_fields:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        trigger_rule:
+          $ref: '#/components/schemas/TriggerRule'
+        ui_color:
+          $ref: '#/components/schemas/Color'
+        ui_fgcolor:
+          $ref: '#/components/schemas/Color'
+        wait_for_downstream:
+          readOnly: true
+          type: boolean
+        weight_rule:
+          $ref: '#/components/schemas/WeightRule'
+      type: object
+    UpdateTaskInstancesState:
+      properties:
+        dag_run_id:
+          description: 'The task instance''s DAG run ID. Either set this or execution_date but not both.
+
+
+            *New in version 2.3.0*
+
+            '
+          type: string
+        dry_run:
+          default: true
+          description: 'If set, don''t actually run this operation. The response will contain a list of task instances
+
+            planned to be affected, but won''t be modified in any way.
+
+            '
+          type: boolean
+        execution_date:
+          description: The execution date. Either set this or dag_run_id but not both.
+          format: datetime
+          type: string
+        include_downstream:
+          description: If set to true, downstream tasks are also affected.
+          type: boolean
+        include_future:
+          description: If set to True, also tasks from future DAG Runs are affected.
+          type: boolean
+        include_past:
+          description: If set to True, also tasks from past DAG Runs are affected.
+          type: boolean
+        include_upstream:
+          description: If set to true, upstream tasks are also affected.
+          type: boolean
+        new_state:
+          description: Expected new state.
+          enum:
+          - success
+          - failed
+          type: string
+        task_id:
+          description: The task ID.
+          type: string
+      type: object
+    TriggerRule:
+      description: 'Trigger rule.
+
+
+        *Changed in version 2.2.0*&#58; ''none_failed_min_one_success'' is added as a possible value.
+
+        '
+      enum:
+      - all_success
+      - all_failed
+      - all_done
+      - one_success
+      - one_failed
+      - none_failed
+      - none_skipped
+      - none_failed_or_skipped
+      - none_failed_min_one_success
+      - dummy
+      type: string
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    ClassReference:
+      description: Class reference
+      properties:
+        class_name:
+          readOnly: true
+          type: string
+        module_path:
+          readOnly: true
+          type: string
+      type: object
+    WeightRule:
+      description: Weight rule.
+      enum:
+      - downstream
+      - upstream
+      - absolute
+      type: string
     DAG:
       description: DAG
       properties:
@@ -2320,6 +2593,8 @@ components:
           - string
           - 'null'
       type: object
+    Timezone:
+      type: string
     TaskInstanceReferenceCollection:
       properties:
         task_instances:
@@ -2380,380 +2655,13 @@ components:
       - second
       - microsecond
       type: object
-    CronExpression:
-      description: Cron expression
-      properties:
-        __type:
-          type: string
-        value:
-          type: string
-      required:
-      - __type
-      - value
-      type:
-      - object
-      - 'null'
-    Task:
-      description: 'For details see:
-
-        [airflow.models.BaseOperator](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.BaseOperator)
-
-        '
-      properties:
-        class_ref:
-          $ref: '#/components/schemas/ClassReference'
-        depends_on_past:
-          readOnly: true
-          type: boolean
-        downstream_task_ids:
-          items:
-            type: string
-          readOnly: true
-          type: array
-        end_date:
-          format: date-time
-          readOnly: true
-          type:
-          - string
-          - 'null'
-        execution_timeout:
-          $ref: '#/components/schemas/TimeDelta'
-        extra_links:
-          items:
-            properties:
-              class_ref:
-                $ref: '#/components/schemas/ClassReference'
-            type: object
-          readOnly: true
-          type: array
-        is_mapped:
-          readOnly: true
-          type: boolean
-        owner:
-          readOnly: true
-          type: string
-        pool:
-          readOnly: true
-          type: string
-        pool_slots:
-          readOnly: true
-          type: number
-        priority_weight:
-          readOnly: true
-          type: number
-        queue:
-          readOnly: true
-          type:
-          - string
-          - 'null'
-        retries:
-          readOnly: true
-          type: number
-        retry_delay:
-          $ref: '#/components/schemas/TimeDelta'
-        retry_exponential_backoff:
-          readOnly: true
-          type: boolean
-        start_date:
-          format: date-time
-          readOnly: true
-          type: string
-        sub_dag:
-          $ref: '#/components/schemas/DAG'
-        task_id:
-          readOnly: true
-          type: string
-        template_fields:
-          items:
-            type: string
-          readOnly: true
-          type: array
-        trigger_rule:
-          $ref: '#/components/schemas/TriggerRule'
-        ui_color:
-          $ref: '#/components/schemas/Color'
-        ui_fgcolor:
-          $ref: '#/components/schemas/Color'
-        wait_for_downstream:
-          readOnly: true
-          type: boolean
-        weight_rule:
-          $ref: '#/components/schemas/WeightRule'
-      type: object
-    Tag:
-      description: Tag
-      properties:
-        name:
-          type: string
-      type: object
-    Timezone:
-      type: string
-    TriggerRule:
-      description: 'Trigger rule.
-
-
-        *Changed in version 2.2.0*&#58; ''none_failed_min_one_success'' is added as a possible value.
-
-        '
-      enum:
-      - all_success
-      - all_failed
-      - all_done
-      - one_success
-      - one_failed
-      - none_failed
-      - none_skipped
-      - none_failed_or_skipped
-      - none_failed_min_one_success
-      - dummy
-      type: string
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
-    UpdateTaskInstancesState:
-      properties:
-        dag_run_id:
-          description: 'The task instance''s DAG run ID. Either set this or execution_date but not both.
-
-
-            *New in version 2.3.0*
-
-            '
-          type: string
-        dry_run:
-          default: true
-          description: 'If set, don''t actually run this operation. The response will contain a list of task instances
-
-            planned to be affected, but won''t be modified in any way.
-
-            '
-          type: boolean
-        execution_date:
-          description: The execution date. Either set this or dag_run_id but not both.
-          format: datetime
-          type: string
-        include_downstream:
-          description: If set to true, downstream tasks are also affected.
-          type: boolean
-        include_future:
-          description: If set to True, also tasks from future DAG Runs are affected.
-          type: boolean
-        include_past:
-          description: If set to True, also tasks from past DAG Runs are affected.
-          type: boolean
-        include_upstream:
-          description: If set to true, upstream tasks are also affected.
-          type: boolean
-        new_state:
-          description: Expected new state.
-          enum:
-          - success
-          - failed
-          type: string
-        task_id:
-          description: The task ID.
-          type: string
-      type: object
-    Color:
-      description: Color in hexadecimal notation.
-      pattern: ^#[a-fA-F0-9]{3,6}$
-      type: string
-    Error:
-      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
-
-        '
-      properties:
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        instance:
-          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
-
-            not yield further information if dereferenced.
-
-            '
-          type: string
-        status:
-          description: The HTTP status code generated by the API server for this occurrence of the problem.
-          type: number
-        title:
-          description: A short, human-readable summary of the problem type.
-          type: string
-        type:
-          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
-
-            encourages that, when dereferenced, it provide human-readable documentation for
-
-            the problem type.
-
-            '
-          type: string
-      required:
-      - type
-      - title
-      - status
-      type: object
-    TaskCollection:
-      description: Collection of tasks.
-      properties:
-        tasks:
-          items:
-            $ref: '#/components/schemas/Task'
-          type: array
-      type: object
-    DAGCollection:
-      allOf:
-      - properties:
-          dags:
-            items:
-              $ref: '#/components/schemas/DAG'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of DAGs.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    ScheduleInterval:
-      anyOf:
-      - $ref: '#/components/schemas/TimeDelta'
-      - $ref: '#/components/schemas/RelativeDelta'
-      - $ref: '#/components/schemas/CronExpression'
-      description: 'Schedule interval. Defines how often DAG runs, this object gets added to your latest task instance''s
-
-        execution_date to figure out the next schedule.
-
-        '
-      discriminator:
-        propertyName: __type
-      readOnly: true
-    ClassReference:
-      description: Class reference
-      properties:
-        class_name:
-          readOnly: true
-          type: string
-        module_path:
-          readOnly: true
-          type: string
-      type: object
-    WeightRule:
-      description: Weight rule.
-      enum:
-      - downstream
-      - upstream
-      - absolute
-      type: string
-  parameters:
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    UpdateMask:
-      description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
-
-        A comma-separated list of fully qualified names of fields.
-
-        '
-      explode: false
-      in: query
-      name: update_mask
-      schema:
-        items:
-          type: string
-        type: array
-      style: form
-    OrderBy:
-      description: 'The name of the field to order the results by.
-
-        Prefix a field name with `-` to reverse the sort order.
-
-
-        *New in version 2.1.0*
-
-        '
-      in: query
-      name: order_by
-      required: false
-      schema:
-        type: string
-    DAGID:
-      description: The DAG ID.
-      in: path
-      name: dag_id
-      required: true
-      schema:
-        type: string
-    TaskID:
-      description: The task ID.
-      in: path
-      name: task_id
-      required: true
-      schema:
-        type: string
-    FileToken:
-      description: 'The key containing the encrypted path to the file. Encryption and decryption take place only on
-
-        the server. This prevents the client from reading an non-DAG file. This also ensures API
-
-        extensibility, because the format of encrypted data may change.
-
-        '
-      in: path
-      name: file_token
-      required: true
-      schema:
-        type: string
-    FilterTags:
-      description: 'List of tags to filter results.
-
-
-        *New in version 2.2.0*
-
-        '
-      in: query
-      name: tags
-      schema:
-        items:
-          type: string
-        type: array
-    OnlyActive:
-      description: 'Only filter active DAGs.
-
-
-        *New in version 2.1.1*
-
-        '
-      in: query
-      name: only_active
-      required: false
-      schema:
-        default: true
-        type: boolean
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
   responses:
+    AlreadyExists:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: An existing resource conflicts with the request.
     NotFound:
       content:
         application/json:
@@ -2772,24 +2680,116 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: A specified Accept header is not allowed.
-    AlreadyExists:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: An existing resource conflicts with the request.
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
+  parameters:
+    FilterTags:
+      description: 'List of tags to filter results.
+
+
+        *New in version 2.2.0*
+
+        '
+      in: query
+      name: tags
+      schema:
+        items:
+          type: string
+        type: array
+    OrderBy:
+      description: 'The name of the field to order the results by.
+
+        Prefix a field name with `-` to reverse the sort order.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: string
+    FileToken:
+      description: 'The key containing the encrypted path to the file. Encryption and decryption take place only on
+
+        the server. This prevents the client from reading an non-DAG file. This also ensures API
+
+        extensibility, because the format of encrypted data may change.
+
+        '
+      in: path
+      name: file_token
+      required: true
+      schema:
+        type: string
+    UpdateMask:
+      description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
+
+        A comma-separated list of fully qualified names of fields.
+
+        '
+      explode: false
+      in: query
+      name: update_mask
+      schema:
+        items:
+          type: string
+        type: array
+      style: form
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
+    TaskID:
+      description: The task ID.
+      in: path
+      name: task_id
+      required: true
+      schema:
+        type: string
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    DAGID:
+      description: The DAG ID.
+      in: path
+      name: dag_id
+      required: true
+      schema:
+        type: string
+    OnlyActive:
+      description: 'Only filter active DAGs.
+
+
+        *New in version 2.1.1*
+
+        '
+      in: query
+      name: only_active
+      required: false
+      schema:
+        default: true
+        type: boolean
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

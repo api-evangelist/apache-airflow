@@ -161,32 +161,6 @@ components:
         This is the set of allowable values for the ``warning_type`` field
 
         in the DagWarning model.'
-    DAGWarningResponse:
-      properties:
-        dag_id:
-          type: string
-          title: Dag Id
-        warning_type:
-          $ref: '#/components/schemas/DagWarningType'
-        message:
-          type: string
-          title: Message
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-        dag_display_name:
-          type: string
-          title: Dag Display Name
-      type: object
-      required:
-      - dag_id
-      - warning_type
-      - message
-      - timestamp
-      - dag_display_name
-      title: DAGWarningResponse
-      description: DAG Warning serializer for responses.
     ValidationError:
       properties:
         loc:
@@ -213,6 +187,19 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
     DAGWarningCollectionResponse:
       properties:
         dag_warnings:
@@ -229,19 +216,76 @@ components:
       - total_entries
       title: DAGWarningCollectionResponse
       description: DAG warning collection serializer for responses.
-    HTTPExceptionResponse:
+    DAGWarningResponse:
       properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
+        dag_id:
+          type: string
+          title: Dag Id
+        warning_type:
+          $ref: '#/components/schemas/DagWarningType'
+        message:
+          type: string
+          title: Message
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+        dag_display_name:
+          type: string
+          title: Dag Display Name
       type: object
       required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
+      - dag_id
+      - warning_type
+      - message
+      - timestamp
+      - dag_display_name
+      title: DAGWarningResponse
+      description: DAG Warning serializer for responses.
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    DagWarningCollection:
+      allOf:
+      - properties:
+          import_errors:
+            items:
+              $ref: '#/components/schemas/DagWarning'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of DAG warnings.
+
+        '
+      type: object
+    DagWarning:
+      properties:
+        dag_id:
+          description: The dag_id.
+          readOnly: true
+          type: string
+        message:
+          description: The message for the dag warning.
+          readOnly: true
+          type: string
+        timestamp:
+          description: The time when this warning was logged.
+          format: datetime
+          readOnly: true
+          type: string
+        warning_type:
+          description: The warning type for the dag warning.
+          readOnly: true
+          type: string
+      type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
 
@@ -277,50 +321,6 @@ components:
       - title
       - status
       type: object
-    DagWarningCollection:
-      allOf:
-      - properties:
-          import_errors:
-            items:
-              $ref: '#/components/schemas/DagWarning'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of DAG warnings.
-
-        '
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
-    DagWarning:
-      properties:
-        dag_id:
-          description: The dag_id.
-          readOnly: true
-          type: string
-        message:
-          description: The message for the dag warning.
-          readOnly: true
-          type: string
-        timestamp:
-          description: The time when this warning was logged.
-          format: datetime
-          readOnly: true
-          type: string
-        warning_type:
-          description: The warning type for the dag warning.
-          readOnly: true
-          type: string
-      type: object
   parameters:
     PageOffset:
       description: The number of items to skip before starting to collect the result set.
@@ -353,18 +353,18 @@ components:
         default: 100
         type: integer
   responses:
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

@@ -503,98 +503,14 @@ paths:
     - url: https://apache.local
 components:
   schemas:
-    BulkBody_PoolBody_:
-      properties:
-        actions:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/BulkCreateAction_PoolBody_'
-            - $ref: '#/components/schemas/BulkUpdateAction_PoolBody_'
-            - $ref: '#/components/schemas/BulkDeleteAction_PoolBody_'
-          type: array
-          title: Actions
-      additionalProperties: false
-      type: object
-      required:
-      - actions
-      title: BulkBody[PoolBody]
-    BulkResponse:
-      properties:
-        create:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk create operation, including successful keys and errors.
-        update:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk update operation, including successful keys and errors.
-        delete:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk delete operation, including successful keys and errors.
-      type: object
-      title: BulkResponse
-      description: 'Serializer for responses to bulk entity operations.
-
-
-        This represents the results of create, update, and delete actions performed on entity in bulk.
-
-        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
-
-        Fields are populated in the response only if the respective action was part of the request, else are set None.'
-    PoolPatchBody:
-      properties:
-        pool:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Pool
-        slots:
-          anyOf:
-          - type: integer
-            minimum: -1.0
-            description: Number of slots. Use -1 for unlimited.
-          - type: 'null'
-          title: Slots
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        include_deferred:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Include Deferred
-        team_name:
-          anyOf:
-          - type: string
-            maxLength: 50
-          - type: 'null'
-          title: Team Name
-      additionalProperties: false
-      type: object
-      title: PoolPatchBody
-      description: Pool serializer for patch bodies.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    BulkActionNotOnExistence:
+    BulkActionOnExistence:
       type: string
       enum:
       - fail
       - skip
-      title: BulkActionNotOnExistence
-      description: Bulk Action to be taken if the entity does not exist.
+      - overwrite
+      title: BulkActionOnExistence
+      description: Bulk Action to be taken if the entity already exists or not.
     PoolResponse:
       properties:
         name:
@@ -650,33 +566,40 @@ components:
       - team_name
       title: PoolResponse
       description: Pool serializer for responses.
-    BulkActionResponse:
+    PoolPatchBody:
       properties:
-        success:
-          items:
-            type: string
-          type: array
-          title: Success
-          description: A list of unique id/key representing successful operations.
-          default: []
-        errors:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Errors
-          description: A list of errors encountered during the operation, each containing details about the issue.
-          default: []
+        pool:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pool
+        slots:
+          anyOf:
+          - type: integer
+            minimum: -1.0
+            description: Number of slots. Use -1 for unlimited.
+          - type: 'null'
+          title: Slots
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        include_deferred:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Include Deferred
+        team_name:
+          anyOf:
+          - type: string
+            maxLength: 50
+          - type: 'null'
+          title: Team Name
+      additionalProperties: false
       type: object
-      title: BulkActionResponse
-      description: 'Serializer for individual bulk action responses.
-
-
-        Represents the outcome of a single bulk operation (create, update, or delete).
-
-        The response includes a list of successful keys and any errors encountered during the operation.
-
-        This structure helps users understand which key actions succeeded and which failed.'
+      title: PoolPatchBody
+      description: Pool serializer for patch bodies.
     PoolBody:
       properties:
         name:
@@ -710,52 +633,42 @@ components:
       - slots
       title: PoolBody
       description: Pool serializer for post bodies.
-    BulkUpdateAction_PoolBody_:
+    HTTPValidationError:
       properties:
-        action:
-          type: string
-          const: update
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
+        detail:
           items:
-            $ref: '#/components/schemas/PoolBody'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Entities
-          description: A list of entities to be updated.
-        update_mask:
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    BulkResponse:
+      properties:
+        create:
           anyOf:
-          - items:
-              type: string
-            type: array
+          - $ref: '#/components/schemas/BulkActionResponse'
           - type: 'null'
-          title: Update Mask
-          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
+          description: Details of the bulk create operation, including successful keys and errors.
+        update:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk update operation, including successful keys and errors.
+        delete:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk delete operation, including successful keys and errors.
       type: object
-      required:
-      - action
-      - entities
-      title: BulkUpdateAction[PoolBody]
-    PoolCollectionResponse:
-      properties:
-        pools:
-          items:
-            $ref: '#/components/schemas/PoolResponse'
-          type: array
-          title: Pools
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - pools
-      - total_entries
-      title: PoolCollectionResponse
-      description: Pool Collection serializer for responses.
+      title: BulkResponse
+      description: 'Serializer for responses to bulk entity operations.
+
+
+        This represents the results of create, update, and delete actions performed on entity in bulk.
+
+        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
+
+        Fields are populated in the response only if the respective action was part of the request, else are set None.'
     ValidationError:
       properties:
         loc:
@@ -782,14 +695,6 @@ components:
       - msg
       - type
       title: ValidationError
-    BulkActionOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      - overwrite
-      title: BulkActionOnExistence
-      description: Bulk Action to be taken if the entity already exists or not.
     HTTPExceptionResponse:
       properties:
         detail:
@@ -827,6 +732,52 @@ components:
       - action
       - entities
       title: BulkDeleteAction[PoolBody]
+    PoolCollectionResponse:
+      properties:
+        pools:
+          items:
+            $ref: '#/components/schemas/PoolResponse'
+          type: array
+          title: Pools
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - pools
+      - total_entries
+      title: PoolCollectionResponse
+      description: Pool Collection serializer for responses.
+    BulkUpdateAction_PoolBody_:
+      properties:
+        action:
+          type: string
+          const: update
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/PoolBody'
+          type: array
+          title: Entities
+          description: A list of entities to be updated.
+        update_mask:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Update Mask
+          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkUpdateAction[PoolBody]
     BulkCreateAction_PoolBody_:
       properties:
         action:
@@ -849,6 +800,82 @@ components:
       - action
       - entities
       title: BulkCreateAction[PoolBody]
+    BulkActionResponse:
+      properties:
+        success:
+          items:
+            type: string
+          type: array
+          title: Success
+          description: A list of unique id/key representing successful operations.
+          default: []
+        errors:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Errors
+          description: A list of errors encountered during the operation, each containing details about the issue.
+          default: []
+      type: object
+      title: BulkActionResponse
+      description: 'Serializer for individual bulk action responses.
+
+
+        Represents the outcome of a single bulk operation (create, update, or delete).
+
+        The response includes a list of successful keys and any errors encountered during the operation.
+
+        This structure helps users understand which key actions succeeded and which failed.'
+    BulkActionNotOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      title: BulkActionNotOnExistence
+      description: Bulk Action to be taken if the entity does not exist.
+    BulkBody_PoolBody_:
+      properties:
+        actions:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/BulkCreateAction_PoolBody_'
+            - $ref: '#/components/schemas/BulkUpdateAction_PoolBody_'
+            - $ref: '#/components/schemas/BulkDeleteAction_PoolBody_'
+          type: array
+          title: Actions
+      additionalProperties: false
+      type: object
+      required:
+      - actions
+      title: BulkBody[PoolBody]
+    PoolCollection:
+      allOf:
+      - properties:
+          pools:
+            items:
+              $ref: '#/components/schemas/Pool'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of pools.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
     Pool:
       description: The pool
       properties:
@@ -922,41 +949,7 @@ components:
       - title
       - status
       type: object
-    PoolCollection:
-      allOf:
-      - properties:
-          pools:
-            items:
-              $ref: '#/components/schemas/Pool'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of pools.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
   parameters:
-    PoolName:
-      description: The pool name.
-      in: path
-      name: pool_name
-      required: true
-      schema:
-        type: string
     PageOffset:
       description: The number of items to skip before starting to collect the result set.
       in: query
@@ -965,20 +958,13 @@ components:
       schema:
         minimum: 0
         type: integer
-    UpdateMask:
-      description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
-
-        A comma-separated list of fully qualified names of fields.
-
-        '
-      explode: false
-      in: query
-      name: update_mask
+    PoolName:
+      description: The pool name.
+      in: path
+      name: pool_name
+      required: true
       schema:
-        items:
-          type: string
-        type: array
-      style: form
+        type: string
     OrderBy:
       description: 'The name of the field to order the results by.
 
@@ -1001,6 +987,20 @@ components:
       schema:
         default: 100
         type: integer
+    UpdateMask:
+      description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
+
+        A comma-separated list of fully qualified names of fields.
+
+        '
+      explode: false
+      in: query
+      name: update_mask
+      schema:
+        items:
+          type: string
+        type: array
+      style: form
   responses:
     AlreadyExists:
       content:
@@ -1008,30 +1008,30 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: An existing resource conflicts with the request.
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client specified an invalid argument.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client specified an invalid argument.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

@@ -67,6 +67,33 @@ paths:
       x-openapi-router-controller: airflow.api_connexion.endpoints.version_endpoint
 components:
   schemas:
+    HealthInfo:
+      description: Instance status information.
+      properties:
+        metadatabase:
+          $ref: '#/components/schemas/MetadatabaseStatus'
+        scheduler:
+          $ref: '#/components/schemas/SchedulerStatus'
+      type: object
+    HealthStatus:
+      description: Health status
+      enum:
+      - healthy
+      - unhealthy
+      type: string
+    SchedulerStatus:
+      description: The status and the latest scheduler heartbeat.
+      properties:
+        latest_scheduler_heartbeat:
+          description: The time the scheduler last do a heartbeat.
+          format: datetime
+          readOnly: true
+          type:
+          - string
+          - 'null'
+        status:
+          $ref: '#/components/schemas/HealthStatus'
+      type: object
     VersionInfo:
       description: Version information.
       properties:
@@ -79,36 +106,9 @@ components:
           description: The version of Airflow
           type: string
       type: object
-    HealthStatus:
-      description: Health status
-      enum:
-      - healthy
-      - unhealthy
-      type: string
-    HealthInfo:
-      description: Instance status information.
-      properties:
-        metadatabase:
-          $ref: '#/components/schemas/MetadatabaseStatus'
-        scheduler:
-          $ref: '#/components/schemas/SchedulerStatus'
-      type: object
     MetadatabaseStatus:
       description: The status of the metadatabase.
       properties:
-        status:
-          $ref: '#/components/schemas/HealthStatus'
-      type: object
-    SchedulerStatus:
-      description: The status and the latest scheduler heartbeat.
-      properties:
-        latest_scheduler_heartbeat:
-          description: The time the scheduler last do a heartbeat.
-          format: datetime
-          readOnly: true
-          type:
-          - string
-          - 'null'
         status:
           $ref: '#/components/schemas/HealthStatus'
       type: object

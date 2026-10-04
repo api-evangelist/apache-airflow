@@ -136,51 +136,49 @@ paths:
     - url: https://apache.local
 components:
   schemas:
-    AppBuilderViewResponse:
+    PluginImportErrorResponse:
+      properties:
+        source:
+          type: string
+          title: Source
+        error:
+          type: string
+          title: Error
+      type: object
+      required:
+      - source
+      - error
+      title: PluginImportErrorResponse
+      description: Plugin Import Error serializer for responses.
+    AppBuilderMenuItemResponse:
       properties:
         name:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           title: Name
+        href:
+          type: string
+          title: Href
         category:
           anyOf:
           - type: string
           - type: 'null'
           title: Category
-        view:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: View
-        label:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Label
-      additionalProperties: true
-      type: object
-      title: AppBuilderViewResponse
-      description: Serializer for AppBuilder View responses.
-    FastAPIAppResponse:
-      properties:
-        app:
-          type: string
-          title: App
-        url_prefix:
-          type: string
-          title: Url Prefix
-        name:
-          type: string
-          title: Name
       additionalProperties: true
       type: object
       required:
-      - app
-      - url_prefix
       - name
-      title: FastAPIAppResponse
-      description: Serializer for Plugin FastAPI App responses.
+      - href
+      title: AppBuilderMenuItemResponse
+      description: Serializer for AppBuilder Menu Item responses.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     PluginResponse:
       properties:
         name:
@@ -269,60 +267,6 @@ components:
       - timetables
       title: PluginResponse
       description: Plugin serializer.
-    PluginCollectionResponse:
-      properties:
-        plugins:
-          items:
-            $ref: '#/components/schemas/PluginResponse'
-          type: array
-          title: Plugins
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - plugins
-      - total_entries
-      title: PluginCollectionResponse
-      description: Plugin Collection serializer.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    PluginImportErrorResponse:
-      properties:
-        source:
-          type: string
-          title: Source
-        error:
-          type: string
-          title: Error
-      type: object
-      required:
-      - source
-      - error
-      title: PluginImportErrorResponse
-      description: Plugin Import Error serializer for responses.
-    FastAPIRootMiddlewareResponse:
-      properties:
-        middleware:
-          type: string
-          title: Middleware
-        name:
-          type: string
-          title: Name
-      additionalProperties: true
-      type: object
-      required:
-      - middleware
-      - name
-      title: FastAPIRootMiddlewareResponse
-      description: Serializer for Plugin FastAPI root middleware responses.
     ReactAppResponse:
       properties:
         name:
@@ -370,42 +314,6 @@ components:
       - bundle_url
       title: ReactAppResponse
       description: Serializer for React App Plugin responses.
-    PluginImportErrorCollectionResponse:
-      properties:
-        import_errors:
-          items:
-            $ref: '#/components/schemas/PluginImportErrorResponse'
-          type: array
-          title: Import Errors
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - import_errors
-      - total_entries
-      title: PluginImportErrorCollectionResponse
-      description: Plugin Import Error Collection serializer.
-    AppBuilderMenuItemResponse:
-      properties:
-        name:
-          type: string
-          title: Name
-        href:
-          type: string
-          title: Href
-        category:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Category
-      additionalProperties: true
-      type: object
-      required:
-      - name
-      - href
-      title: AppBuilderMenuItemResponse
-      description: Serializer for AppBuilder Menu Item responses.
     ValidationError:
       properties:
         loc:
@@ -432,6 +340,53 @@ components:
       - msg
       - type
       title: ValidationError
+    FastAPIAppResponse:
+      properties:
+        app:
+          type: string
+          title: App
+        url_prefix:
+          type: string
+          title: Url Prefix
+        name:
+          type: string
+          title: Name
+      additionalProperties: true
+      type: object
+      required:
+      - app
+      - url_prefix
+      - name
+      title: FastAPIAppResponse
+      description: Serializer for Plugin FastAPI App responses.
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    FastAPIRootMiddlewareResponse:
+      properties:
+        middleware:
+          type: string
+          title: Middleware
+        name:
+          type: string
+          title: Name
+      additionalProperties: true
+      type: object
+      required:
+      - middleware
+      - name
+      title: FastAPIRootMiddlewareResponse
+      description: Serializer for Plugin FastAPI root middleware responses.
     ExternalViewResponse:
       properties:
         name:
@@ -478,81 +433,64 @@ components:
       - href
       title: ExternalViewResponse
       description: Serializer for External View Plugin responses.
-    HTTPExceptionResponse:
+    AppBuilderViewResponse:
       properties:
-        detail:
+        name:
           anyOf:
           - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
+          - type: 'null'
+          title: Name
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        view:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: View
+        label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Label
+      additionalProperties: true
       type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    Error:
-      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
-
-        '
+      title: AppBuilderViewResponse
+      description: Serializer for AppBuilder View responses.
+    PluginCollectionResponse:
       properties:
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        instance:
-          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
-
-            not yield further information if dereferenced.
-
-            '
-          type: string
-        status:
-          description: The HTTP status code generated by the API server for this occurrence of the problem.
-          type: number
-        title:
-          description: A short, human-readable summary of the problem type.
-          type: string
-        type:
-          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
-
-            encourages that, when dereferenced, it provide human-readable documentation for
-
-            the problem type.
-
-            '
-          type: string
-      required:
-      - type
-      - title
-      - status
-      type: object
-    PluginCollection:
-      allOf:
-      - properties:
-          plugins:
-            items:
-              $ref: '#/components/schemas/PluginCollectionItem'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'A collection of plugin.
-
-
-        *New in version 2.1.0*
-
-        '
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
+        plugins:
+          items:
+            $ref: '#/components/schemas/PluginResponse'
+          type: array
+          title: Plugins
         total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
           type: integer
+          title: Total Entries
       type: object
+      required:
+      - plugins
+      - total_entries
+      title: PluginCollectionResponse
+      description: Plugin Collection serializer.
+    PluginImportErrorCollectionResponse:
+      properties:
+        import_errors:
+          items:
+            $ref: '#/components/schemas/PluginImportErrorResponse'
+          type: array
+          title: Import Errors
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - import_errors
+      - total_entries
+      title: PluginImportErrorCollectionResponse
+      description: Plugin Import Error Collection serializer.
     PluginCollectionItem:
       description: 'A plugin Item.
 
@@ -626,6 +564,68 @@ components:
           - string
           - 'null'
       type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    PluginCollection:
+      allOf:
+      - properties:
+          plugins:
+            items:
+              $ref: '#/components/schemas/PluginCollectionItem'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'A collection of plugin.
+
+
+        *New in version 2.1.0*
+
+        '
+      type: object
+    Error:
+      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
+
+        '
+      properties:
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        instance:
+          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
+
+            not yield further information if dereferenced.
+
+            '
+          type: string
+        status:
+          description: The HTTP status code generated by the API server for this occurrence of the problem.
+          type: number
+        title:
+          description: A short, human-readable summary of the problem type.
+          type: string
+        type:
+          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
+
+            encourages that, when dereferenced, it provide human-readable documentation for
+
+            the problem type.
+
+            '
+          type: string
+      required:
+      - type
+      - title
+      - status
+      type: object
   parameters:
     PageOffset:
       description: The number of items to skip before starting to collect the result set.
@@ -644,24 +644,24 @@ components:
         default: 100
         type: integer
   responses:
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.
     PermissionDenied:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

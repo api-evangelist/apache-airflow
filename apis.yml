@@ -588,6 +588,8 @@ apis:
   humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
   baseURL: http://localhost:8080/api/experimental
   tags:
+  - Monitors
+  tags_raw:
   - Monitor
   properties:
   - type: OpenAPI

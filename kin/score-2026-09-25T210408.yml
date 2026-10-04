@@ -1,33 +1,31 @@
-# Kin Score artifact — apache-airflow — 2026-08-30T203505
+# Kin Score artifact — apache-airflow — 2026-09-25T210408
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: apache-airflow
-  schema_version: 0.17.2
-  scored_at: '2026-08-30'
-  run_ts: 2026-08-30T203505
-  composite: 47.2
+  schema_version: 0.23.0
+  scored_at: '2026-09-25'
+  run_ts: 2026-09-25T210408
+  composite: 46.7
   band: developing
   facets:
-    discoverability: 64.8
-    contract_quality: 59.7
-    governance: 33.3
+    discoverability: 51.8
+    contract_quality: 51.5
+    contract_governance: 31.8
     operational_transparency: 36.8
-    developer_ergonomics: 59.5
-    commercial_clarity: 15.8
-    contract_governance: 33.3
+    developer_ergonomics: 72.6
     access_clarity: 15.8
   agent_readiness:
-    score: 30.2
+    score: 31.9
     band: agent-ready
     dimensions:
       spec_presence: true
       agentic_access: derived
-      reversibility_documented: false
+      reversibility_documented: documented
       mcp_server: false
-      auth_clarity: negotiable
+      auth_clarity: bearer
       idempotency: false
-      error_semantics: documented
+      error_semantics: verified
       openapi_examples: partial
       rate_limit_signal: documented
       event_surface_described: false
@@ -40,6 +38,12 @@ kin_score:
       protected_resource_metadata: false
       dynamic_client_registration: false
       agentic_commerce: false
+  regulatory:
+    applies: true
+    regime: Horizontal (data, software, accessibility, platform)
+    regime_id: horizontal
+    score: 22.5
+    matched_via: fallback
   open_source:
     applies: true
     score: 65.0
@@ -48,7 +52,7 @@ kin_score:
     agentic_access: derived
     conformance: derived
     contracts:
-      total: 18
+      total: 44
       derived: 0
       coverage: 0.0
       callable: 0.0

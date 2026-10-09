@@ -73,7 +73,7 @@ workflows:
       endpoint is disabled unless the deployment sets test_connection to Enabled
       in the core config, so a 403 here means the feature is turned off rather
       than that the credentials are wrong.
-    operationId: test_connection
+    operationId: postApiV2ConnectionsTest
     requestBody:
       contentType: application/json
       payload:
@@ -96,7 +96,7 @@ workflows:
   - stepId: createConnection
     description: >-
       Persist the connection now that the credentials are known to work.
-    operationId: post_connection
+    operationId: postApiV2Connections
     requestBody:
       contentType: application/json
       payload:
@@ -120,7 +120,7 @@ workflows:
       Read the stored connection to confirm what Airflow persisted. The password
       is deliberately absent from the response; only the non-secret fields come
       back.
-    operationId: get_connection
+    operationId: getApiV2ConnectionsByConnectionId
     parameters:
     - name: connection_id
       in: path
@@ -141,7 +141,7 @@ workflows:
     description: >-
       List the connections to confirm the new one is present in the deployment's
       inventory, which is the view an operator audits against.
-    operationId: get_connections
+    operationId: getApiV2Connections
     parameters:
     - name: limit
       in: query

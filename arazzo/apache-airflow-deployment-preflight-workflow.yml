@@ -109,7 +109,7 @@ workflows:
     description: >-
       Count the active DAGs the deployment is serving, giving the preflight a
       concrete number to compare against the expected inventory.
-    operationId: get_dags
+    operationId: getApiV2Dags
     parameters:
     - name: only_active
       in: query

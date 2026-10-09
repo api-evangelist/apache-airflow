@@ -44,7 +44,7 @@ workflows:
     description: >-
       Read the DAG record for its owners, tags, paused state, and the file_token
       that authorizes fetching its source in a later step.
-    operationId: get_dag
+    operationId: getApiV2DagsByDagId
     parameters:
     - name: dag_id
       in: path
@@ -68,7 +68,7 @@ workflows:
       Read the extended DAG details for the timetable description, concurrency
       limits, catchup posture, start date, and default arguments — the fields that
       explain how the DAG actually behaves.
-    operationId: get_dag_details
+    operationId: getApiV2DagsByDagIdDetails
     parameters:
     - name: dag_id
       in: path

@@ -1,19 +1,1426 @@
-generated: '2026-07-15'
+generated: '2026-09-23'
 method: generated
-source: openapi/apache-airflow-openapi.yaml
+source: openapi/airflow-asset-api-openapi.yml, openapi/airflow-backfill-api-openapi.yml, openapi/airflow-config-api-openapi.yml,
+  openapi/airflow-connection-api-openapi.yml, openapi/airflow-dag-api-openapi.yml, openapi/airflow-dag-parsing-api-openapi.yml,
+  openapi/airflow-dag-run-api-openapi.yml, openapi/airflow-dagsource-api-openapi.yml, openapi/airflow-dagstats-api-openapi.yml,
+  openapi/airflow-dagversion-api-openapi.yml, openapi/airflow-dagwarning-api-openapi.yml, openapi/airflow-event-log-api-openapi.yml,
+  openapi/airflow-experimental-api-openapi.yml, openapi/airflow-extra-links-api-openapi.yml,
+  openapi/airflow-import-error-api-openapi.yml, openapi/airflow-job-api-openapi.yml, openapi/airflow-login-api-openapi.yml,
+  openapi/airflow-monitor-api-openapi.yml, openapi/airflow-plugin-api-openapi.yml, openapi/airflow-pool-api-openapi.yml,
+  openapi/airflow-provider-api-openapi.yml, openapi/airflow-task-api-openapi.yml, openapi/airflow-task-instance-api-openapi.yml,
+  openapi/airflow-variable-api-openapi.yml, openapi/airflow-version-api-openapi.yml, openapi/airflow-xcom-api-openapi.yml,
+  openapi/apache-airflow-config-api-openapi.yml, openapi/apache-airflow-connection-api-openapi.yml,
+  openapi/apache-airflow-dag-api-openapi.yml, openapi/apache-airflow-dag-run-api-openapi.yml,
+  openapi/apache-airflow-dagwarning-api-openapi.yml, openapi/apache-airflow-dataset-api-openapi.yml,
+  openapi/apache-airflow-event-log-api-openapi.yml, openapi/apache-airflow-import-error-api-openapi.yml,
+  openapi/apache-airflow-monitoring-api-openapi.yml, openapi/apache-airflow-permission-api-openapi.yml,
+  openapi/apache-airflow-plugin-api-openapi.yml, openapi/apache-airflow-pool-api-openapi.yml,
+  openapi/apache-airflow-provider-api-openapi.yml, openapi/apache-airflow-role-api-openapi.yml,
+  openapi/apache-airflow-task-instance-api-openapi.yml, openapi/apache-airflow-user-api-openapi.yml,
+  openapi/apache-airflow-variable-api-openapi.yml, openapi/apache-airflow-xcom-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
 summary:
-  operations: 73
+  operations: 186
   by_action_class:
-    connected: 41
-    acting: 32
+    connected: 111
+    acting: 75
   by_consequence:
-    read: 41
-    write: 32
+    read: 111
+    write: 75
   human_in_the_loop_required: 0
 operations:
+- path: /api/v2/assets
+  method: get
+  operationId: get_assets
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/assets/aliases
+  method: get
+  operationId: get_asset_aliases
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/assets/aliases/{asset_alias_id}
+  method: get
+  operationId: get_asset_alias
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/assets/events
+  method: get
+  operationId: get_asset_events
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/assets/events
+  method: post
+  operationId: create_asset_event
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/assets/{asset_id}/materialize
+  method: post
+  operationId: materialize_asset
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/assets/{asset_id}/queuedEvents
+  method: get
+  operationId: get_asset_queued_events
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/assets/{asset_id}/queuedEvents
+  method: delete
+  operationId: delete_asset_queued_events
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/assets/{asset_id}
+  method: get
+  operationId: get_asset
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/assets/queuedEvents
+  method: get
+  operationId: get_dag_asset_queued_events
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/assets/queuedEvents
+  method: delete
+  operationId: delete_dag_asset_queued_events
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/assets/{asset_id}/queuedEvents
+  method: get
+  operationId: get_dag_asset_queued_event
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/assets/{asset_id}/queuedEvents
+  method: delete
+  operationId: delete_dag_asset_queued_event
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/backfills
+  method: get
+  operationId: list_backfills
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/backfills
+  method: post
+  operationId: create_backfill
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/backfills/{backfill_id}
+  method: get
+  operationId: get_backfill
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/backfills/{backfill_id}/pause
+  method: put
+  operationId: pause_backfill
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/backfills/{backfill_id}/unpause
+  method: put
+  operationId: unpause_backfill
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/backfills/{backfill_id}/cancel
+  method: put
+  operationId: cancel_backfill
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/backfills/dry_run
+  method: post
+  operationId: create_backfill_dry_run
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/config
+  method: get
+  operationId: get_config
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/config/section/{section}/option/{option}
+  method: get
+  operationId: get_config_value
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/connections/{connection_id}
+  method: delete
+  operationId: delete_connection
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/connections/{connection_id}
+  method: get
+  operationId: get_connection
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/connections/{connection_id}
+  method: patch
+  operationId: patch_connection
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/connections
+  method: get
+  operationId: get_connections
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/connections
+  method: post
+  operationId: post_connection
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/connections
+  method: patch
+  operationId: bulk_connections
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/connections/test
+  method: post
+  operationId: test_connection
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/connections/defaults
+  method: post
+  operationId: create_default_connections
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags
+  method: get
+  operationId: get_dags
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags
+  method: patch
+  operationId: patch_dags
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}
+  method: get
+  operationId: get_dag
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}
+  method: patch
+  operationId: patch_dag
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}
+  method: delete
+  operationId: delete_dag
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/details
+  method: get
+  operationId: get_dag_details
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/favorite
+  method: post
+  operationId: favorite_dag
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/unfavorite
+  method: post
+  operationId: unfavorite_dag
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dagTags
+  method: get
+  operationId: get_dag_tags
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/parseDagFile/{file_token}
+  method: put
+  operationId: reparse_dag_file
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}
+  method: get
+  operationId: get_dag_run
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}
+  method: delete
+  operationId: delete_dag_run
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}
+  method: patch
+  operationId: patch_dag_run
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/upstreamAssetEvents
+  method: get
+  operationId: get_upstream_asset_events
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/clear
+  method: post
+  operationId: clear_dag_run
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns
+  method: get
+  operationId: get_dag_runs
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns
+  method: post
+  operationId: trigger_dag_run
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/wait
+  method: get
+  operationId: wait_dag_run_until_finished
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/list
+  method: post
+  operationId: get_list_dag_runs_batch
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dagSources/{dag_id}
+  method: get
+  operationId: get_dag_source
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dagStats
+  method: get
+  operationId: get_dag_stats
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagVersions/{version_number}
+  method: get
+  operationId: get_dag_version
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagVersions
+  method: get
+  operationId: get_dag_versions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dagWarnings
+  method: get
+  operationId: list_dag_warnings
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/eventLogs/{event_log_id}
+  method: get
+  operationId: get_event_log
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/eventLogs
+  method: get
+  operationId: get_event_logs
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/wait
+  method: get
+  operationId: wait_dag_run_until_finished
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/links
+  method: get
+  operationId: get_extra_links
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/importErrors/{import_error_id}
+  method: get
+  operationId: get_import_error
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/importErrors
+  method: get
+  operationId: get_import_errors
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/jobs
+  method: get
+  operationId: get_jobs
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/auth/login
+  method: get
+  operationId: login
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/auth/logout
+  method: get
+  operationId: logout
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/monitor/health
+  method: get
+  operationId: get_health
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/plugins
+  method: get
+  operationId: get_plugins
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/plugins/importErrors
+  method: get
+  operationId: import_errors
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/pools/{pool_name}
+  method: delete
+  operationId: delete_pool
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/pools/{pool_name}
+  method: get
+  operationId: get_pool
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/pools/{pool_name}
+  method: patch
+  operationId: patch_pool
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/pools
+  method: get
+  operationId: get_pools
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/pools
+  method: post
+  operationId: post_pool
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/pools
+  method: patch
+  operationId: bulk_pools
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/providers
+  method: get
+  operationId: get_providers
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/tasks
+  method: get
+  operationId: get_tasks
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/tasks/{task_id}
+  method: get
+  operationId: get_task
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/links
+  method: get
+  operationId: get_extra_links
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}
+  method: get
+  operationId: get_task_instance
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}
+  method: patch
+  operationId: patch_task_instance
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}
+  method: delete
+  operationId: delete_task_instance
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/listMapped
+  method: get
+  operationId: get_mapped_task_instances
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/dependencies
+  method: get
+  operationId: get_task_instance_dependencies_by_map_index
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/dependencies
+  method: get
+  operationId: get_task_instance_dependencies
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/tries
+  method: get
+  operationId: get_task_instance_tries
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/tries
+  method: get
+  operationId: get_mapped_task_instance_tries
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}
+  method: get
+  operationId: get_mapped_task_instance
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}
+  method: patch
+  operationId: patch_task_instance_by_map_index
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances
+  method: get
+  operationId: get_task_instances
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances
+  method: patch
+  operationId: bulk_task_instances
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/list
+  method: post
+  operationId: get_task_instances_batch
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/tries/{task_try_number}
+  method: get
+  operationId: get_task_instance_try_details
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/tries/{task_try_number}
+  method: get
+  operationId: get_mapped_task_instance_try_details
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/clearTaskInstances
+  method: post
+  operationId: post_clear_task_instances
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/dry_run
+  method: patch
+  operationId: patch_task_instance_dry_run_by_map_index
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/dry_run
+  method: patch
+  operationId: patch_task_instance_dry_run
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/logs/{try_number}
+  method: get
+  operationId: get_log
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/externalLogUrl/{try_number}
+  method: get
+  operationId: get_external_log_url
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/hitlDetails
+  method: patch
+  operationId: update_hitl_detail
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/hitlDetails
+  method: get
+  operationId: get_hitl_detail
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/hitlDetails/tries/{try_number}
+  method: get
+  operationId: get_hitl_detail_try_detail
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/hitlDetails
+  method: get
+  operationId: get_hitl_details
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/variables/{variable_key}
+  method: delete
+  operationId: delete_variable
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/variables/{variable_key}
+  method: get
+  operationId: get_variable
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/variables/{variable_key}
+  method: patch
+  operationId: patch_variable
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/variables
+  method: get
+  operationId: get_variables
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/variables
+  method: post
+  operationId: post_variable
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/variables
+  method: patch
+  operationId: bulk_variables
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/version
+  method: get
+  operationId: get_version
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries/{xcom_key}
+  method: get
+  operationId: get_xcom_entry
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries/{xcom_key}
+  method: patch
+  operationId: update_xcom_entry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries/{xcom_key}
+  method: delete
+  operationId: delete_xcom_entry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries
+  method: get
+  operationId: get_xcom_entries
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries
+  method: post
+  operationId: create_xcom_entry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /config
   method: get
   operationId: get_config
@@ -118,16 +1525,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /dagWarnings
-  method: get
-  operationId: get_dag_warnings
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
 - path: /dags
   method: get
   operationId: get_dags
@@ -199,6 +1596,52 @@ operations:
 - path: /dags/{dag_id}/clearTaskInstances
   method: post
   operationId: post_clear_task_instances
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /dags/{dag_id}/details
+  method: get
+  operationId: get_dag_details
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/tasks
+  method: get
+  operationId: get_tasks
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/tasks/{task_id}
+  method: get
+  operationId: get_task
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/updateTaskInstancesState
+  method: post
+  operationId: post_set_task_instances_state
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -312,150 +1755,6 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances
-  method: get
-  operationId: get_task_instances
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}
-  method: get
-  operationId: get_task_instance
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}
-  method: patch
-  operationId: patch_task_instance
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/links
-  method: get
-  operationId: get_extra_links
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/listMapped
-  method: get
-  operationId: get_mapped_task_instances
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/logs/{task_try_number}
-  method: get
-  operationId: get_log
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/setNote
-  method: patch
-  operationId: set_task_instance_note
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries
-  method: get
-  operationId: get_xcom_entries
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries/{xcom_key}
-  method: get
-  operationId: get_xcom_entry
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}
-  method: get
-  operationId: get_mapped_task_instance
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}
-  method: patch
-  operationId: patch_mapped_task_instance
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/setNote
-  method: patch
-  operationId: set_mapped_task_instance_note
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
 - path: /dags/{dag_id}/dagRuns/{dag_run_id}/upstreamDatasetEvents
   method: get
   operationId: get_upstream_dataset_events
@@ -466,84 +1765,36 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /dags/{dag_id}/details
-  method: get
-  operationId: get_dag_details
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/tasks
-  method: get
-  operationId: get_tasks
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/tasks/{task_id}
-  method: get
-  operationId: get_task
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /dags/{dag_id}/updateTaskInstancesState
-  method: post
-  operationId: post_set_task_instances_state
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
 - path: /dags/~/dagRuns/list
   method: post
   operationId: get_dag_runs_batch
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /dags/~/dagRuns/~/taskInstances/list
-  method: post
-  operationId: get_task_instances_batch
+      max-ttl: 3600
+    audit: none
+- path: /dagWarnings
+  method: get
+  operationId: get_dag_warnings
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/upstreamDatasetEvents
+  method: get
+  operationId: get_upstream_dataset_events
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /datasets
   method: get
   operationId: get_datasets
@@ -594,16 +1845,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /health
-  method: get
-  operationId: get_health
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
 - path: /importErrors
   method: get
   operationId: get_import_errors
@@ -617,6 +1858,26 @@ operations:
 - path: /importErrors/{import_error_id}
   method: get
   operationId: get_import_error
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /health
+  method: get
+  operationId: get_health
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /version
+  method: get
+  operationId: get_version
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -790,6 +2051,140 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances
+  method: get
+  operationId: get_task_instances
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}
+  method: get
+  operationId: get_task_instance
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}
+  method: patch
+  operationId: patch_task_instance
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/links
+  method: get
+  operationId: get_extra_links
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/listMapped
+  method: get
+  operationId: get_mapped_task_instances
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/logs/{task_try_number}
+  method: get
+  operationId: get_log
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/setNote
+  method: patch
+  operationId: set_task_instance_note
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}
+  method: get
+  operationId: get_mapped_task_instance
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}
+  method: patch
+  operationId: patch_mapped_task_instance
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/setNote
+  method: patch
+  operationId: set_mapped_task_instance_note
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /dags/~/dagRuns/~/taskInstances/list
+  method: post
+  operationId: get_task_instances_batch
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /users
   method: get
   operationId: get_users
@@ -926,9 +2321,19 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /version
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries
   method: get
-  operationId: get_version
+  operationId: get_xcom_entries
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries/{xcom_key}
+  method: get
+  operationId: get_xcom_entry
   x-agentic-access:
     action-class: connected
     consequence: read

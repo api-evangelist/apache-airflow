@@ -63,7 +63,7 @@ workflows:
     description: >-
       Read the DAG to confirm it exists and to learn whether it is currently
       paused before attempting to trigger it.
-    operationId: get_dag
+    operationId: getApiV2DagsByDagId
     parameters:
     - name: dag_id
       in: path
@@ -95,7 +95,7 @@ workflows:
       Unpause the DAG so the scheduler will actually run the tasks. The
       update_mask limits the patch to the is_paused field, leaving every other
       DAG attribute untouched.
-    operationId: patch_dag
+    operationId: patchApiV2DagsByDagId
     parameters:
     - name: dag_id
       in: path

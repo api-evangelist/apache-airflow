@@ -64,7 +64,7 @@ workflows:
     description: >-
       List the active DAGs so the audit can state the denominator it is reporting
       against rather than only the failures.
-    operationId: get_dags
+    operationId: getApiV2Dags
     parameters:
     - name: only_active
       in: query

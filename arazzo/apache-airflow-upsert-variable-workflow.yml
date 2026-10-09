@@ -45,7 +45,7 @@ workflows:
       Look the variable up by key. A 200 means it exists and should be patched; a
       404 means it must be created. Both outcomes are expected, so both are
       treated as success and the branch is decided on the status code.
-    operationId: get_variable
+    operationId: getApiV2VariablesByVariableKey
     parameters:
     - name: variable_key
       in: path
@@ -68,7 +68,7 @@ workflows:
       Patch the existing variable. The update_mask restricts the write to the
       value and description fields, and the key in the body must match the key in
       the path.
-    operationId: patch_variable
+    operationId: patchApiV2VariablesByVariableKey
     parameters:
     - name: variable_key
       in: path
@@ -112,7 +112,7 @@ workflows:
     description: >-
       Read the variable back and require the stored value to match what was sent,
       closing the loop on either branch.
-    operationId: get_variable
+    operationId: getApiV2VariablesByVariableKey
     parameters:
     - name: variable_key
       in: path

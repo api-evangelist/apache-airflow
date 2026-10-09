@@ -48,7 +48,7 @@ workflows:
       Look the pool up by name. A 200 means it exists and should be resized; a 404
       means it must be created. Both are expected outcomes, so the branch is
       decided on the status code.
-    operationId: get_pool
+    operationId: getApiV2PoolsByPoolName
     parameters:
     - name: pool_name
       in: path
@@ -71,7 +71,7 @@ workflows:
       Resize the existing pool. The update_mask restricts the patch to slots and
       description so the pool is not accidentally renamed, which is what happens
       when the name field is included in the mask.
-    operationId: patch_pool
+    operationId: patchApiV2PoolsByPoolName
     parameters:
     - name: pool_name
       in: path
@@ -99,7 +99,7 @@ workflows:
   - stepId: createPool
     description: >-
       Create the pool when the lookup found nothing under this name.
-    operationId: post_pool
+    operationId: postApiV2Pools
     requestBody:
       contentType: application/json
       payload:
@@ -115,7 +115,7 @@ workflows:
     description: >-
       Read the pool back and require the slot count to match what was requested,
       returning the live occupied, used, queued, and open slot accounting.
-    operationId: get_pool
+    operationId: getApiV2PoolsByPoolName
     parameters:
     - name: pool_name
       in: path
@@ -136,7 +136,7 @@ workflows:
     description: >-
       List every pool so the caller can see the deployment's full concurrency
       budget alongside the pool just written.
-    operationId: get_pools
+    operationId: getApiV2Pools
     parameters:
     - name: limit
       in: query

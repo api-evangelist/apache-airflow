@@ -139,54 +139,6 @@ paths:
     - url: https://apache.local
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    DagWarningType:
-      type: string
-      enum:
-      - asset conflict
-      - non-existent pool
-      - runtime varying value
-      title: DagWarningType
-      description: 'Enum for DAG warning types.
-
-
-        This is the set of allowable values for the ``warning_type`` field
-
-        in the DagWarning model.'
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     HTTPExceptionResponse:
       properties:
         detail:
@@ -216,6 +168,15 @@ components:
       - total_entries
       title: DAGWarningCollectionResponse
       description: DAG warning collection serializer for responses.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     DAGWarningResponse:
       properties:
         dag_id:
@@ -242,17 +203,45 @@ components:
       - dag_display_name
       title: DAGWarningResponse
       description: DAG Warning serializer for responses.
-    CollectionInfo:
-      description: Metadata about collection.
+    ValidationError:
       properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DagWarningType:
+      type: string
+      enum:
+      - asset conflict
+      - non-existent pool
+      - runtime varying value
+      title: DagWarningType
+      description: 'Enum for DAG warning types.
+
+
+        This is the set of allowable values for the ``warning_type`` field
+
+        in the DagWarning model.'
     DagWarningCollection:
       allOf:
       - properties:
@@ -321,7 +310,39 @@ components:
       - title
       - status
       type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+  responses:
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
   parameters:
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
     PageOffset:
       description: The number of items to skip before starting to collect the result set.
       in: query
@@ -344,27 +365,6 @@ components:
       required: false
       schema:
         type: string
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
-  responses:
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

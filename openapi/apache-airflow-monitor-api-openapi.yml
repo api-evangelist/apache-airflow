@@ -24,6 +24,61 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    HealthInfoResponse:
+      properties:
+        metadatabase:
+          $ref: '#/components/schemas/BaseInfoResponse'
+        scheduler:
+          $ref: '#/components/schemas/SchedulerInfoResponse'
+        triggerer:
+          $ref: '#/components/schemas/TriggererInfoResponse'
+        dag_processor:
+          anyOf:
+          - $ref: '#/components/schemas/DagProcessorInfoResponse'
+          - type: 'null'
+      type: object
+      required:
+      - metadatabase
+      - scheduler
+      - triggerer
+      title: HealthInfoResponse
+      description: Health serializer for responses.
+    DagProcessorInfoResponse:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        latest_dag_processor_heartbeat:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Latest Dag Processor Heartbeat
+      type: object
+      required:
+      - status
+      - latest_dag_processor_heartbeat
+      title: DagProcessorInfoResponse
+      description: DagProcessor info serializer for responses.
+    SchedulerInfoResponse:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        latest_scheduler_heartbeat:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Latest Scheduler Heartbeat
+      type: object
+      required:
+      - status
+      - latest_scheduler_heartbeat
+      title: SchedulerInfoResponse
+      description: Scheduler info serializer for responses.
     BaseInfoResponse:
       properties:
         status:
@@ -54,61 +109,6 @@ components:
       - latest_triggerer_heartbeat
       title: TriggererInfoResponse
       description: Triggerer info serializer for responses.
-    HealthInfoResponse:
-      properties:
-        metadatabase:
-          $ref: '#/components/schemas/BaseInfoResponse'
-        scheduler:
-          $ref: '#/components/schemas/SchedulerInfoResponse'
-        triggerer:
-          $ref: '#/components/schemas/TriggererInfoResponse'
-        dag_processor:
-          anyOf:
-          - $ref: '#/components/schemas/DagProcessorInfoResponse'
-          - type: 'null'
-      type: object
-      required:
-      - metadatabase
-      - scheduler
-      - triggerer
-      title: HealthInfoResponse
-      description: Health serializer for responses.
-    SchedulerInfoResponse:
-      properties:
-        status:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Status
-        latest_scheduler_heartbeat:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Latest Scheduler Heartbeat
-      type: object
-      required:
-      - status
-      - latest_scheduler_heartbeat
-      title: SchedulerInfoResponse
-      description: Scheduler info serializer for responses.
-    DagProcessorInfoResponse:
-      properties:
-        status:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Status
-        latest_dag_processor_heartbeat:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Latest Dag Processor Heartbeat
-      type: object
-      required:
-      - status
-      - latest_dag_processor_heartbeat
-      title: DagProcessorInfoResponse
-      description: DagProcessor info serializer for responses.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

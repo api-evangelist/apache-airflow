@@ -417,6 +417,30 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    ReprocessBehavior:
+      type: string
+      enum:
+      - failed
+      - completed
+      - none
+      title: ReprocessBehavior
+      description: 'Internal enum for setting reprocess behavior in a backfill.
+
+
+        :meta private:'
     HTTPValidationError:
       properties:
         detail:
@@ -426,11 +450,11 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    BackfillCollectionResponse:
+    DryRunBackfillCollectionResponse:
       properties:
         backfills:
           items:
-            $ref: '#/components/schemas/BackfillResponse'
+            $ref: '#/components/schemas/DryRunBackfillResponse'
           type: array
           title: Backfills
         total_entries:
@@ -440,8 +464,8 @@ components:
       required:
       - backfills
       - total_entries
-      title: BackfillCollectionResponse
-      description: Backfill Collection serializer for responses.
+      title: DryRunBackfillCollectionResponse
+      description: Backfill collection serializer for responses in dry-run mode.
     DryRunBackfillResponse:
       properties:
         logical_date:
@@ -494,19 +518,6 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
     BackfillPostBody:
       properties:
         dag_id:
@@ -548,11 +559,11 @@ components:
       - to_date
       title: BackfillPostBody
       description: Object used for create backfill request.
-    DryRunBackfillCollectionResponse:
+    BackfillCollectionResponse:
       properties:
         backfills:
           items:
-            $ref: '#/components/schemas/DryRunBackfillResponse'
+            $ref: '#/components/schemas/BackfillResponse'
           type: array
           title: Backfills
         total_entries:
@@ -562,8 +573,8 @@ components:
       required:
       - backfills
       - total_entries
-      title: DryRunBackfillCollectionResponse
-      description: Backfill collection serializer for responses in dry-run mode.
+      title: BackfillCollectionResponse
+      description: Backfill Collection serializer for responses.
     BackfillResponse:
       properties:
         id:
@@ -628,17 +639,6 @@ components:
       - dag_display_name
       title: BackfillResponse
       description: Base serializer for Backfill.
-    ReprocessBehavior:
-      type: string
-      enum:
-      - failed
-      - completed
-      - none
-      title: ReprocessBehavior
-      description: 'Internal enum for setting reprocess behavior in a backfill.
-
-
-        :meta private:'
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

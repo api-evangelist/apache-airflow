@@ -237,15 +237,19 @@ paths:
     - url: https://apache.local
 components:
   schemas:
-    HTTPValidationError:
+    HTTPExceptionResponse:
       properties:
         detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
           title: Detail
       type: object
-      title: HTTPValidationError
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
     ConfigOption:
       properties:
         key:
@@ -268,6 +272,15 @@ components:
       - value
       title: ConfigOption
       description: Config option.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -294,32 +307,6 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    Config:
-      properties:
-        sections:
-          items:
-            $ref: '#/components/schemas/ConfigSection'
-          type: array
-          title: Sections
-      additionalProperties: false
-      type: object
-      required:
-      - sections
-      title: Config
-      description: List of config sections with their options.
     ConfigSection:
       properties:
         name:
@@ -337,6 +324,19 @@ components:
       - options
       title: ConfigSection
       description: Config Section Schema.
+    Config:
+      properties:
+        sections:
+          items:
+            $ref: '#/components/schemas/ConfigSection'
+          type: array
+          title: Sections
+      additionalProperties: false
+      type: object
+      required:
+      - sections
+      title: Config
+      description: List of config sections with their options.
     ConfigOption_2:
       description: The option of configuration.
       properties:
@@ -346,25 +346,6 @@ components:
         value:
           readOnly: true
           type: string
-      type: object
-    Config_2:
-      description: The configuration.
-      properties:
-        sections:
-          items:
-            $ref: '#/components/schemas/ConfigSection_2'
-          type: array
-      type: object
-    ConfigSection_2:
-      description: The section of configuration.
-      properties:
-        name:
-          readOnly: true
-          type: string
-        options:
-          items:
-            $ref: '#/components/schemas/ConfigOption_2'
-          type: array
       type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
@@ -400,6 +381,25 @@ components:
       - type
       - title
       - status
+      type: object
+    ConfigSection_2:
+      description: The section of configuration.
+      properties:
+        name:
+          readOnly: true
+          type: string
+        options:
+          items:
+            $ref: '#/components/schemas/ConfigOption_2'
+          type: array
+      type: object
+    Config_2:
+      description: The configuration.
+      properties:
+        sections:
+          items:
+            $ref: '#/components/schemas/ConfigSection_2'
+          type: array
       type: object
   responses:
     PermissionDenied:

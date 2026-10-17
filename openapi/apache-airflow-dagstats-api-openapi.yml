@@ -67,19 +67,19 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    DagStatsStateResponse:
+    HTTPExceptionResponse:
       properties:
-        state:
-          $ref: '#/components/schemas/DagRunState'
-        count:
-          type: integer
-          title: Count
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
       type: object
       required:
-      - state
-      - count
-      title: DagStatsStateResponse
-      description: DagStatsState serializer for responses.
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
     HTTPValidationError:
       properties:
         detail:
@@ -115,35 +115,6 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    DagStatsCollectionResponse:
-      properties:
-        dags:
-          items:
-            $ref: '#/components/schemas/DagStatsResponse'
-          type: array
-          title: Dags
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - dags
-      - total_entries
-      title: DagStatsCollectionResponse
-      description: DAG Stats Collection serializer for responses.
     DagRunState:
       type: string
       enum:
@@ -160,6 +131,19 @@ components:
         so please ensure that their values always match the ones with the
 
         same name in TaskInstanceState.'
+    DagStatsStateResponse:
+      properties:
+        state:
+          $ref: '#/components/schemas/DagRunState'
+        count:
+          type: integer
+          title: Count
+      type: object
+      required:
+      - state
+      - count
+      title: DagStatsStateResponse
+      description: DagStatsState serializer for responses.
     DagStatsResponse:
       properties:
         dag_id:
@@ -180,6 +164,22 @@ components:
       - stats
       title: DagStatsResponse
       description: DAG Stats serializer for responses.
+    DagStatsCollectionResponse:
+      properties:
+        dags:
+          items:
+            $ref: '#/components/schemas/DagStatsResponse'
+          type: array
+          title: Dags
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - dags
+      - total_entries
+      title: DagStatsCollectionResponse
+      description: DAG Stats Collection serializer for responses.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

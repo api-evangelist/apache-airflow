@@ -103,6 +103,19 @@ paths:
     - url: https://apache.local
 components:
   schemas:
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
     HTTPValidationError:
       properties:
         detail:
@@ -112,22 +125,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ProviderCollectionResponse:
-      properties:
-        providers:
-          items:
-            $ref: '#/components/schemas/ProviderResponse'
-          type: array
-          title: Providers
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - providers
-      - total_entries
-      title: ProviderCollectionResponse
-      description: Provider Collection serializer for responses.
     ProviderResponse:
       properties:
         package_name:
@@ -178,48 +175,22 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPExceptionResponse:
+    ProviderCollectionResponse:
       properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
+        providers:
+          items:
+            $ref: '#/components/schemas/ProviderResponse'
+          type: array
+          title: Providers
+        total_entries:
+          type: integer
+          title: Total Entries
       type: object
       required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    Provider:
-      description: 'The provider
-
-
-        *New in version 2.1.0*
-
-        '
-      properties:
-        description:
-          description: The description of the provider.
-          type: string
-        package_name:
-          description: The package name of the provider.
-          type: string
-        version:
-          description: The version of the provider.
-          type: string
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
+      - providers
+      - total_entries
+      title: ProviderCollectionResponse
+      description: Provider Collection serializer for responses.
     ProviderCollection:
       description: 'Collection of providers.
 
@@ -267,6 +238,35 @@ components:
       - type
       - title
       - status
+      type: object
+    Provider:
+      description: 'The provider
+
+
+        *New in version 2.1.0*
+
+        '
+      properties:
+        description:
+          description: The description of the provider.
+          type: string
+        package_name:
+          description: The package name of the provider.
+          type: string
+        version:
+          description: The version of the provider.
+          type: string
+      type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
       type: object
   responses:
     PermissionDenied:

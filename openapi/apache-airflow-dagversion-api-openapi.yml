@@ -167,15 +167,19 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    HTTPValidationError:
+    HTTPExceptionResponse:
       properties:
         detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
           title: Detail
       type: object
-      title: HTTPValidationError
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
     DagVersionResponse:
       properties:
         id:
@@ -222,6 +226,15 @@ components:
       - bundle_url
       title: DagVersionResponse
       description: Dag Version serializer for responses.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -248,19 +261,6 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
     DAGVersionCollectionResponse:
       properties:
         dag_versions:

@@ -67,14 +67,6 @@ paths:
       x-openapi-router-controller: airflow.api_connexion.endpoints.version_endpoint
 components:
   schemas:
-    HealthInfo:
-      description: Instance status information.
-      properties:
-        metadatabase:
-          $ref: '#/components/schemas/MetadatabaseStatus'
-        scheduler:
-          $ref: '#/components/schemas/SchedulerStatus'
-      type: object
     HealthStatus:
       description: Health status
       enum:
@@ -105,6 +97,14 @@ components:
         version:
           description: The version of Airflow
           type: string
+      type: object
+    HealthInfo:
+      description: Instance status information.
+      properties:
+        metadatabase:
+          $ref: '#/components/schemas/MetadatabaseStatus'
+        scheduler:
+          $ref: '#/components/schemas/SchedulerStatus'
       type: object
     MetadatabaseStatus:
       description: The status of the metadatabase.

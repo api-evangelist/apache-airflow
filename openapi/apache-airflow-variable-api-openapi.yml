@@ -490,120 +490,7 @@ paths:
     - url: https://apache.local
 components:
   schemas:
-    BulkActionOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      - overwrite
-      title: BulkActionOnExistence
-      description: Bulk Action to be taken if the entity already exists or not.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     JsonValue: {}
-    BulkBody_VariableBody_:
-      properties:
-        actions:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/BulkCreateAction_VariableBody_'
-            - $ref: '#/components/schemas/BulkUpdateAction_VariableBody_'
-            - $ref: '#/components/schemas/BulkDeleteAction_VariableBody_'
-          type: array
-          title: Actions
-      additionalProperties: false
-      type: object
-      required:
-      - actions
-      title: BulkBody[VariableBody]
-    VariableResponse:
-      properties:
-        key:
-          type: string
-          title: Key
-        value:
-          type: string
-          title: Value
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        is_encrypted:
-          type: boolean
-          title: Is Encrypted
-        team_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Team Name
-      type: object
-      required:
-      - key
-      - value
-      - description
-      - is_encrypted
-      - team_name
-      title: VariableResponse
-      description: Variable serializer for responses.
-    BulkResponse:
-      properties:
-        create:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk create operation, including successful keys and errors.
-        update:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk update operation, including successful keys and errors.
-        delete:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk delete operation, including successful keys and errors.
-      type: object
-      title: BulkResponse
-      description: 'Serializer for responses to bulk entity operations.
-
-
-        This represents the results of create, update, and delete actions performed on entity in bulk.
-
-        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
-
-        Fields are populated in the response only if the respective action was part of the request, else are set None.'
-    BulkDeleteAction_VariableBody_:
-      properties:
-        action:
-          type: string
-          const: delete
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            anyOf:
-            - type: string
-            - $ref: '#/components/schemas/VariableBody'
-          type: array
-          title: Entities
-          description: A list of entity id/key or entity objects to be deleted.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkDeleteAction[VariableBody]
     HTTPExceptionResponse:
       properties:
         detail:
@@ -617,88 +504,6 @@ components:
       - detail
       title: HTTPExceptionResponse
       description: HTTPException Model used for error response.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    VariableBody:
-      properties:
-        key:
-          type: string
-          maxLength: 250
-          title: Key
-        value:
-          $ref: '#/components/schemas/JsonValue'
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        team_name:
-          anyOf:
-          - type: string
-            maxLength: 50
-          - type: 'null'
-          title: Team Name
-      additionalProperties: false
-      type: object
-      required:
-      - key
-      - value
-      title: VariableBody
-      description: Variable serializer for bodies.
-    BulkUpdateAction_VariableBody_:
-      properties:
-        action:
-          type: string
-          const: update
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            $ref: '#/components/schemas/VariableBody'
-          type: array
-          title: Entities
-          description: A list of entities to be updated.
-        update_mask:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Update Mask
-          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkUpdateAction[VariableBody]
     BulkActionResponse:
       properties:
         success:
@@ -742,6 +547,178 @@ components:
       - total_entries
       title: VariableCollectionResponse
       description: Variable Collection serializer for responses.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    BulkActionNotOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      title: BulkActionNotOnExistence
+      description: Bulk Action to be taken if the entity does not exist.
+    BulkResponse:
+      properties:
+        create:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk create operation, including successful keys and errors.
+        update:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk update operation, including successful keys and errors.
+        delete:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk delete operation, including successful keys and errors.
+      type: object
+      title: BulkResponse
+      description: 'Serializer for responses to bulk entity operations.
+
+
+        This represents the results of create, update, and delete actions performed on entity in bulk.
+
+        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
+
+        Fields are populated in the response only if the respective action was part of the request, else are set None.'
+    BulkBody_VariableBody_:
+      properties:
+        actions:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/BulkCreateAction_VariableBody_'
+            - $ref: '#/components/schemas/BulkUpdateAction_VariableBody_'
+            - $ref: '#/components/schemas/BulkDeleteAction_VariableBody_'
+          type: array
+          title: Actions
+      additionalProperties: false
+      type: object
+      required:
+      - actions
+      title: BulkBody[VariableBody]
+    BulkActionOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      - overwrite
+      title: BulkActionOnExistence
+      description: Bulk Action to be taken if the entity already exists or not.
+    BulkDeleteAction_VariableBody_:
+      properties:
+        action:
+          type: string
+          const: delete
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            anyOf:
+            - type: string
+            - $ref: '#/components/schemas/VariableBody'
+          type: array
+          title: Entities
+          description: A list of entity id/key or entity objects to be deleted.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkDeleteAction[VariableBody]
+    VariableBody:
+      properties:
+        key:
+          type: string
+          maxLength: 250
+          title: Key
+        value:
+          $ref: '#/components/schemas/JsonValue'
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        team_name:
+          anyOf:
+          - type: string
+            maxLength: 50
+          - type: 'null'
+          title: Team Name
+      additionalProperties: false
+      type: object
+      required:
+      - key
+      - value
+      title: VariableBody
+      description: Variable serializer for bodies.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    BulkUpdateAction_VariableBody_:
+      properties:
+        action:
+          type: string
+          const: update
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/VariableBody'
+          type: array
+          title: Entities
+          description: A list of entities to be updated.
+        update_mask:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Update Mask
+          description: A list of field names to update for each entity.Only these fields will be applied from the request body to the database model.Any extra fields provided will be ignored.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkUpdateAction[VariableBody]
     BulkCreateAction_VariableBody_:
       properties:
         action:
@@ -764,66 +741,36 @@ components:
       - action
       - entities
       title: BulkCreateAction[VariableBody]
-    BulkActionNotOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      title: BulkActionNotOnExistence
-      description: Bulk Action to be taken if the entity does not exist.
-    Variable:
-      allOf:
-      - $ref: '#/components/schemas/VariableCollectionItem'
-      - properties:
-          value:
-            type: string
-        type: object
-      description: Full representation of Variable
-    CollectionInfo:
-      description: Metadata about collection.
+    VariableResponse:
       properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
-    VariableCollection:
-      allOf:
-      - properties:
-          variables:
-            items:
-              $ref: '#/components/schemas/VariableCollectionItem'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of variables.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    VariableCollectionItem:
-      description: 'XCom entry collection item.
-
-        The value field are only available when retrieving a single object due to the sensitivity of this data.'
-      properties:
-        description:
-          description: 'The description of the variable.
-
-
-            *New in version 2.4.0*
-
-            '
-          type:
-          - string
-          - 'null'
         key:
           type: string
+          title: Key
+        value:
+          type: string
+          title: Value
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        is_encrypted:
+          type: boolean
+          title: Is Encrypted
+        team_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Team Name
       type: object
+      required:
+      - key
+      - value
+      - description
+      - is_encrypted
+      - team_name
+      title: VariableResponse
+      description: Variable serializer for responses.
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
 
@@ -859,29 +806,60 @@ components:
       - title
       - status
       type: object
-  parameters:
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    OrderBy:
-      description: 'The name of the field to order the results by.
+    Variable:
+      allOf:
+      - $ref: '#/components/schemas/VariableCollectionItem'
+      - properties:
+          value:
+            type: string
+        type: object
+      description: Full representation of Variable
+    VariableCollection:
+      allOf:
+      - properties:
+          variables:
+            items:
+              $ref: '#/components/schemas/VariableCollectionItem'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of variables.
 
-        Prefix a field name with `-` to reverse the sort order.
 
-
-        *New in version 2.1.0*
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
 
         '
-      in: query
-      name: order_by
-      required: false
-      schema:
-        type: string
+      type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
+    VariableCollectionItem:
+      description: 'XCom entry collection item.
+
+        The value field are only available when retrieving a single object due to the sensitivity of this data.'
+      properties:
+        description:
+          description: 'The description of the variable.
+
+
+            *New in version 2.4.0*
+
+            '
+          type:
+          - string
+          - 'null'
+        key:
+          type: string
+      type: object
+  parameters:
     VariableKey:
       description: The variable Key.
       in: path
@@ -897,6 +875,28 @@ components:
       required: false
       schema:
         default: 100
+        type: integer
+    OrderBy:
+      description: 'The name of the field to order the results by.
+
+        Prefix a field name with `-` to reverse the sort order.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: string
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
         type: integer
     UpdateMask:
       description: 'The fields to update on the resource. If absent or empty, all modifiable fields are updated.
@@ -919,6 +919,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Client does not have sufficient permission.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client specified an invalid argument.
     NotFound:
       content:
         application/json:
@@ -931,12 +937,6 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Request not authenticated due to missing, invalid, authentication info.
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client specified an invalid argument.
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

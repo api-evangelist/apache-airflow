@@ -334,24 +334,6 @@ apis:
     url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
   - type: ChangeLog
     url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
-- aid: apache-airflow:apache-airflow-dag-run-api
-  name: Apache Airflow DAG Run API
-  description: The DAG Run API from Apache Airflow — 6 operation(s) for dag run.
-  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
-  baseURL: http://localhost:8080/api/experimental
-  tags:
-  - DAG Run
-  properties:
-  - type: OpenAPI
-    url: openapi/apache-airflow-dag-run-api-openapi.yml
-  - type: Documentation
-    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
-  - type: ErrorCatalog
-    url: errors/apache-airflow-problem-types.yml
-  - type: Authentication
-    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
-  - type: ChangeLog
-    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
 - aid: apache-airflow:apache-airflow-event-log-api
   name: Apache Airflow Event Log API
   description: The Event Log API from Apache Airflow — 2 operation(s) for event log.
@@ -650,6 +632,96 @@ apis:
     url: https://pypi.org/project/apache-airflow-client/
   - type: SDKs
     url: https://github.com/apache/airflow
+- aid: apache-airflow:apache-airflow-asset-state-store-api
+  name: Apache Airflow Asset State Store API
+  description: The Asset State Store API from Apache Airflow — 2 operation(s) for asset state store.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Asset State Store
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-asset-state-store-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: ChangeLog
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+- aid: apache-airflow:apache-airflow-experimental-api
+  name: Apache Airflow Experimental API
+  description: The experimental API from Apache Airflow — 1 operation(s) for experimental.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - experimental
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-experimental-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: ChangeLog
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+- aid: apache-airflow:apache-airflow-extra-links-api
+  name: Apache Airflow Extra Links API
+  description: The Extra Links API from Apache Airflow — 1 operation(s) for extra links.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Extra Links
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-extra-links-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: ChangeLog
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+- aid: apache-airflow:apache-airflow-task-state-store-api
+  name: Apache Airflow Task State Store API
+  description: The Task State Store API from Apache Airflow — 2 operation(s) for task state store.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - Task State Store
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-task-state-store-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: ChangeLog
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
+- aid: apache-airflow:apache-airflow-dag-run-api
+  name: Apache Airflow DAG Run API
+  description: The DAG Run API from Apache Airflow — 14 operation(s) for dag run.
+  humanURL: https://airflow.apache.org/docs/apache-airflow/stable/deprecated-rest-api-ref.html
+  baseURL: http://localhost:8080/api/experimental
+  tags:
+  - DAG Run
+  properties:
+  - type: OpenAPI
+    url: openapi/apache-airflow-dag-run-api-openapi.yml
+  - type: Documentation
+    url: https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html
+  - type: ErrorCatalog
+    url: errors/apache-airflow-problem-types.yml
+  - type: Authentication
+    url: https://airflow.apache.org/docs/apache-airflow/stable/security/api.html
+  - type: ChangeLog
+    url: https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html
 common:
 - type: Plans
   url: plans/apache-airflow-plans-pricing.yml

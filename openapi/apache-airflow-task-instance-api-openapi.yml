@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
   title: Airflow Task Instance API
-  description: Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+  description: 'Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+
+
+    **Filtering with pattern parameters.** Many list endpoints accept ``*_pattern`` and ``*_prefix_pattern`` query parameters. Unless a parameter''s own description says otherwise, ``*_pattern`` is a case-insensitive substring match (SQL ``ILIKE ''%term%''``) where ``%`` matches any sequence and ``_`` matches any single character (e.g. ``%customer_%``) — convenient, but it cannot use B-tree indexes, so it is slow on large tables. ``*_prefix_pattern`` matches the start of the value, is case-sensitive and index-friendly (prefer it at scale); there ``%`` and ``_`` are literal and trailing non-alphanumeric characters are stripped so the range scan stays index-compatible under locale-aware collations (e.g. ``test_`` matches values starting with ``test``, and ``s3://`` matches ``s3``). In both, ``|`` means OR (e.g. ``dag1|dag2``) and ``~`` matches everything. Regular expressions are not supported by these parameters; regex-capable endpoints expose a separate parameter.'
   version: '2'
 tags:
 - name: Task Instance
@@ -10,7 +13,7 @@ paths:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Extra Links
+      summary: Get Extra Links
       description: Get extra links for task instance.
       operationId: get_extra_links
       security:
@@ -42,6 +45,14 @@ paths:
           type: integer
           default: -1
           title: Map Index
+      - name: try_number
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Try Number
       responses:
         '200':
           description: Successful Response
@@ -73,14 +84,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Task Instance
+      summary: Get Task Instance
       description: Get task instance.
       operationId: get_task_instance
       security:
@@ -136,13 +144,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
     patch:
       tags:
       - Task Instance
-      summary: Airflow Patch Task Instance
+      summary: Patch Task Instance
       description: Update a task instance.
       operationId: patch_task_instance
       security:
@@ -234,13 +239,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
     delete:
       tags:
       - Task Instance
-      summary: Airflow Delete Task Instance
+      summary: Delete Task Instance
       description: Delete a task instance.
       operationId: delete_task_instance
       security:
@@ -302,14 +304,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/listMapped:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Mapped Task Instances
+      summary: Get Mapped Task Instances
       description: Get list of mapped task instances.
       operationId: get_mapped_task_instances
       security:
@@ -569,9 +568,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `pool_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Pool Name Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `pool_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: pool_name_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Pool Name Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: queue
         in: query
         required: false
@@ -587,9 +596,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `queue_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Queue Name Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `queue_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: queue_name_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Queue Name Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: executor
         in: query
         required: false
@@ -629,9 +648,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `operator_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Operator Name Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `operator_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: operator_name_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Operator Name Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: map_index
         in: query
         required: false
@@ -640,6 +669,26 @@ paths:
           items:
             type: integer
           title: Map Index
+      - name: rendered_map_index_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `rendered_map_index_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+          title: Rendered Map Index Pattern
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `rendered_map_index_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: rendered_map_index_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Rendered Map Index Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: limit
         in: query
         required: false
@@ -663,11 +712,11 @@ paths:
           type: array
           items:
             type: string
-          description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, duration, start_date, end_date, map_index, try_number, logical_date, run_after, data_interval_start, data_interval_end, rendered_map_index, operator, run_after, logical_date, data_interval_start, data_interval_end`'
+          description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, duration, start_date, end_date, map_index, try_number, logical_date, run_after, data_interval_start, data_interval_end, rendered_map_index, operator`'
           default:
           - map_index
           title: Order By
-        description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, duration, start_date, end_date, map_index, try_number, logical_date, run_after, data_interval_start, data_interval_end, rendered_map_index, operator, run_after, logical_date, data_interval_start, data_interval_end`'
+        description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, duration, start_date, end_date, map_index, try_number, logical_date, run_after, data_interval_start, data_interval_end, rendered_map_index, operator`'
       responses:
         '200':
           description: Successful Response
@@ -699,14 +748,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/dependencies:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Task Instance Dependencies
+      summary: Get Task Instance Dependencies
       description: Get dependencies blocking task from getting scheduled.
       operationId: get_task_instance_dependencies_by_map_index
       security:
@@ -768,14 +814,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/dependencies:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Task Instance Dependencies
+      summary: Get Task Instance Dependencies
       description: Get dependencies blocking task from getting scheduled.
       operationId: get_task_instance_dependencies
       security:
@@ -838,14 +881,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/tries:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Task Instance Tries
+      summary: Get Task Instance Tries
       description: Get list of task instances history.
       operationId: get_task_instance_tries
       security:
@@ -908,14 +948,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/tries:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Mapped Task Instance Tries
+      summary: Get Mapped Task Instance Tries
       operationId: get_mapped_task_instance_tries
       security:
       - OAuth2PasswordBearer: []
@@ -976,14 +1013,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Mapped Task Instance
+      summary: Get Mapped Task Instance
       description: Get task instance.
       operationId: get_mapped_task_instance
       security:
@@ -1045,13 +1079,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
     patch:
       tags:
       - Task Instance
-      summary: Airflow Patch Task Instance
+      summary: Patch Task Instance
       description: Update a task instance.
       operationId: patch_task_instance_by_map_index
       security:
@@ -1143,20 +1174,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Task Instances
+      summary: Get Task Instances
       description: 'Get list of task instances.
 
 
         This endpoint allows specifying `~` as the dag_id, dag_run_id
 
-        to retrieve task instances for all DAGs and DAG runs.
+        to retrieve task instances for all Dags and Dag runs.
 
 
         Supports two pagination modes:
@@ -1167,11 +1195,13 @@ paths:
 
         **Cursor:** pass `cursor` (empty string for the first page, then `next_cursor` from the response).
 
-        When `cursor` is provided, `offset` is ignored and `total_entries` is not returned.
+        When `cursor` is provided, `offset` is ignored and `total_entries` is capped at
 
-        ``next_cursor`` is ``null`` when there are no more pages; ``previous_cursor`` is ``null``
+        `total_entries_limit` (a value equal to that limit means at least that many task instances
 
-        on the first page.'
+        match). ``next_cursor`` is ``null`` when there are no more pages; ``previous_cursor`` is
+
+        ``null`` on the first page.'
       operationId: get_task_instances
       security:
       - OAuth2PasswordBearer: []
@@ -1426,9 +1456,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `task_display_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Task Display Name Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `task_display_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: task_display_name_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive prefix match on task display name (`_task_display_property_value` else `task_id`). Index-friendly alternative to `task_display_name_pattern`; on large databases combine with `dag_id_prefix_pattern` (or a specific Dag in the path) so composite indexes apply. See "Filtering with pattern parameters".
+          title: Task Display Name Prefix Pattern
+        description: Case-sensitive prefix match on task display name (`_task_display_property_value` else `task_id`). Index-friendly alternative to `task_display_name_pattern`; on large databases combine with `dag_id_prefix_pattern` (or a specific Dag in the path) so composite indexes apply. See "Filtering with pattern parameters".
       - name: task_group_id
         in: query
         required: false
@@ -1446,9 +1486,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `dag_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Dag Id Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `dag_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: dag_id_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Dag Id Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: run_id_pattern
         in: query
         required: false
@@ -1456,9 +1506,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `run_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Run Id Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `run_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: run_id_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Run Id Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: state
         in: query
         required: false
@@ -1482,9 +1542,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `pool_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Pool Name Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `pool_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: pool_name_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Pool Name Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: queue
         in: query
         required: false
@@ -1500,9 +1570,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `queue_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Queue Name Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `queue_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: queue_name_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Queue Name Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: executor
         in: query
         required: false
@@ -1542,9 +1622,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `operator_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Operator Name Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `operator_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: operator_name_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Operator Name Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: map_index
         in: query
         required: false
@@ -1553,6 +1643,26 @@ paths:
           items:
             type: integer
           title: Map Index
+      - name: rendered_map_index_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `rendered_map_index_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+          title: Rendered Map Index Pattern
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `rendered_map_index_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: rendered_map_index_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Rendered Map Index Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: limit
         in: query
         required: false
@@ -1576,11 +1686,11 @@ paths:
           type: array
           items:
             type: string
-          description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, duration, start_date, end_date, map_index, try_number, logical_date, run_after, data_interval_start, data_interval_end, rendered_map_index, operator, logical_date, run_after, data_interval_start, data_interval_end`'
+          description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, duration, start_date, end_date, map_index, try_number, logical_date, run_after, data_interval_start, data_interval_end, rendered_map_index, operator`'
           default:
           - map_index
           title: Order By
-        description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, duration, start_date, end_date, map_index, try_number, logical_date, run_after, data_interval_start, data_interval_end, rendered_map_index, operator, logical_date, run_after, data_interval_start, data_interval_end`'
+        description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, state, duration, start_date, end_date, map_index, try_number, logical_date, run_after, data_interval_start, data_interval_end, rendered_map_index, operator`'
       responses:
         '200':
           description: Successful Response
@@ -1618,13 +1728,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
     patch:
       tags:
       - Task Instance
-      summary: Airflow Bulk Task Instances
+      summary: Bulk Task Instances
       description: Bulk update, and delete task instances.
       operationId: bulk_task_instances
       security:
@@ -1674,14 +1781,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/list:
     post:
       tags:
       - Task Instance
-      summary: Airflow Get Task Instances Batch
+      summary: Get Task Instances Batch
       description: Get list of task instances.
       operationId: get_task_instances_batch
       security:
@@ -1739,14 +1843,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/tries/{task_try_number}:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Task Instance Try Details
+      summary: Get Task Instance Try Details
       description: Get task instance details by try number.
       operationId: get_task_instance_try_details
       security:
@@ -1815,14 +1916,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/tries/{task_try_number}:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Mapped Task Instance Try Details
+      summary: Get Mapped Task Instance Try Details
       operationId: get_mapped_task_instance_try_details
       security:
       - OAuth2PasswordBearer: []
@@ -1889,14 +1987,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/clearTaskInstances:
     post:
       tags:
       - Task Instance
-      summary: Airflow Post Clear Task Instances
+      summary: Post Clear Task Instances
       description: Clear task instances.
       operationId: post_clear_task_instances
       security:
@@ -1934,6 +2029,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPExceptionResponse'
           description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
         '404':
           content:
             application/json:
@@ -1952,14 +2053,171 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
+  /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskGroupInstances/{group_id}:
+    patch:
+      tags:
+      - Task Instance
+      summary: Patch Task Group Instances
+      description: Update the state of all task instances in a task group.
+      operationId: patch_task_group_instances
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Id
+      - name: dag_run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Run Id
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Group Id
+      - name: update_mask
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: 'null'
+          title: Update Mask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchTaskInstanceBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskInstanceCollectionResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Conflict
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskGroupInstances/{group_id}/dry_run:
+    patch:
+      tags:
+      - Task Instance
+      summary: Patch Task Group Instances Dry Run
+      description: Dry-run of updating the state of all task instances in a task group.
+      operationId: patch_task_group_instances_dry_run
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: dag_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Id
+      - name: dag_run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dag Run Id
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Group Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchTaskInstanceBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskInstanceCollectionResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/dry_run:
     patch:
       tags:
       - Task Instance
-      summary: Airflow Patch Task Instance Dry Run
+      summary: Patch Task Instance Dry Run
       description: Update a task instance dry_run mode.
       operationId: patch_task_instance_dry_run_by_map_index
       security:
@@ -2045,14 +2303,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/dry_run:
     patch:
       tags:
       - Task Instance
-      summary: Airflow Patch Task Instance Dry Run
+      summary: Patch Task Instance Dry Run
       description: Update a task instance dry_run mode.
       operationId: patch_task_instance_dry_run
       security:
@@ -2138,14 +2393,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/logs/{try_number}:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Log
+      summary: Get Log
       description: Get logs for a specific task instance.
       operationId: get_log
       security:
@@ -2249,14 +2501,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/externalLogUrl/{try_number}:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get External Log Url
+      summary: Get External Log Url
       description: Get external log URL for a specific task instance.
       operationId: get_external_log_url
       security:
@@ -2332,14 +2581,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/hitlDetails:
     patch:
       tags:
       - Task Instance
-      summary: Airflow Update Hitl Detail
+      summary: Update Hitl Detail
       description: Update a Human-in-the-loop detail.
       operationId: update_hitl_detail
       security:
@@ -2395,6 +2641,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPExceptionResponse'
           description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
         '404':
           content:
             application/json:
@@ -2413,13 +2665,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Hitl Detail
+      summary: Get Hitl Detail
       description: Get a Human-in-the-loop detail of a specific task instance.
       operationId: get_hitl_detail
       security:
@@ -2481,14 +2730,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/hitlDetails/tries/{try_number}:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Hitl Detail Try Detail
+      summary: Get Hitl Detail Try Detail
       description: Get a Human-in-the-loop detail of a specific task instance.
       operationId: get_hitl_detail_try_detail
       security:
@@ -2558,14 +2804,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/hitlDetails:
     get:
       tags:
       - Task Instance
-      summary: Airflow Get Hitl Details
+      summary: Get Hitl Details
       description: Get Human-in-the-loop details.
       operationId: get_hitl_details
       security:
@@ -2619,9 +2862,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `dag_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Dag Id Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `dag_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: dag_id_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Dag Id Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: task_id
         in: query
         required: false
@@ -2637,9 +2890,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `task_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Task Id Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `task_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: task_id_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Task Id Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: map_index
         in: query
         required: false
@@ -2687,9 +2950,9 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `subject_search` on large tables — see "Filtering with pattern parameters".
           title: Subject Search
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `subject_search` on large tables — see "Filtering with pattern parameters".
       - name: body_search
         in: query
         required: false
@@ -2697,9 +2960,9 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `body_search` on large tables — see "Filtering with pattern parameters".
           title: Body Search
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `body_search` on large tables — see "Filtering with pattern parameters".
       - name: created_at_gte
         in: query
         required: false
@@ -2761,9 +3024,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances:
     parameters:
     - $ref: '#/components/parameters/DAGID'
@@ -3123,374 +3383,72 @@ paths:
       x-openapi-router-controller: airflow.api_connexion.endpoints.task_instance_endpoint
 components:
   schemas:
-    BulkTaskInstanceBody:
+    StructuredLogMessage:
       properties:
-        new_state:
-          anyOf:
-          - $ref: '#/components/schemas/TaskInstanceState'
-          - type: 'null'
-        note:
-          anyOf:
-          - type: string
-            maxLength: 1000
-          - type: 'null'
-          title: Note
-        include_upstream:
-          type: boolean
-          title: Include Upstream
-          default: false
-        include_downstream:
-          type: boolean
-          title: Include Downstream
-          default: false
-        include_future:
-          type: boolean
-          title: Include Future
-          default: false
-        include_past:
-          type: boolean
-          title: Include Past
-          default: false
-        task_id:
-          type: string
-          title: Task Id
-        map_index:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Map Index
-        dag_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Dag Id
-        dag_run_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Dag Run Id
-      additionalProperties: false
-      type: object
-      required:
-      - task_id
-      title: BulkTaskInstanceBody
-      description: Request body for bulk update, and delete task instances.
-    BulkCreateAction_BulkTaskInstanceBody_:
-      properties:
-        action:
-          type: string
-          const: create
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
-          items:
-            $ref: '#/components/schemas/BulkTaskInstanceBody'
-          type: array
-          title: Entities
-          description: A list of entities to be created.
-        action_on_existence:
-          $ref: '#/components/schemas/BulkActionOnExistence'
-          default: fail
-      additionalProperties: false
-      type: object
-      required:
-      - action
-      - entities
-      title: BulkCreateAction[BulkTaskInstanceBody]
-    PatchTaskInstanceBody:
-      properties:
-        new_state:
-          anyOf:
-          - $ref: '#/components/schemas/TaskInstanceState'
-          - type: 'null'
-        note:
-          anyOf:
-          - type: string
-            maxLength: 1000
-          - type: 'null'
-          title: Note
-        include_upstream:
-          type: boolean
-          title: Include Upstream
-          default: false
-        include_downstream:
-          type: boolean
-          title: Include Downstream
-          default: false
-        include_future:
-          type: boolean
-          title: Include Future
-          default: false
-        include_past:
-          type: boolean
-          title: Include Past
-          default: false
-      additionalProperties: false
-      type: object
-      title: PatchTaskInstanceBody
-      description: Request body for Clear Task Instances endpoint.
-    UpdateHITLDetailPayload:
-      properties:
-        chosen_options:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          title: Chosen Options
-        params_input:
-          additionalProperties: true
-          type: object
-          title: Params Input
-      type: object
-      required:
-      - chosen_options
-      title: UpdateHITLDetailPayload
-      description: Schema for updating the content of a Human-in-the-loop detail.
-    TaskInstanceResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        task_id:
-          type: string
-          title: Task Id
-        dag_id:
-          type: string
-          title: Dag Id
-        dag_run_id:
-          type: string
-          title: Dag Run Id
-        map_index:
-          type: integer
-          title: Map Index
-        logical_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Logical Date
-        run_after:
+        timestamp:
           type: string
           format: date-time
-          title: Run After
-        start_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Start Date
-        end_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: End Date
-        duration:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Duration
-        state:
-          anyOf:
-          - $ref: '#/components/schemas/TaskInstanceState'
-          - type: 'null'
-        try_number:
-          type: integer
-          title: Try Number
-        max_tries:
-          type: integer
-          title: Max Tries
-        task_display_name:
+          title: Timestamp
+        event:
           type: string
-          title: Task Display Name
-        dag_display_name:
-          type: string
-          title: Dag Display Name
-        hostname:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Hostname
-        unixname:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Unixname
-        pool:
-          type: string
-          title: Pool
-        pool_slots:
-          type: integer
-          title: Pool Slots
-        queue:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Queue
-        priority_weight:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Priority Weight
-        operator:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Operator
-        operator_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Operator Name
-        queued_when:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Queued When
-        scheduled_when:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Scheduled When
-        pid:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Pid
-        executor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Executor
-        executor_config:
-          type: string
-          title: Executor Config
-        note:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Note
-        rendered_map_index:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Rendered Map Index
-        rendered_fields:
-          additionalProperties: true
-          type: object
-          title: Rendered Fields
-        trigger:
-          anyOf:
-          - $ref: '#/components/schemas/TriggerResponse'
-          - type: 'null'
-        triggerer_job:
-          anyOf:
-          - $ref: '#/components/schemas/JobResponse'
-          - type: 'null'
-        dag_version:
-          anyOf:
-          - $ref: '#/components/schemas/DagVersionResponse'
-          - type: 'null'
+          title: Event
+      additionalProperties: true
       type: object
       required:
-      - id
-      - task_id
-      - dag_id
-      - dag_run_id
-      - map_index
-      - logical_date
-      - run_after
-      - start_date
-      - end_date
-      - duration
-      - state
-      - try_number
-      - max_tries
-      - task_display_name
-      - dag_display_name
-      - hostname
-      - unixname
-      - pool
-      - pool_slots
-      - queue
-      - priority_weight
-      - operator
-      - operator_name
-      - queued_when
-      - scheduled_when
-      - pid
-      - executor
-      - executor_config
-      - note
-      - rendered_map_index
-      - trigger
-      - triggerer_job
-      - dag_version
-      title: TaskInstanceResponse
-      description: TaskInstance serializer for responses.
-    ValidationError:
+      - event
+      title: StructuredLogMessage
+      description: An individual log message.
+    TaskInstanceHistoryCollectionResponse:
       properties:
-        loc:
+        task_instances:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/TaskInstanceHistoryResponse'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ExtraLinkCollectionResponse:
-      properties:
-        extra_links:
-          additionalProperties:
-            anyOf:
-            - type: string
-            - type: 'null'
-          type: object
-          title: Extra Links
+          title: Task Instances
         total_entries:
           type: integer
           title: Total Entries
       type: object
       required:
-      - extra_links
+      - task_instances
       - total_entries
-      title: ExtraLinkCollectionResponse
-      description: Extra Links Response.
-    BulkActionNotOnExistence:
+      title: TaskInstanceHistoryCollectionResponse
+      description: TaskInstanceHistory Collection serializer for responses.
+    BulkResponse:
+      properties:
+        create:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk create operation, including successful keys and errors.
+        update:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk update operation, including successful keys and errors.
+        delete:
+          anyOf:
+          - $ref: '#/components/schemas/BulkActionResponse'
+          - type: 'null'
+          description: Details of the bulk delete operation, including successful keys and errors.
+      type: object
+      title: BulkResponse
+      description: 'Serializer for responses to bulk entity operations.
+
+
+        This represents the results of create, update, and delete actions performed on entity in bulk.
+
+        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
+
+        Fields are populated in the response only if the respective action was part of the request, else are set None.'
+    BulkActionOnExistence:
       type: string
       enum:
       - fail
       - skip
-      title: BulkActionNotOnExistence
-      description: Bulk Action to be taken if the entity does not exist.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
+      - overwrite
+      title: BulkActionOnExistence
+      description: Bulk Action to be taken if the entity already exists or not.
     JobResponse:
       properties:
         id:
@@ -3563,55 +3521,31 @@ components:
       - unixname
       title: JobResponse
       description: Job serializer for responses.
-    StructuredLogMessage:
+    HITLDetailResponse:
       properties:
-        timestamp:
+        responded_by:
+          $ref: '#/components/schemas/HITLUser'
+        responded_at:
           type: string
           format: date-time
-          title: Timestamp
-        event:
-          type: string
-          title: Event
-      additionalProperties: true
-      type: object
-      required:
-      - event
-      title: StructuredLogMessage
-      description: An individual log message.
-    ExternalLogUrlResponse:
-      properties:
-        url:
-          type: string
-          title: Url
-      type: object
-      required:
-      - url
-      title: ExternalLogUrlResponse
-      description: Response for the external log URL endpoint.
-    BulkDeleteAction_BulkTaskInstanceBody_:
-      properties:
-        action:
-          type: string
-          const: delete
-          title: Action
-          description: The action to be performed on the entities.
-        entities:
+          title: Responded At
+        chosen_options:
           items:
-            anyOf:
-            - type: string
-            - $ref: '#/components/schemas/BulkTaskInstanceBody'
+            type: string
           type: array
-          title: Entities
-          description: A list of entity id/key or entity objects to be deleted.
-        action_on_non_existence:
-          $ref: '#/components/schemas/BulkActionNotOnExistence'
-          default: fail
-      additionalProperties: false
+          minItems: 1
+          title: Chosen Options
+        params_input:
+          additionalProperties: true
+          type: object
+          title: Params Input
       type: object
       required:
-      - action
-      - entities
-      title: BulkDeleteAction[BulkTaskInstanceBody]
+      - responded_by
+      - responded_at
+      - chosen_options
+      title: HITLDetailResponse
+      description: Response of updating a Human-in-the-loop detail.
     TaskInstancesBatchBody:
       properties:
         dag_ids:
@@ -3800,6 +3734,28 @@ components:
       type: object
       title: TaskInstancesBatchBody
       description: Task Instance body for get batch.
+    BulkCreateAction_BulkTaskInstanceBody_:
+      properties:
+        action:
+          type: string
+          const: create
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            $ref: '#/components/schemas/BulkTaskInstanceBody'
+          type: array
+          title: Entities
+          description: A list of entities to be created.
+        action_on_existence:
+          $ref: '#/components/schemas/BulkActionOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkCreateAction[BulkTaskInstanceBody]
     BulkActionResponse:
       properties:
         success:
@@ -3827,26 +3783,6 @@ components:
         The response includes a list of successful keys and any errors encountered during the operation.
 
         This structure helps users understand which key actions succeeded and which failed.'
-    BulkActionOnExistence:
-      type: string
-      enum:
-      - fail
-      - skip
-      - overwrite
-      title: BulkActionOnExistence
-      description: Bulk Action to be taken if the entity already exists or not.
-    TaskDependencyCollectionResponse:
-      properties:
-        dependencies:
-          items:
-            $ref: '#/components/schemas/TaskDependencyResponse'
-          type: array
-          title: Dependencies
-      type: object
-      required:
-      - dependencies
-      title: TaskDependencyCollectionResponse
-      description: Task scheduling dependencies collection serializer for responses.
     HITLUser:
       properties:
         id:
@@ -3861,6 +3797,157 @@ components:
       - name
       title: HITLUser
       description: Schema for a Human-in-the-loop users.
+    DagVersionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        version_number:
+          type: integer
+          title: Version Number
+        dag_id:
+          type: string
+          title: Dag Id
+        bundle_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bundle Name
+        bundle_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bundle Version
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+        bundle_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bundle Url
+      type: object
+      required:
+      - id
+      - version_number
+      - dag_id
+      - bundle_name
+      - bundle_version
+      - created_at
+      - dag_display_name
+      - bundle_url
+      title: DagVersionResponse
+      description: Dag Version serializer for responses.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HITLDetailCollection:
+      properties:
+        hitl_details:
+          items:
+            $ref: '#/components/schemas/HITLDetail'
+          type: array
+          title: Hitl Details
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - hitl_details
+      - total_entries
+      title: HITLDetailCollection
+      description: Schema for a collection of Human-in-the-loop details.
+    BulkDeleteAction_BulkTaskInstanceBody_:
+      properties:
+        action:
+          type: string
+          const: delete
+          title: Action
+          description: The action to be performed on the entities.
+        entities:
+          items:
+            anyOf:
+            - type: string
+            - $ref: '#/components/schemas/BulkTaskInstanceBody'
+          type: array
+          title: Entities
+          description: A list of entity id/key or entity objects to be deleted.
+        action_on_non_existence:
+          $ref: '#/components/schemas/BulkActionNotOnExistence'
+          default: fail
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - entities
+      title: BulkDeleteAction[BulkTaskInstanceBody]
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UpdateHITLDetailPayload:
+      properties:
+        chosen_options:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Chosen Options
+        params_input:
+          additionalProperties: true
+          type: object
+          title: Params Input
+      type: object
+      required:
+      - chosen_options
+      title: UpdateHITLDetailPayload
+      description: Schema for updating the content of a Human-in-the-loop detail.
     ClearTaskInstancesBody:
       properties:
         dry_run:
@@ -3928,10 +4015,11 @@ components:
           title: Include Past
           default: false
         run_on_latest_version:
-          type: boolean
+          anyOf:
+          - type: boolean
+          - type: 'null'
           title: Run On Latest Version
-          description: (Experimental) Run on the latest bundle version of the dag after clearing the task instances.
-          default: false
+          description: (Experimental) Run on the latest bundle version of the dag after clearing the task instances. If not specified, falls back to the DAG-level ``rerun_with_latest_version`` parameter, then the ``[core] rerun_with_latest_version`` config option, and finally ``False`` (the historical default for clear/rerun).
         prevent_running_task:
           type: boolean
           title: Prevent Running Task
@@ -3946,6 +4034,16 @@ components:
       type: object
       title: ClearTaskInstancesBody
       description: Request body for Clear Task Instances endpoint.
+    ExternalLogUrlResponse:
+      properties:
+        url:
+          type: string
+          title: Url
+      type: object
+      required:
+      - url
+      title: ExternalLogUrlResponse
+      description: Response for the external log URL endpoint.
     TaskInstancesLogResponse:
       properties:
         content:
@@ -3968,22 +4066,417 @@ components:
       - continuation_token
       title: TaskInstancesLogResponse
       description: Log serializer for responses.
-    TaskInstanceHistoryCollectionResponse:
+    TriggerResponse:
+      properties:
+        id:
+          type: integer
+          title: Id
+        classpath:
+          type: string
+          title: Classpath
+        kwargs:
+          type: string
+          title: Kwargs
+          deprecated: true
+        created_date:
+          type: string
+          format: date-time
+          title: Created Date
+        queue:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Queue
+        triggerer_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Triggerer Id
+      type: object
+      required:
+      - id
+      - classpath
+      - kwargs
+      - created_date
+      - queue
+      - triggerer_id
+      title: TriggerResponse
+      description: Trigger serializer for responses.
+    TaskInstanceCollectionResponse:
       properties:
         task_instances:
           items:
-            $ref: '#/components/schemas/TaskInstanceHistoryResponse'
+            $ref: '#/components/schemas/TaskInstanceResponse'
           type: array
           title: Task Instances
+        total_entries:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Entries
+          description: Number of matching items. For offset pagination this is the exact total. For cursor pagination it is capped at ``total_entries_limit``; a value equal to that limit means at least that many items match.
+        total_entries_limit:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Entries Limit
+          description: Cap applied to ``total_entries`` under cursor pagination. ``null`` for offset pagination, where ``total_entries`` is exact.
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Token pointing to the next page. Populated for cursor pagination, ``null`` when using offset pagination or when there is no next page.
+        previous_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Previous Cursor
+          description: Token pointing to the previous page. Populated for cursor pagination, ``null`` when using offset pagination or when on the first page.
+      type: object
+      required:
+      - task_instances
+      title: TaskInstanceCollectionResponse
+      description: 'Task instance collection response supporting both offset and cursor pagination.
+
+
+        A single flat model is used instead of a discriminated union
+
+        (``Annotated[Offset | Cursor, Field(discriminator=...)]``) because
+
+        the OpenAPI ``oneOf`` + ``discriminator`` construct is not handled
+
+        correctly by ``@hey-api/openapi-ts`` / ``@7nohe/openapi-react-query-codegen``:
+
+        return types degrade to ``unknown`` in JSDoc and can produce
+
+        incorrect TypeScript types (see hey-api/openapi-ts#1613, #3270).'
+    HITLDetailHistory:
+      properties:
+        options:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Options
+        subject:
+          type: string
+          title: Subject
+        body:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Body
+        defaults:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Defaults
+        multiple:
+          type: boolean
+          title: Multiple
+          default: false
+        params:
+          additionalProperties: true
+          type: object
+          title: Params
+        assigned_users:
+          items:
+            $ref: '#/components/schemas/HITLUser'
+          type: array
+          title: Assigned Users
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        responded_by_user:
+          anyOf:
+          - $ref: '#/components/schemas/HITLUser'
+          - type: 'null'
+        responded_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Responded At
+        chosen_options:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Chosen Options
+        params_input:
+          additionalProperties: true
+          type: object
+          title: Params Input
+        response_received:
+          type: boolean
+          title: Response Received
+          default: false
+        task_instance:
+          $ref: '#/components/schemas/TaskInstanceHistoryResponse'
+      type: object
+      required:
+      - options
+      - subject
+      - created_at
+      - task_instance
+      title: HITLDetailHistory
+      description: Schema for Human-in-the-loop detail history.
+    TaskInstanceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        task_id:
+          type: string
+          title: Task Id
+        dag_id:
+          type: string
+          title: Dag Id
+        dag_run_id:
+          type: string
+          title: Dag Run Id
+        map_index:
+          type: integer
+          title: Map Index
+        logical_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date
+        run_after:
+          type: string
+          format: date-time
+          title: Run After
+        start_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+        duration:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Duration
+        state:
+          anyOf:
+          - $ref: '#/components/schemas/TaskInstanceState'
+          - type: 'null'
+        try_number:
+          type: integer
+          title: Try Number
+        max_tries:
+          type: integer
+          title: Max Tries
+        task_display_name:
+          type: string
+          title: Task Display Name
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+        hostname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hostname
+        unixname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unixname
+        pool:
+          type: string
+          title: Pool
+        pool_slots:
+          type: integer
+          title: Pool Slots
+        queue:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Queue
+        priority_weight:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Priority Weight
+        operator:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator
+        operator_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator Name
+        queued_when:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Queued When
+        scheduled_when:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Scheduled When
+        pid:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Pid
+        executor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Executor
+        executor_config:
+          type: string
+          title: Executor Config
+        note:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Note
+        rendered_map_index:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rendered Map Index
+        rendered_fields:
+          additionalProperties: true
+          type: object
+          title: Rendered Fields
+        trigger:
+          anyOf:
+          - $ref: '#/components/schemas/TriggerResponse'
+          - type: 'null'
+        triggerer_job:
+          anyOf:
+          - $ref: '#/components/schemas/JobResponse'
+          - type: 'null'
+        dag_version:
+          anyOf:
+          - $ref: '#/components/schemas/DagVersionResponse'
+          - type: 'null'
+      type: object
+      required:
+      - id
+      - task_id
+      - dag_id
+      - dag_run_id
+      - map_index
+      - logical_date
+      - run_after
+      - start_date
+      - end_date
+      - duration
+      - state
+      - try_number
+      - max_tries
+      - task_display_name
+      - dag_display_name
+      - hostname
+      - unixname
+      - pool
+      - pool_slots
+      - queue
+      - priority_weight
+      - operator
+      - operator_name
+      - queued_when
+      - scheduled_when
+      - pid
+      - executor
+      - executor_config
+      - note
+      - rendered_map_index
+      - trigger
+      - triggerer_job
+      - dag_version
+      title: TaskInstanceResponse
+      description: TaskInstance serializer for responses.
+    ExtraLinkCollectionResponse:
+      properties:
+        extra_links:
+          additionalProperties:
+            anyOf:
+            - type: string
+            - type: 'null'
+          type: object
+          title: Extra Links
         total_entries:
           type: integer
           title: Total Entries
       type: object
       required:
-      - task_instances
+      - extra_links
       - total_entries
-      title: TaskInstanceHistoryCollectionResponse
-      description: TaskInstanceHistory Collection serializer for responses.
+      title: ExtraLinkCollectionResponse
+      description: Extra Links Response.
+    TaskDependencyResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        reason:
+          type: string
+          title: Reason
+      type: object
+      required:
+      - name
+      - reason
+      title: TaskDependencyResponse
+      description: Task Dependency serializer for responses.
+    TaskDependencyCollectionResponse:
+      properties:
+        dependencies:
+          items:
+            $ref: '#/components/schemas/TaskDependencyResponse'
+          type: array
+          title: Dependencies
+      type: object
+      required:
+      - dependencies
+      title: TaskDependencyCollectionResponse
+      description: Task scheduling dependencies collection serializer for responses.
+    BulkBody_BulkTaskInstanceBody_:
+      properties:
+        actions:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/BulkCreateAction_BulkTaskInstanceBody_'
+            - $ref: '#/components/schemas/BulkUpdateAction_BulkTaskInstanceBody_'
+            - $ref: '#/components/schemas/BulkDeleteAction_BulkTaskInstanceBody_'
+          type: array
+          title: Actions
+      additionalProperties: false
+      type: object
+      required:
+      - actions
+      title: BulkBody[BulkTaskInstanceBody]
+    BulkActionNotOnExistence:
+      type: string
+      enum:
+      - fail
+      - skip
+      title: BulkActionNotOnExistence
+      description: Bulk Action to be taken if the entity does not exist.
     TaskInstanceState:
       type: string
       enum:
@@ -3999,11 +4492,119 @@ components:
       - upstream_failed
       - skipped
       - deferred
+      - awaiting_input
       title: TaskInstanceState
       description: 'All possible states that a Task Instance can be in.
 
 
         Note that None is also allowed, so always use this in a type hint with Optional.'
+    HITLDetail:
+      properties:
+        options:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Options
+        subject:
+          type: string
+          title: Subject
+        body:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Body
+        defaults:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Defaults
+        multiple:
+          type: boolean
+          title: Multiple
+          default: false
+        params:
+          additionalProperties: true
+          type: object
+          title: Params
+        assigned_users:
+          items:
+            $ref: '#/components/schemas/HITLUser'
+          type: array
+          title: Assigned Users
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        responded_by_user:
+          anyOf:
+          - $ref: '#/components/schemas/HITLUser'
+          - type: 'null'
+        responded_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Responded At
+        chosen_options:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Chosen Options
+        params_input:
+          additionalProperties: true
+          type: object
+          title: Params Input
+        response_received:
+          type: boolean
+          title: Response Received
+          default: false
+        task_instance:
+          $ref: '#/components/schemas/TaskInstanceResponse'
+      type: object
+      required:
+      - options
+      - subject
+      - created_at
+      - task_instance
+      title: HITLDetail
+      description: Schema for Human-in-the-loop detail.
+    PatchTaskInstanceBody:
+      properties:
+        new_state:
+          anyOf:
+          - $ref: '#/components/schemas/TaskInstanceState'
+          - type: 'null'
+        note:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Note
+        include_upstream:
+          type: boolean
+          title: Include Upstream
+          default: false
+        include_downstream:
+          type: boolean
+          title: Include Downstream
+          default: false
+        include_future:
+          type: boolean
+          title: Include Future
+          default: false
+        include_past:
+          type: boolean
+          title: Include Past
+          default: false
+      additionalProperties: false
+      type: object
+      title: PatchTaskInstanceBody
+      description: Request body for patching task instance state.
     TaskInstanceHistoryResponse:
       properties:
         task_id:
@@ -4146,390 +4747,6 @@ components:
       - dag_version
       title: TaskInstanceHistoryResponse
       description: TaskInstanceHistory serializer for responses.
-    HITLDetailHistory:
-      properties:
-        options:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          title: Options
-        subject:
-          type: string
-          title: Subject
-        body:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Body
-        defaults:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Defaults
-        multiple:
-          type: boolean
-          title: Multiple
-          default: false
-        params:
-          additionalProperties: true
-          type: object
-          title: Params
-        assigned_users:
-          items:
-            $ref: '#/components/schemas/HITLUser'
-          type: array
-          title: Assigned Users
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        responded_by_user:
-          anyOf:
-          - $ref: '#/components/schemas/HITLUser'
-          - type: 'null'
-        responded_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Responded At
-        chosen_options:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Chosen Options
-        params_input:
-          additionalProperties: true
-          type: object
-          title: Params Input
-        response_received:
-          type: boolean
-          title: Response Received
-          default: false
-        task_instance:
-          $ref: '#/components/schemas/TaskInstanceHistoryResponse'
-      type: object
-      required:
-      - options
-      - subject
-      - created_at
-      - task_instance
-      title: HITLDetailHistory
-      description: Schema for Human-in-the-loop detail history.
-    TaskInstanceCollectionResponse:
-      properties:
-        task_instances:
-          items:
-            $ref: '#/components/schemas/TaskInstanceResponse'
-          type: array
-          title: Task Instances
-        total_entries:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Total Entries
-          description: Total number of matching items. Populated for offset pagination, ``null`` when using cursor pagination.
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-          description: Token pointing to the next page. Populated for cursor pagination, ``null`` when using offset pagination or when there is no next page.
-        previous_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Previous Cursor
-          description: Token pointing to the previous page. Populated for cursor pagination, ``null`` when using offset pagination or when on the first page.
-      type: object
-      required:
-      - task_instances
-      title: TaskInstanceCollectionResponse
-      description: 'Task instance collection response supporting both offset and cursor pagination.
-
-
-        A single flat model is used instead of a discriminated union
-
-        (``Annotated[Offset | Cursor, Field(discriminator=...)]``) because
-
-        the OpenAPI ``oneOf`` + ``discriminator`` construct is not handled
-
-        correctly by ``@hey-api/openapi-ts`` / ``@7nohe/openapi-react-query-codegen``:
-
-        return types degrade to ``unknown`` in JSDoc and can produce
-
-        incorrect TypeScript types (see hey-api/openapi-ts#1613, #3270).'
-    BulkBody_BulkTaskInstanceBody_:
-      properties:
-        actions:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/BulkCreateAction_BulkTaskInstanceBody_'
-            - $ref: '#/components/schemas/BulkUpdateAction_BulkTaskInstanceBody_'
-            - $ref: '#/components/schemas/BulkDeleteAction_BulkTaskInstanceBody_'
-          type: array
-          title: Actions
-      additionalProperties: false
-      type: object
-      required:
-      - actions
-      title: BulkBody[BulkTaskInstanceBody]
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    TaskDependencyResponse:
-      properties:
-        name:
-          type: string
-          title: Name
-        reason:
-          type: string
-          title: Reason
-      type: object
-      required:
-      - name
-      - reason
-      title: TaskDependencyResponse
-      description: Task Dependency serializer for responses.
-    HITLDetailResponse:
-      properties:
-        responded_by:
-          $ref: '#/components/schemas/HITLUser'
-        responded_at:
-          type: string
-          format: date-time
-          title: Responded At
-        chosen_options:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          title: Chosen Options
-        params_input:
-          additionalProperties: true
-          type: object
-          title: Params Input
-      type: object
-      required:
-      - responded_by
-      - responded_at
-      - chosen_options
-      title: HITLDetailResponse
-      description: Response of updating a Human-in-the-loop detail.
-    BulkResponse:
-      properties:
-        create:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk create operation, including successful keys and errors.
-        update:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk update operation, including successful keys and errors.
-        delete:
-          anyOf:
-          - $ref: '#/components/schemas/BulkActionResponse'
-          - type: 'null'
-          description: Details of the bulk delete operation, including successful keys and errors.
-      type: object
-      title: BulkResponse
-      description: 'Serializer for responses to bulk entity operations.
-
-
-        This represents the results of create, update, and delete actions performed on entity in bulk.
-
-        Each action (if requested) is represented as a field containing details about successful keys and any encountered errors.
-
-        Fields are populated in the response only if the respective action was part of the request, else are set None.'
-    HITLDetailCollection:
-      properties:
-        hitl_details:
-          items:
-            $ref: '#/components/schemas/HITLDetail'
-          type: array
-          title: Hitl Details
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - hitl_details
-      - total_entries
-      title: HITLDetailCollection
-      description: Schema for a collection of Human-in-the-loop details.
-    TriggerResponse:
-      properties:
-        id:
-          type: integer
-          title: Id
-        classpath:
-          type: string
-          title: Classpath
-        kwargs:
-          type: string
-          title: Kwargs
-        created_date:
-          type: string
-          format: date-time
-          title: Created Date
-        queue:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Queue
-        triggerer_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Triggerer Id
-      type: object
-      required:
-      - id
-      - classpath
-      - kwargs
-      - created_date
-      - queue
-      - triggerer_id
-      title: TriggerResponse
-      description: Trigger serializer for responses.
-    DagVersionResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        version_number:
-          type: integer
-          title: Version Number
-        dag_id:
-          type: string
-          title: Dag Id
-        bundle_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bundle Name
-        bundle_version:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bundle Version
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        dag_display_name:
-          type: string
-          title: Dag Display Name
-        bundle_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Bundle Url
-      type: object
-      required:
-      - id
-      - version_number
-      - dag_id
-      - bundle_name
-      - bundle_version
-      - created_at
-      - dag_display_name
-      - bundle_url
-      title: DagVersionResponse
-      description: Dag Version serializer for responses.
-    HITLDetail:
-      properties:
-        options:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          title: Options
-        subject:
-          type: string
-          title: Subject
-        body:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Body
-        defaults:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Defaults
-        multiple:
-          type: boolean
-          title: Multiple
-          default: false
-        params:
-          additionalProperties: true
-          type: object
-          title: Params
-        assigned_users:
-          items:
-            $ref: '#/components/schemas/HITLUser'
-          type: array
-          title: Assigned Users
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        responded_by_user:
-          anyOf:
-          - $ref: '#/components/schemas/HITLUser'
-          - type: 'null'
-        responded_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Responded At
-        chosen_options:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Chosen Options
-        params_input:
-          additionalProperties: true
-          type: object
-          title: Params Input
-        response_received:
-          type: boolean
-          title: Response Received
-          default: false
-        task_instance:
-          $ref: '#/components/schemas/TaskInstanceResponse'
-      type: object
-      required:
-      - options
-      - subject
-      - created_at
-      - task_instance
-      title: HITLDetail
-      description: Schema for Human-in-the-loop detail.
     BulkUpdateAction_BulkTaskInstanceBody_:
       properties:
         action:
@@ -4560,6 +4777,121 @@ components:
       - action
       - entities
       title: BulkUpdateAction[BulkTaskInstanceBody]
+    BulkTaskInstanceBody:
+      properties:
+        new_state:
+          anyOf:
+          - $ref: '#/components/schemas/TaskInstanceState'
+          - type: 'null'
+        note:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Note
+        include_upstream:
+          type: boolean
+          title: Include Upstream
+          default: false
+        include_downstream:
+          type: boolean
+          title: Include Downstream
+          default: false
+        include_future:
+          type: boolean
+          title: Include Future
+          default: false
+        include_past:
+          type: boolean
+          title: Include Past
+          default: false
+        task_id:
+          type: string
+          title: Task Id
+        map_index:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Map Index
+        dag_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Dag Id
+        dag_run_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Dag Run Id
+      additionalProperties: false
+      type: object
+      required:
+      - task_id
+      title: BulkTaskInstanceBody
+      description: Request body for bulk update, and delete task instances.
+    TaskInstanceReference:
+      properties:
+        dag_id:
+          description: The DAG ID.
+          readOnly: true
+          type: string
+        dag_run_id:
+          description: The DAG run ID.
+          readOnly: true
+          type: string
+        execution_date:
+          format: datetime
+          readOnly: true
+          type: string
+        task_id:
+          description: The task ID.
+          readOnly: true
+          type: string
+      type: object
+    Job:
+      properties:
+        dag_id:
+          type:
+          - string
+          - 'null'
+        end_date:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        executor_class:
+          type:
+          - string
+          - 'null'
+        hostname:
+          type:
+          - string
+          - 'null'
+        id:
+          type: integer
+        job_type:
+          type:
+          - string
+          - 'null'
+        latest_heartbeat:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        start_date:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        unixname:
+          type:
+          - string
+          - 'null'
+      type: object
     ExtraLink:
       description: Additional links containing additional information about the task.
       properties:
@@ -4571,25 +4903,6 @@ components:
         name:
           readOnly: true
           type: string
-      type: object
-    ExtraLinkCollection:
-      description: The collection of extra links.
-      properties:
-        extra_links:
-          items:
-            $ref: '#/components/schemas/ExtraLink'
-          type: array
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
       type: object
     TaskInstanceCollection:
       allOf:
@@ -4607,22 +4920,16 @@ components:
 
         '
       type: object
-    UpdateTaskInstance:
+    CollectionInfo:
+      description: Metadata about collection.
       properties:
-        dry_run:
-          default: false
-          description: 'If set, don''t actually run this operation. The response will contain the task instance
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
 
-            planned to be affected, but won''t be modified in any way.
+            (limit, offset) are applied.
 
             '
-          type: boolean
-        new_state:
-          description: Expected new state.
-          enum:
-          - success
-          - failed
-          type: string
+          type: integer
       type: object
     TaskInstance:
       properties:
@@ -4721,68 +5028,56 @@ components:
         unixname:
           type: string
       type: object
-    TaskInstanceReference:
+    ExtraLinkCollection:
+      description: The collection of extra links.
       properties:
-        dag_id:
-          description: The DAG ID.
-          readOnly: true
-          type: string
-        dag_run_id:
-          description: The DAG run ID.
-          readOnly: true
-          type: string
-        execution_date:
-          format: datetime
-          readOnly: true
-          type: string
-        task_id:
-          description: The task ID.
-          readOnly: true
+        extra_links:
+          items:
+            $ref: '#/components/schemas/ExtraLink'
+          type: array
+      type: object
+    UpdateTaskInstance:
+      properties:
+        dry_run:
+          default: false
+          description: 'If set, don''t actually run this operation. The response will contain the task instance
+
+            planned to be affected, but won''t be modified in any way.
+
+            '
+          type: boolean
+        new_state:
+          description: Expected new state.
+          enum:
+          - success
+          - failed
           type: string
       type: object
-    Job:
+    Trigger:
       properties:
-        dag_id:
-          type:
-          - string
-          - 'null'
-        end_date:
+        classpath:
+          type: string
+        created_date:
           format: datetime
-          type:
-          - string
-          - 'null'
-        executor_class:
-          type:
-          - string
-          - 'null'
-        hostname:
-          type:
-          - string
-          - 'null'
+          type: string
         id:
           type: integer
-        job_type:
+        kwargs:
+          type: string
+        triggerer_id:
           type:
-          - string
+          - integer
           - 'null'
-        latest_heartbeat:
-          format: datetime
-          type:
-          - string
-          - 'null'
-        start_date:
-          format: datetime
-          type:
-          - string
-          - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        unixname:
-          type:
-          - string
-          - 'null'
+      type: object
+    ClassReference:
+      description: Class reference
+      properties:
+        class_name:
+          readOnly: true
+          type: string
+        module_path:
+          readOnly: true
+          type: string
       type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
@@ -4819,6 +5114,36 @@ components:
       - title
       - status
       type: object
+    TaskState:
+      description: 'Task state.
+
+
+        *Changed in version 2.0.2*&#58; ''removed'' is added as a possible value.
+
+
+        *Changed in version 2.2.0*&#58; ''deferred'' is added as a possible value.
+
+
+        *Changed in version 2.4.0*&#58; ''sensing'' state has been removed.
+
+        *Changed in version 2.4.2*&#58; ''restarting'' is added as a possible value
+
+        '
+      enum:
+      - success
+      - running
+      - failed
+      - upstream_failed
+      - skipped
+      - up_for_retry
+      - up_for_reschedule
+      - queued
+      - none
+      - scheduled
+      - deferred
+      - removed
+      - restarting
+      type: string
     ListTaskInstanceForm:
       properties:
         dag_ids:
@@ -4914,62 +5239,6 @@ components:
             $ref: '#/components/schemas/TaskState'
           type: array
       type: object
-    ClassReference:
-      description: Class reference
-      properties:
-        class_name:
-          readOnly: true
-          type: string
-        module_path:
-          readOnly: true
-          type: string
-      type: object
-    Trigger:
-      properties:
-        classpath:
-          type: string
-        created_date:
-          format: datetime
-          type: string
-        id:
-          type: integer
-        kwargs:
-          type: string
-        triggerer_id:
-          type:
-          - integer
-          - 'null'
-      type: object
-    TaskState:
-      description: 'Task state.
-
-
-        *Changed in version 2.0.2*&#58; ''removed'' is added as a possible value.
-
-
-        *Changed in version 2.2.0*&#58; ''deferred'' is added as a possible value.
-
-
-        *Changed in version 2.4.0*&#58; ''sensing'' state has been removed.
-
-        *Changed in version 2.4.2*&#58; ''restarting'' is added as a possible value
-
-        '
-      enum:
-      - success
-      - running
-      - failed
-      - upstream_failed
-      - skipped
-      - up_for_retry
-      - up_for_reschedule
-      - queued
-      - none
-      - scheduled
-      - deferred
-      - removed
-      - restarting
-      type: string
     SLAMiss:
       properties:
         dag_id:
@@ -5025,12 +5294,6 @@ components:
       scheme: negotiate
       type: http
   responses:
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
     NotFound:
       content:
         application/json:
@@ -5043,6 +5306,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Request not authenticated due to missing, invalid, authentication info.
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
     BadRequest:
       content:
         application/json:
@@ -5050,18 +5319,17 @@ components:
             $ref: '#/components/schemas/Error'
       description: Client specified an invalid argument.
   parameters:
-    FilterDurationGTE:
-      description: 'Returns objects greater than or equal to the specified values.
+    FullContent:
+      description: 'A full content will be returned.
 
-
-        This can be combined with duration_lte parameter to receive only the selected period.
+        By default, only the first fragment will be returned.
 
         '
       in: query
-      name: duration_gte
+      name: full_content
       required: false
       schema:
-        type: number
+        type: boolean
     FilterEndDateGTE:
       description: 'Returns objects greater or equal the specified date.
 
@@ -5075,6 +5343,114 @@ components:
       schema:
         format: date-time
         type: string
+    DAGID:
+      description: The DAG ID.
+      in: path
+      name: dag_id
+      required: true
+      schema:
+        type: string
+    FilterQueue:
+      description: The value can be repeated to retrieve multiple matching values (OR condition).
+      in: query
+      name: queue
+      schema:
+        items:
+          type: string
+        type: array
+    FilterMapIndex:
+      description: Filter on map index for mapped task.
+      in: query
+      name: map_index
+      schema:
+        type: integer
+    FilterState:
+      description: The value can be repeated to retrieve multiple matching values (OR condition).
+      in: query
+      name: state
+      required: false
+      schema:
+        items:
+          type: string
+        type: array
+    DAGRunID:
+      description: The DAG run ID.
+      in: path
+      name: dag_run_id
+      required: true
+      schema:
+        type: string
+    MapIndex:
+      description: The map index.
+      in: path
+      name: map_index
+      required: true
+      schema:
+        type: integer
+    ContinuationToken:
+      description: 'A token that allows you to continue fetching logs.
+
+        If passed, it will specify the location from which the download should be continued.
+
+        '
+      in: query
+      name: token
+      required: false
+      schema:
+        type: string
+    FilterDurationGTE:
+      description: 'Returns objects greater than or equal to the specified values.
+
+
+        This can be combined with duration_lte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: duration_gte
+      required: false
+      schema:
+        type: number
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
+    FilterDurationLTE:
+      description: 'Returns objects less than or equal to the specified values.
+
+
+        This can be combined with duration_gte parameter to receive only the selected range.
+
+        '
+      in: query
+      name: duration_lte
+      required: false
+      schema:
+        type: number
+    FilterExecutionDateLTE:
+      description: 'Returns objects less than or equal to the specified date.
+
+
+        This can be combined with execution_date_gte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: execution_date_lte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
     OrderBy:
       description: 'The name of the field to order the results by.
 
@@ -5089,75 +5465,6 @@ components:
       required: false
       schema:
         type: string
-    FilterQueue:
-      description: The value can be repeated to retrieve multiple matching values (OR condition).
-      in: query
-      name: queue
-      schema:
-        items:
-          type: string
-        type: array
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
-    FullContent:
-      description: 'A full content will be returned.
-
-        By default, only the first fragment will be returned.
-
-        '
-      in: query
-      name: full_content
-      required: false
-      schema:
-        type: boolean
-    FilterExecutionDateLTE:
-      description: 'Returns objects less than or equal to the specified date.
-
-
-        This can be combined with execution_date_gte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: execution_date_lte
-      required: false
-      schema:
-        format: date-time
-        type: string
-    FilterState:
-      description: The value can be repeated to retrieve multiple matching values (OR condition).
-      in: query
-      name: state
-      required: false
-      schema:
-        items:
-          type: string
-        type: array
-    MapIndex:
-      description: The map index.
-      in: path
-      name: map_index
-      required: true
-      schema:
-        type: integer
-    FilterExecutionDateGTE:
-      description: 'Returns objects greater or equal to the specified date.
-
-
-        This can be combined with execution_date_lte parameter to receive only the selected period.
-
-        '
-      in: query
-      name: execution_date_gte
-      required: false
-      schema:
-        format: date-time
-        type: string
     TaskTryNumber:
       description: The task try number.
       in: path
@@ -5165,27 +5472,11 @@ components:
       required: true
       schema:
         type: integer
-    FilterDurationLTE:
-      description: 'Returns objects less than or equal to the specified values.
-
-
-        This can be combined with duration_gte parameter to receive only the selected range.
-
-        '
-      in: query
-      name: duration_lte
-      required: false
-      schema:
-        type: number
-    ContinuationToken:
-      description: 'A token that allows you to continue fetching logs.
-
-        If passed, it will specify the location from which the download should be continued.
-
-        '
-      in: query
-      name: token
-      required: false
+    TaskID:
+      description: The task ID.
+      in: path
+      name: task_id
+      required: true
       schema:
         type: string
     FilterStartDateGTE:
@@ -5201,12 +5492,6 @@ components:
       schema:
         format: date-time
         type: string
-    FilterMapIndex:
-      description: Filter on map index for mapped task.
-      in: query
-      name: map_index
-      schema:
-        type: integer
     FilterEndDateLTE:
       description: 'Returns objects less than or equal to the specified date.
 
@@ -5219,44 +5504,6 @@ components:
       required: false
       schema:
         format: date-time
-        type: string
-    TaskID:
-      description: The task ID.
-      in: path
-      name: task_id
-      required: true
-      schema:
-        type: string
-    DAGID:
-      description: The DAG ID.
-      in: path
-      name: dag_id
-      required: true
-      schema:
-        type: string
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    FilterPool:
-      description: The value can be repeated to retrieve multiple matching values (OR condition).
-      in: query
-      name: pool
-      required: false
-      schema:
-        items:
-          type: string
-        type: array
-    DAGRunID:
-      description: The DAG run ID.
-      in: path
-      name: dag_run_id
-      required: true
-      schema:
         type: string
     FilterStartDateLTE:
       description: 'Returns objects less or equal the specified date.
@@ -5271,3 +5518,25 @@ components:
       schema:
         format: date-time
         type: string
+    FilterExecutionDateGTE:
+      description: 'Returns objects greater or equal to the specified date.
+
+
+        This can be combined with execution_date_lte parameter to receive only the selected period.
+
+        '
+      in: query
+      name: execution_date_gte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    FilterPool:
+      description: The value can be repeated to retrieve multiple matching values (OR condition).
+      in: query
+      name: pool
+      required: false
+      schema:
+        items:
+          type: string
+        type: array

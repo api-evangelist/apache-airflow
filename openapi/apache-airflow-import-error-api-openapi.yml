@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
   title: Airflow Import Error API
-  description: Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+  description: 'Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+
+
+    **Filtering with pattern parameters.** Many list endpoints accept ``*_pattern`` and ``*_prefix_pattern`` query parameters. Unless a parameter''s own description says otherwise, ``*_pattern`` is a case-insensitive substring match (SQL ``ILIKE ''%term%''``) where ``%`` matches any sequence and ``_`` matches any single character (e.g. ``%customer_%``) — convenient, but it cannot use B-tree indexes, so it is slow on large tables. ``*_prefix_pattern`` matches the start of the value, is case-sensitive and index-friendly (prefer it at scale); there ``%`` and ``_`` are literal and trailing non-alphanumeric characters are stripped so the range scan stays index-compatible under locale-aware collations (e.g. ``test_`` matches values starting with ``test``, and ``s3://`` matches ``s3``). In both, ``|`` means OR (e.g. ``dag1|dag2``) and ``~`` matches everything. Regular expressions are not supported by these parameters; regex-capable endpoints expose a separate parameter.'
   version: '2'
 tags:
 - name: Import Error
@@ -10,7 +13,7 @@ paths:
     get:
       tags:
       - Import Error
-      summary: Airflow Get Import Error
+      summary: Get Import Error
       description: Get an import error.
       operationId: get_import_error
       security:
@@ -54,14 +57,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/importErrors:
     get:
       tags:
       - Import Error
-      summary: Airflow Get Import Errors
+      summary: Get Import Errors
       description: Get all import errors.
       operationId: get_import_errors
       security:
@@ -103,9 +103,39 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `filename_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Filename Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `filename_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: filename_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Filename Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+      - name: filename
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Exact filename match. Returns only the import error for this specific file path.
+          title: Filename
+        description: Exact filename match. Returns only the import error for this specific file path.
+      - name: bundle_name
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Exact bundle name match. Returns only import errors from this specific bundle.
+          title: Bundle Name
+        description: Exact bundle name match. Returns only import errors from this specific bundle.
       responses:
         '200':
           description: Successful Response
@@ -131,9 +161,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /importErrors:
     get:
       operationId: get_import_errors
@@ -180,19 +207,6 @@ paths:
       x-openapi-router-controller: airflow.api_connexion.endpoints.import_error_endpoint
 components:
   schemas:
-    HTTPExceptionResponse:
-      properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
     ImportErrorResponse:
       properties:
         import_error_id:
@@ -222,31 +236,6 @@ components:
       - stack_trace
       title: ImportErrorResponse
       description: Import Error Response.
-    ImportErrorCollectionResponse:
-      properties:
-        import_errors:
-          items:
-            $ref: '#/components/schemas/ImportErrorResponse'
-          type: array
-          title: Import Errors
-        total_entries:
-          type: integer
-          title: Total Entries
-      type: object
-      required:
-      - import_errors
-      - total_entries
-      title: ImportErrorCollectionResponse
-      description: Import Error Collection Response.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -273,6 +262,91 @@ components:
       - msg
       - type
       title: ValidationError
+    ImportErrorCollectionResponse:
+      properties:
+        import_errors:
+          items:
+            $ref: '#/components/schemas/ImportErrorResponse'
+          type: array
+          title: Import Errors
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - import_errors
+      - total_entries
+      title: ImportErrorCollectionResponse
+      description: Import Error Collection Response.
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ImportErrorCollection:
+      allOf:
+      - properties:
+          import_errors:
+            items:
+              $ref: '#/components/schemas/ImportError'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of import errors.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    ImportError:
+      properties:
+        filename:
+          description: The filename
+          readOnly: true
+          type: string
+        import_error_id:
+          description: The import error ID.
+          readOnly: true
+          type: integer
+        stack_trace:
+          description: The full stackstrace..
+          readOnly: true
+          type: string
+        timestamp:
+          description: The time when this error was created.
+          format: datetime
+          readOnly: true
+          type: string
+      type: object
+    CollectionInfo:
+      description: Metadata about collection.
+      properties:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
+          type: integer
+      type: object
     Error:
       description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
 
@@ -308,53 +382,6 @@ components:
       - title
       - status
       type: object
-    ImportError:
-      properties:
-        filename:
-          description: The filename
-          readOnly: true
-          type: string
-        import_error_id:
-          description: The import error ID.
-          readOnly: true
-          type: integer
-        stack_trace:
-          description: The full stackstrace..
-          readOnly: true
-          type: string
-        timestamp:
-          description: The time when this error was created.
-          format: datetime
-          readOnly: true
-          type: string
-      type: object
-    ImportErrorCollection:
-      allOf:
-      - properties:
-          import_errors:
-            items:
-              $ref: '#/components/schemas/ImportError'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of import errors.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2
@@ -375,44 +402,6 @@ components:
     Kerberos:
       scheme: negotiate
       type: http
-  parameters:
-    ImportErrorID:
-      description: The import error ID.
-      in: path
-      name: import_error_id
-      required: true
-      schema:
-        type: integer
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
-    OrderBy:
-      description: 'The name of the field to order the results by.
-
-        Prefix a field name with `-` to reverse the sort order.
-
-
-        *New in version 2.1.0*
-
-        '
-      in: query
-      name: order_by
-      required: false
-      schema:
-        type: string
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
   responses:
     PermissionDenied:
       content:
@@ -432,3 +421,41 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Request not authenticated due to missing, invalid, authentication info.
+  parameters:
+    ImportErrorID:
+      description: The import error ID.
+      in: path
+      name: import_error_id
+      required: true
+      schema:
+        type: integer
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    OrderBy:
+      description: 'The name of the field to order the results by.
+
+        Prefix a field name with `-` to reverse the sort order.
+
+
+        *New in version 2.1.0*
+
+        '
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: string

@@ -8,7 +8,7 @@ info:
   - x-providerName differs across the merged source definitions and was not carried
   - x-serviceName differs across the merged source definitions and was not carried
   version: '1.0'
-  description: 'Operations tagged XCom across 2 of this provider''s published API definitions: airflow-xcom-api-openapi.yml, apache-airflow-openapi.yaml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged XCom across 2 of this provider''s published API definitions: apache-airflow-openapi.yaml, apache-airflow-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - description: Apache Airflow Stable API.
   url: /api/v1
@@ -16,13 +16,95 @@ servers:
 tags:
 - name: XCom
 paths:
+  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries:
+    parameters:
+    - $ref: '#/components/parameters/DAGID'
+    - $ref: '#/components/parameters/DAGRunID'
+    - $ref: '#/components/parameters/TaskID'
+    get:
+      description: This endpoint allows specifying `~` as the dag_id, dag_run_id, task_id to retrieve XCOM entries for for all DAGs, DAG runs and task instances. XCom values won't be returned as they can be large. Use this endpoint to get a list of XCom entries and then fetch individual entry to get value.
+      operationId: get_xcom_entries
+      parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/PageOffset'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XComCollection'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+      summary: Apache Airflow List XCom Entries
+      tags:
+      - XCom
+      x-openapi-router-controller: airflow.api_connexion.endpoints.xcom_endpoint
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
+  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries/{xcom_key}:
+    parameters:
+    - $ref: '#/components/parameters/DAGID'
+    - $ref: '#/components/parameters/DAGRunID'
+    - $ref: '#/components/parameters/TaskID'
+    - $ref: '#/components/parameters/XComKey'
+    get:
+      operationId: get_xcom_entry
+      parameters:
+      - description: 'Whether to deserialize an XCom value when using a custom XCom backend.
+
+
+          The XCom API endpoint calls `orm_deserialize_value` by default since an XCom may contain value
+
+          that is potentially expensive to deserialize in the web server. Setting this to true overrides
+
+          the consideration, and calls `deserialize_value` instead.
+
+
+          This parameter is not meaningful when using the default XCom backend.
+
+
+          *New in version 2.4.0*
+
+          '
+        in: query
+        name: deserialize
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XCom'
+          description: Success.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: Apache Airflow Get an XCom Entry
+      tags:
+      - XCom
+      x-openapi-router-controller: airflow.api_connexion.endpoints.xcom_endpoint
+    servers:
+    - description: Apache Airflow Stable API.
+      url: /api/v1
+    - url: https://apache.local
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries/{xcom_key}:
     get:
       tags:
       - XCom
-      summary: Airflow Get Xcom Entry
+      summary: Get Xcom Entry
       description: Get an XCom entry.
-      operationId: get_xcom_entry
+      operationId: getApiV2DagsByDagIdDagRunsByDagRunIdTaskInstancesByTaskIdXcomEntriesByXcomKey
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -113,13 +195,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
+      x-operation-id-source: normalized
+      x-operation-id-original: get_xcom_entry
     patch:
       tags:
       - XCom
-      summary: Airflow Update Xcom Entry
+      summary: Update Xcom Entry
       description: Update an existing XCom entry.
       operationId: update_xcom_entry
       security:
@@ -193,13 +274,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
     delete:
       tags:
       - XCom
-      summary: Airflow Delete Xcom Entry
+      summary: Delete Xcom Entry
       description: Delete an XCom entry.
       operationId: delete_xcom_entry
       security:
@@ -271,19 +349,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
   /api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries:
     get:
       tags:
       - XCom
-      summary: Airflow Get Xcom Entries
+      summary: Get Xcom Entries
       description: 'Get all XCom entries.
 
 
-        This endpoint allows specifying `~` as the dag_id, dag_run_id, task_id to retrieve XCom entries for all DAGs.'
-      operationId: get_xcom_entries
+        This endpoint allows specifying `~` as the dag_id, dag_run_id, task_id to retrieve XCom entries for all Dags.'
+      operationId: getApiV2DagsByDagIdDagRunsByDagRunIdTaskInstancesByTaskIdXcomEntries
       security:
       - OAuth2PasswordBearer: []
       - HTTPBearer: []
@@ -346,9 +421,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `xcom_key_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Xcom Key Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `xcom_key_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: xcom_key_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Xcom Key Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: dag_display_name_pattern
         in: query
         required: false
@@ -356,9 +441,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `dag_display_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Dag Display Name Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `dag_display_name_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: dag_display_name_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Dag Display Name Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: run_id_pattern
         in: query
         required: false
@@ -366,9 +461,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `run_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Run Id Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `run_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: run_id_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Run Id Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: task_id_pattern
         in: query
         required: false
@@ -376,9 +481,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+          description: Case-insensitive substring match (SQL `ILIKE`). Slower than `task_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
           title: Task Id Pattern
-        description: SQL LIKE expression — use `%` / `_` wildcards (e.g. `%customer_%`). or the pipe `|` operator for OR logic (e.g. `dag1 | dag2`). Regular expressions are **not** supported.
+        description: Case-insensitive substring match (SQL `ILIKE`). Slower than `task_id_prefix_pattern` on large tables — see "Filtering with pattern parameters".
+      - name: task_id_prefix_pattern
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
+          title: Task Id Prefix Pattern
+        description: Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".
       - name: map_index_filter
         in: query
         required: false
@@ -459,6 +574,22 @@ paths:
             format: date-time
           - type: 'null'
           title: Run After Lt
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `key, dag_id, run_id, task_id, map_index, timestamp, run_after`'
+          default:
+          - dag_id
+          - task_id
+          - run_id
+          - map_index
+          - key
+          title: Order By
+        description: 'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `key, dag_id, run_id, task_id, map_index, timestamp, run_after`'
       responses:
         '200':
           description: Successful Response
@@ -496,13 +627,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
+      x-operation-id-source: normalized
+      x-operation-id-original: get_xcom_entries
     post:
       tags:
       - XCom
-      summary: Airflow Create Xcom Entry
+      summary: Create Xcom Entry
       description: Create an XCom entry.
       operationId: create_xcom_entry
       security:
@@ -564,167 +694,176 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPExceptionResponse'
           description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Conflict
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/TaskID'
-    get:
-      description: This endpoint allows specifying `~` as the dag_id, dag_run_id, task_id to retrieve XCOM entries for for all DAGs, DAG runs and task instances. XCom values won't be returned as they can be large. Use this endpoint to get a list of XCom entries and then fetch individual entry to get value.
-      operationId: getDagsByDagIdDagRunsByDagRunIdTaskInstancesByTaskIdXcomEntries
-      parameters:
-      - $ref: '#/components/parameters/PageLimit'
-      - $ref: '#/components/parameters/PageOffset'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/XComCollection'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-      summary: Apache Airflow List XCom Entries
-      tags:
-      - XCom
-      x-openapi-router-controller: airflow.api_connexion.endpoints.xcom_endpoint
-      x-operation-id-source: normalized
-      x-operation-id-original: get_xcom_entries
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
-  /dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/xcomEntries/{xcom_key}:
-    parameters:
-    - $ref: '#/components/parameters/DAGID'
-    - $ref: '#/components/parameters/DAGRunID'
-    - $ref: '#/components/parameters/TaskID'
-    - $ref: '#/components/parameters/XComKey'
-    get:
-      operationId: getDagsByDagIdDagRunsByDagRunIdTaskInstancesByTaskIdXcomEntriesByXcomKey
-      parameters:
-      - description: 'Whether to deserialize an XCom value when using a custom XCom backend.
-
-
-          The XCom API endpoint calls `orm_deserialize_value` by default since an XCom may contain value
-
-          that is potentially expensive to deserialize in the web server. Setting this to true overrides
-
-          the consideration, and calls `deserialize_value` instead.
-
-
-          This parameter is not meaningful when using the default XCom backend.
-
-
-          *New in version 2.4.0*
-
-          '
-        in: query
-        name: deserialize
-        required: false
-        schema:
-          default: false
-          type: boolean
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/XCom'
-          description: Success.
-        '401':
-          $ref: '#/components/responses/Unauthenticated'
-        '403':
-          $ref: '#/components/responses/PermissionDenied'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      summary: Apache Airflow Get an XCom Entry
-      tags:
-      - XCom
-      x-openapi-router-controller: airflow.api_connexion.endpoints.xcom_endpoint
-      x-operation-id-source: normalized
-      x-operation-id-original: get_xcom_entry
-    servers:
-    - description: Apache Airflow Stable API.
-      url: /api/v1
-    - url: https://apache.local
 components:
+  parameters:
+    XComKey:
+      description: The XCom key.
+      in: path
+      name: xcom_key
+      required: true
+      schema:
+        type: string
+    PageLimit:
+      description: The numbers of items to return.
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 100
+        type: integer
+    PageOffset:
+      description: The number of items to skip before starting to collect the result set.
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    DAGRunID:
+      description: The DAG run ID.
+      in: path
+      name: dag_run_id
+      required: true
+      schema:
+        type: string
+    DAGID:
+      description: The DAG ID.
+      in: path
+      name: dag_id
+      required: true
+      schema:
+        type: string
+    TaskID:
+      description: The task ID.
+      in: path
+      name: task_id
+      required: true
+      schema:
+        type: string
+  responses:
+    PermissionDenied:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Client does not have sufficient permission.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A specified resource is not found.
+    Unauthenticated:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Request not authenticated due to missing, invalid, authentication info.
   schemas:
-    HTTPExceptionResponse:
+    CollectionInfo:
+      description: Metadata about collection.
       properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
-      type: object
-      required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    XComResponse:
-      properties:
-        key:
-          type: string
-          title: Key
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-        logical_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Logical Date
-        map_index:
+        total_entries:
+          description: 'Count of total objects in the current result set before pagination parameters
+
+            (limit, offset) are applied.
+
+            '
           type: integer
-          title: Map Index
-        task_id:
-          type: string
-          title: Task Id
+      type: object
+    XComCollection:
+      allOf:
+      - properties:
+          xcom_entries:
+            items:
+              $ref: '#/components/schemas/XComCollectionItem'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/CollectionInfo'
+      description: 'Collection of XCom entries.
+
+
+        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
+
+        '
+      type: object
+    XCom:
+      allOf:
+      - $ref: '#/components/schemas/XComCollectionItem'
+      - properties:
+          value:
+            description: The value
+            type: string
+        type: object
+      description: Full representations of XCom entry.
+    XComCollectionItem:
+      description: 'XCom entry collection item.
+
+
+        The value field is only available when reading a single object due to the size of the value.
+
+        '
+      properties:
         dag_id:
           type: string
-          title: Dag Id
-        run_id:
+        execution_date:
+          format: datetime
           type: string
-          title: Run Id
-        dag_display_name:
+        key:
           type: string
-          title: Dag Display Name
-        task_display_name:
+        task_id:
           type: string
-          title: Task Display Name
-        run_after:
+        timestamp:
+          format: datetime
           type: string
-          format: date-time
-          title: Run After
       type: object
+    Error:
+      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
+
+        '
+      properties:
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        instance:
+          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
+
+            not yield further information if dereferenced.
+
+            '
+          type: string
+        status:
+          description: The HTTP status code generated by the API server for this occurrence of the problem.
+          type: number
+        title:
+          description: A short, human-readable summary of the problem type.
+          type: string
+        type:
+          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
+
+            encourages that, when dereferenced, it provide human-readable documentation for
+
+            the problem type.
+
+            '
+          type: string
       required:
-      - key
-      - timestamp
-      - logical_date
-      - map_index
-      - task_id
-      - dag_id
-      - run_id
-      - dag_display_name
-      - task_display_name
-      - run_after
-      title: XComResponse
-      description: Serializer for a xcom item.
+      - type
+      - title
+      - status
+      type: object
     XComResponseString:
       properties:
         key:
@@ -782,73 +921,6 @@ components:
       - value
       title: XComResponseString
       description: XCom response serializer with string return type.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    XComCreateBody:
-      properties:
-        key:
-          type: string
-          title: Key
-        value:
-          title: Value
-        map_index:
-          type: integer
-          title: Map Index
-          default: -1
-      additionalProperties: false
-      type: object
-      required:
-      - key
-      - value
-      title: XComCreateBody
-      description: Payload serializer for creating an XCom entry.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    XComUpdateBody:
-      properties:
-        value:
-          title: Value
-        map_index:
-          type: integer
-          title: Map Index
-          default: -1
-      additionalProperties: false
-      type: object
-      required:
-      - value
-      title: XComUpdateBody
-      description: Payload serializer for updating an XCom entry.
     XComResponseNative:
       properties:
         key:
@@ -903,6 +975,119 @@ components:
       - value
       title: XComResponseNative
       description: XCom response serializer with native return type.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    XComResponse:
+      properties:
+        key:
+          type: string
+          title: Key
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+        logical_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Logical Date
+        map_index:
+          type: integer
+          title: Map Index
+        task_id:
+          type: string
+          title: Task Id
+        dag_id:
+          type: string
+          title: Dag Id
+        run_id:
+          type: string
+          title: Run Id
+        dag_display_name:
+          type: string
+          title: Dag Display Name
+        task_display_name:
+          type: string
+          title: Task Display Name
+        run_after:
+          type: string
+          format: date-time
+          title: Run After
+      type: object
+      required:
+      - key
+      - timestamp
+      - logical_date
+      - map_index
+      - task_id
+      - dag_id
+      - run_id
+      - dag_display_name
+      - task_display_name
+      - run_after
+      title: XComResponse
+      description: Serializer for a xcom item.
+    XComUpdateBody:
+      properties:
+        value:
+          title: Value
+        map_index:
+          type: integer
+          title: Map Index
+          default: -1
+      additionalProperties: false
+      type: object
+      required:
+      - value
+      title: XComUpdateBody
+      description: Payload serializer for updating an XCom entry.
+    HTTPExceptionResponse:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     XComCollectionResponse:
       properties:
         xcom_entries:
@@ -919,163 +1104,34 @@ components:
       - total_entries
       title: XComCollectionResponse
       description: XCom Collection serializer for responses.
-    XComCollection:
-      allOf:
-      - properties:
-          xcom_entries:
-            items:
-              $ref: '#/components/schemas/XComCollectionItem'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/CollectionInfo'
-      description: 'Collection of XCom entries.
-
-
-        *Changed in version 2.1.0*&#58; ''total_entries'' field is added.
-
-        '
-      type: object
-    Error:
-      description: '[RFC7807](https://tools.ietf.org/html/rfc7807) compliant response.
-
-        '
+    XComCreateBody:
       properties:
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        instance:
-          description: 'A URI reference that identifies the specific occurrence of the problem. It may or may
-
-            not yield further information if dereferenced.
-
-            '
-          type: string
-        status:
-          description: The HTTP status code generated by the API server for this occurrence of the problem.
-          type: number
-        title:
-          description: A short, human-readable summary of the problem type.
-          type: string
-        type:
-          description: 'A URI reference [RFC3986] that identifies the problem type. This specification
-
-            encourages that, when dereferenced, it provide human-readable documentation for
-
-            the problem type.
-
-            '
-          type: string
-      required:
-      - type
-      - title
-      - status
-      type: object
-    XCom:
-      allOf:
-      - $ref: '#/components/schemas/XComCollectionItem'
-      - properties:
-          value:
-            description: The value
-            type: string
-        type: object
-      description: Full representations of XCom entry.
-    CollectionInfo:
-      description: Metadata about collection.
-      properties:
-        total_entries:
-          description: 'Count of total objects in the current result set before pagination parameters
-
-            (limit, offset) are applied.
-
-            '
-          type: integer
-      type: object
-    XComCollectionItem:
-      description: 'XCom entry collection item.
-
-
-        The value field is only available when reading a single object due to the size of the value.
-
-        '
-      properties:
-        dag_id:
-          type: string
-        execution_date:
-          format: datetime
-          type: string
         key:
           type: string
-        task_id:
-          type: string
-        timestamp:
-          format: datetime
-          type: string
+          title: Key
+        value:
+          title: Value
+        map_index:
+          type: integer
+          title: Map Index
+          default: -1
+      additionalProperties: false
       type: object
-  responses:
-    PermissionDenied:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Client does not have sufficient permission.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A specified resource is not found.
-    Unauthenticated:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Request not authenticated due to missing, invalid, authentication info.
-  parameters:
-    PageLimit:
-      description: The numbers of items to return.
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 100
-        type: integer
-    DAGID:
-      description: The DAG ID.
-      in: path
-      name: dag_id
-      required: true
-      schema:
-        type: string
-    TaskID:
-      description: The task ID.
-      in: path
-      name: task_id
-      required: true
-      schema:
-        type: string
-    PageOffset:
-      description: The number of items to skip before starting to collect the result set.
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    DAGRunID:
-      description: The DAG run ID.
-      in: path
-      name: dag_run_id
-      required: true
-      schema:
-        type: string
-    XComKey:
-      description: The XCom key.
-      in: path
-      name: xcom_key
-      required: true
-      schema:
-        type: string
+      required:
+      - key
+      - value
+      title: XComCreateBody
+      description: Payload serializer for creating an XCom entry.
   securitySchemes:
+    Basic:
+      scheme: basic
+      type: http
+    GoogleOpenId:
+      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+      type: openIdConnect
+    Kerberos:
+      scheme: negotiate
+      type: http
     OAuth2PasswordBearer:
       type: oauth2
       description: To authenticate Airflow API requests, clients must include a JWT (JSON Web Token) in the Authorization header of each request. This token is used to verify the identity of the client and ensure that they have the appropriate permissions to access the requested resources. You can use the endpoint ``POST /auth/token`` in order to generate a JWT token. Upon successful authentication, the server will issue a JWT token that contains the necessary information (such as user identity and scope) to authenticate subsequent requests. To learn more about Airflow public API authentication, please read https://airflow.apache.org/docs/apache-airflow/stable/security/api.html.
@@ -1086,17 +1142,8 @@ components:
     HTTPBearer:
       type: http
       scheme: bearer
-    Basic:
-      scheme: basic
-      type: http
-    GoogleOpenId:
-      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
-      type: openIdConnect
-    Kerberos:
-      scheme: negotiate
-      type: http
 externalDocs:
   url: https://airflow.apache.org/docs/apache-airflow/stable/
 x-refined-from:
-- airflow-xcom-api-openapi.yml
 - apache-airflow-openapi.yaml
+- apache-airflow-openapi.yml

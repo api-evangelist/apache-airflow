@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
   title: Airflow Dag Stats API
-  description: Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+  description: 'Airflow API. All endpoints located under ``/api/v2`` can be used safely, are stable and backward compatible. Endpoints located under ``/ui`` are dedicated to the UI and are subject to breaking change depending on the need of the frontend. Users should not rely on those but use the public ones instead.
+
+
+    **Filtering with pattern parameters.** Many list endpoints accept ``*_pattern`` and ``*_prefix_pattern`` query parameters. Unless a parameter''s own description says otherwise, ``*_pattern`` is a case-insensitive substring match (SQL ``ILIKE ''%term%''``) where ``%`` matches any sequence and ``_`` matches any single character (e.g. ``%customer_%``) — convenient, but it cannot use B-tree indexes, so it is slow on large tables. ``*_prefix_pattern`` matches the start of the value, is case-sensitive and index-friendly (prefer it at scale); there ``%`` and ``_`` are literal and trailing non-alphanumeric characters are stripped so the range scan stays index-compatible under locale-aware collations (e.g. ``test_`` matches values starting with ``test``, and ``s3://`` matches ``s3``). In both, ``|`` means OR (e.g. ``dag1|dag2``) and ``~`` matches everything. Regular expressions are not supported by these parameters; regex-capable endpoints expose a separate parameter.'
   version: '2'
 tags:
 - name: DagStats
@@ -10,7 +13,7 @@ paths:
     get:
       tags:
       - DagStats
-      summary: Airflow Get Dag Stats
+      summary: Get Dag Stats
       description: Get Dag statistics.
       operationId: get_dag_stats
       security:
@@ -62,33 +65,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      x-microcks-operation:
-        delay: 0
-        dispatcher: FALLBACK
 components:
   schemas:
-    HTTPExceptionResponse:
+    DagRunState:
+      type: string
+      enum:
+      - queued
+      - running
+      - success
+      - failed
+      title: DagRunState
+      description: 'All possible states that a DagRun can be in.
+
+
+        These are "shared" with TaskInstanceState in some parts of the code,
+
+        so please ensure that their values always match the ones with the
+
+        same name in TaskInstanceState.'
+    DagStatsCollectionResponse:
       properties:
-        detail:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Detail
+        dags:
+          items:
+            $ref: '#/components/schemas/DagStatsResponse'
+          type: array
+          title: Dags
+        total_entries:
+          type: integer
+          title: Total Entries
       type: object
       required:
-      - detail
-      title: HTTPExceptionResponse
-      description: HTTPException Model used for error response.
-    HTTPValidationError:
+      - dags
+      - total_entries
+      title: DagStatsCollectionResponse
+      description: Dag Stats Collection serializer for responses.
+    DagStatsStateResponse:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        state:
+          $ref: '#/components/schemas/DagRunState'
+        count:
+          type: integer
+          title: Count
       type: object
-      title: HTTPValidationError
+      required:
+      - state
+      - count
+      title: DagStatsStateResponse
+      description: DagStatsState serializer for responses.
     ValidationError:
       properties:
         loc:
@@ -115,35 +138,6 @@ components:
       - msg
       - type
       title: ValidationError
-    DagRunState:
-      type: string
-      enum:
-      - queued
-      - running
-      - success
-      - failed
-      title: DagRunState
-      description: 'All possible states that a DagRun can be in.
-
-
-        These are "shared" with TaskInstanceState in some parts of the code,
-
-        so please ensure that their values always match the ones with the
-
-        same name in TaskInstanceState.'
-    DagStatsStateResponse:
-      properties:
-        state:
-          $ref: '#/components/schemas/DagRunState'
-        count:
-          type: integer
-          title: Count
-      type: object
-      required:
-      - state
-      - count
-      title: DagStatsStateResponse
-      description: DagStatsState serializer for responses.
     DagStatsResponse:
       properties:
         dag_id:
@@ -163,23 +157,29 @@ components:
       - dag_display_name
       - stats
       title: DagStatsResponse
-      description: DAG Stats serializer for responses.
-    DagStatsCollectionResponse:
+      description: Dag Stats serializer for responses.
+    HTTPExceptionResponse:
       properties:
-        dags:
-          items:
-            $ref: '#/components/schemas/DagStatsResponse'
-          type: array
-          title: Dags
-        total_entries:
-          type: integer
-          title: Total Entries
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Detail
       type: object
       required:
-      - dags
-      - total_entries
-      title: DagStatsCollectionResponse
-      description: DAG Stats Collection serializer for responses.
+      - detail
+      title: HTTPExceptionResponse
+      description: HTTPException Model used for error response.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2PasswordBearer:
       type: oauth2

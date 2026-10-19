@@ -1,0 +1,12 @@
+{
+ "url": "https://airflow.apache.org/docs/apache-airflow/stable/_static/dot-dot/src/airflow/api_fastapi/core_api/openapi/v2-rest-api-generated.yaml",
+ "final": "https://airflow.apache.org/docs/apache-airflow/stable/_static/dot-dot/src/airflow/api_fastapi/core_api/openapi/v2-rest-api-generated.yaml",
+ "status": 200,
+ "content_type": "application/yaml",
+ "bytes": 462497,
+ "sha256": "ba5593d18690897f7ecad0c1bb2f62bf25a0a9dc33490376122dfa88d1fc3d8b",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

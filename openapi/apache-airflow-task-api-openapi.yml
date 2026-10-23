@@ -398,3 +398,9 @@ components:
     HTTPBearer:
       type: http
       scheme: bearer
+x-provenance:
+  method: harvested
+  publisher: Apache Airflow
+  source: https://airflow.apache.org/docs/apache-airflow/stable/_static/dot-dot/src/airflow/api_fastapi/core_api/openapi/v2-rest-api-generated.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)

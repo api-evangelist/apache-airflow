@@ -7,44 +7,44 @@ artifacts:
     method: generated
     evidence: declared in the artifact
   arazzo/apache-airflow-audit-dag-runs-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-collect-dag-run-results-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-dataset-lineage-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-deployment-preflight-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-diagnose-failed-dag-run-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-force-task-instance-state-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-onboard-dag-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-provision-user-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-register-connection-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-retry-failed-tasks-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-trigger-dag-run-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-upsert-pool-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   arazzo/apache-airflow-upsert-variable-workflow.yml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: Arazzo whose sourceDescriptions are our split specs (../openapi/)
   authentication/apache-airflow-authentication.yml:
     method: derived
     evidence: declared in the artifact
@@ -777,127 +777,7 @@ artifacts:
   json-structure/openapi.yaml-x-com-structure.json:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-09-24T161608.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T125852.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T133943.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T143147.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T154045.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-26T215308.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T094438.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T103455.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T123021.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T132314.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T140727.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-28T221322.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-29T213958.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-29T230545.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-30T203505.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-30T220315.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-31T223420.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T063623.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T210448.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T222808.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-02T211804.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-02T224043.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-03T161828.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-03T174231.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T062714.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T212454.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T224856.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T055819.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T072335.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T144739.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T195450.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T211839.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T011047.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T211804.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T224210.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-07T200636.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-07T213054.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-08T214843.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-08T232836.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-10T204815.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-10T222408.yml:
+  kin/checks-2026-10-11T110117.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-12T062655.yml:
@@ -981,6 +861,21 @@ artifacts:
   kin/score-2026-09-24T161608.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T210408.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T232841.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T000835.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T024842.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-11T110117.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/apache-airflow-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
@@ -994,84 +889,19 @@ artifacts:
     method: harvested
     evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
       to the provider's source is unverified
-  openapi/airflow-asset-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-backfill-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-config-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-connection-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-dag-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-dag-parsing-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-dag-run-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-dagsource-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-dagstats-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-dagversion-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-dagwarning-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-event-log-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-experimental-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-extra-links-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-import-error-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-job-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-login-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-monitor-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-plugin-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-pool-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-provider-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-task-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-task-instance-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-variable-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-version-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/airflow-xcom-api-openapi.yml:
-    method: unknown
-    evidence: no authorship recorded
+  openapi/_original/apache-airflow-openapi.yml:
+    method: harvested
+    evidence: byte-identical to https://airflow.apache.org/docs/apache-airflow/stable/_static/dot-dot/src/airflow/api_fastapi/core_api/openapi/v2-rest-api-generated.yaml
+      (sha256 ba5593d18690, fetched 2026-10-19)
+  openapi/apache-airflow-asset-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-asset-state-store-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-backfill-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-config-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
@@ -1081,7 +911,19 @@ artifacts:
   openapi/apache-airflow-dag-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-dag-parsing-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-dag-run-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-dagsource-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-dagstats-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-dagversion-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-dagwarning-api-openapi.yml:
@@ -1093,7 +935,22 @@ artifacts:
   openapi/apache-airflow-event-log-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-experimental-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-extra-links-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-import-error-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-job-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-login-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-monitor-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-monitoring-api-openapi.yml:
@@ -1114,7 +971,13 @@ artifacts:
   openapi/apache-airflow-role-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-task-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-task-instance-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-task-state-store-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-user-api-openapi.yml:
@@ -1123,12 +986,15 @@ artifacts:
   openapi/apache-airflow-variable-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/apache-airflow-version-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   openapi/apache-airflow-xcom-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   overlays/apache-airflow-openapi-overlay.yaml:
-    method: unknown
-    evidence: no authorship recorded
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   packages/apache-airflow-packages.yml:
     method: searched
     evidence: declared in the artifact

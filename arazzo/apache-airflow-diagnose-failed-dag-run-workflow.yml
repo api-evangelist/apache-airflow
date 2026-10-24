@@ -54,7 +54,7 @@ workflows:
     description: >-
       Read the DAG run and require the failed state so the workflow is not run
       against a healthy pipeline.
-    operationId: get_dag_run
+    operationId: getApiV2DagsByDagIdDagRunsByDagRunId
     parameters:
     - name: dag_id
       in: path

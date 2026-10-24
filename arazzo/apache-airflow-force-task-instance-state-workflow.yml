@@ -155,7 +155,7 @@ workflows:
     description: >-
       Read the DAG run to report whether overriding the task released the rest of
       the pipeline.
-    operationId: get_dag_run
+    operationId: getApiV2DagsByDagIdDagRunsByDagRunId
     parameters:
     - name: dag_id
       in: path

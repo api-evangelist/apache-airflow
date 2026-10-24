@@ -54,7 +54,7 @@ workflows:
     description: >-
       Poll the DAG run until Airflow stamps an end_date. XCom values are only
       dependable once the run has reached a terminal state.
-    operationId: get_dag_run
+    operationId: getApiV2DagsByDagIdDagRunsByDagRunId
     parameters:
     - name: dag_id
       in: path

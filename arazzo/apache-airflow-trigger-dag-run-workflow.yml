@@ -141,7 +141,7 @@ workflows:
       Poll the DAG run until Airflow stamps an end_date, which it does only when
       the run reaches a terminal state (success or failed). Retries every 15
       seconds for up to 80 attempts (~20 minutes).
-    operationId: get_dag_run
+    operationId: getApiV2DagsByDagIdDagRunsByDagRunId
     parameters:
     - name: dag_id
       in: path

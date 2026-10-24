@@ -117,7 +117,7 @@ workflows:
     description: >-
       Pull the most recent DAG runs, newest first, so the caller can judge whether
       this pipeline has been finishing cleanly before depending on it.
-    operationId: get_dag_runs
+    operationId: getApiV2DagsByDagIdDagRuns
     parameters:
     - name: dag_id
       in: path

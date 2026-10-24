@@ -53,7 +53,7 @@ workflows:
     description: >-
       Read the DAG run and require the failed state. Clearing a healthy run would
       throw away good work, so the workflow refuses to proceed on anything else.
-    operationId: get_dag_run
+    operationId: getApiV2DagsByDagIdDagRunsByDagRunId
     parameters:
     - name: dag_id
       in: path
@@ -125,7 +125,7 @@ workflows:
     description: >-
       Poll the DAG run until Airflow stamps a fresh end_date, marking the re-run
       as finished. Retries every 15 seconds for up to 80 attempts (~20 minutes).
-    operationId: get_dag_run
+    operationId: getApiV2DagsByDagIdDagRunsByDagRunId
     parameters:
     - name: dag_id
       in: path
